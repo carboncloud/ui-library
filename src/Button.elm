@@ -14,7 +14,7 @@ type alias ColorPalette =
 
 colorPalette : ColorPalette
 colorPalette =
-    { primary = Css.rgb 0 1 0
+    { primary = Css.rgb 0 255 0
     }
 
 color : (ColorPalette-> Css.Color) -> ColorPalette -> ButtonAttribute msg

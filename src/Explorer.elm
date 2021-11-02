@@ -10,6 +10,7 @@ import UIExplorer
         )
 
 import Button
+import Html.Styled exposing (toUnstyled)
 
 main : UIExplorerProgram {} () {}
 main =
@@ -17,6 +18,6 @@ main =
         defaultConfig
         [ storiesOf
             "Welcome"
-            [ ( "Button", \_ -> Button.raised [] <| Button.Text "My button", {} )
+            [ ( "Button", \_ -> toUnstyled <| Button.raised [] <| Button.Text "My button", {} )
             ]
         ]
