@@ -20,7 +20,7 @@ config =
     { defaultConfig
         | customHeader =
             Just
-                { title = "Substance Design System"
+                { title = "Design System"
                 , logo =
                     UIExplorer.logoFromHtml <|
                         toUnstyled <|
@@ -44,10 +44,22 @@ main =
             [ ( "Button"
               , \_ ->
                     toUnstyled <|
-                        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "20px" ] ]
-                            [ Button.raised [] Noop <| Button.Text "Primary"
-                            , Button.raised (Button.color Secondary) Noop <| Button.Text "Secondary"
-                            , Button.raised (Button.color Warn) Noop <| Button.Text "Warn"
+                        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px" ] ]
+                            [ Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "20px" ] ]
+                                [ Button.raised Primary Noop <| Button.Text "Primary"
+                                , Button.raised Secondary Noop <| Button.Text "Secondary"
+                                , Button.raised Warn Noop <| Button.Text "Warn"
+                                ]
+                            , Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "20px" ] ]
+                                [ Button.ghost Primary Noop <| Button.Text "Primary"
+                                , Button.ghost Secondary Noop <| Button.Text "Secondary"
+                                , Button.ghost Warn Noop <| Button.Text "Warn"
+                                ]
+                            , Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "20px" ] ]
+                                [ Button.flat Primary Noop <| Button.Text "Primary"
+                                , Button.flat Secondary Noop <| Button.Text "Secondary"
+                                , Button.flat Warn Noop <| Button.Text "Warn"
+                                ]
                             ]
               , {}
               )
@@ -70,7 +82,9 @@ main =
                     toUnstyled <|
                         colorSwatchGroup <|
                             toneGroup "secondary"
-                                [ ( Color.secondary500, 500 )
+                                [ ( Color.secondary050, 50 )
+                                , ( Color.secondary500, 500 )
+                                , ( Color.secondary600, 600 )
                                 ]
               , {}
               )
@@ -92,11 +106,16 @@ main =
             , ( "Status"
               , \_ ->
                     toUnstyled <|
-                        colorSwatchGroup 
-                                [ colorSwatch "warn" Color.warn
-                                , colorSwatch "success" Color.success
-                                , colorSwatch "focus" Color.focus
+                        colorSwatchGroup
+                            (toneGroup "warn"
+                                [ ( Color.warn050, 50 )
+                                , ( Color.warn500, 500 )
+                                , ( Color.warn600, 600 )
                                 ]
+                                ++ [ colorSwatch "success" Color.success
+                                   , colorSwatch "focus" Color.focus
+                                   ]
+                            )
               , {}
               )
             ]

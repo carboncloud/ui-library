@@ -5036,6 +5036,7 @@ var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
 var $author$project$Explorer$Noop = {$: 'Noop'};
+var $author$project$Button$Primary = {$: 'Primary'};
 var $author$project$Button$Secondary = {$: 'Secondary'};
 var $author$project$Button$Text = function (a) {
 	return {$: 'Text', a: a};
@@ -5524,12 +5525,6 @@ var $rtfeldman$elm_css$Css$hex = function (str) {
 	return $rtfeldman$elm_css$Css$erroneousHex(str);
 };
 var $author$project$Color$black = $rtfeldman$elm_css$Css$hex('#05050a');
-var $elm$core$Basics$identity = function (x) {
-	return x;
-};
-var $author$project$Button$ButtonStyle = function (a) {
-	return {$: 'ButtonStyle', a: a};
-};
 var $rtfeldman$elm_css$Css$Preprocess$AppendProperty = function (a) {
 	return {$: 'AppendProperty', a: a};
 };
@@ -5539,121 +5534,6 @@ var $rtfeldman$elm_css$Css$property = F2(
 	});
 var $rtfeldman$elm_css$Css$backgroundColor = function (c) {
 	return A2($rtfeldman$elm_css$Css$property, 'background-color', c.value);
-};
-var $rtfeldman$elm_css$Css$Preprocess$ExtendSelector = F2(
-	function (a, b) {
-		return {$: 'ExtendSelector', a: a, b: b};
-	});
-var $rtfeldman$elm_css$Css$Structure$PseudoClassSelector = function (a) {
-	return {$: 'PseudoClassSelector', a: a};
-};
-var $rtfeldman$elm_css$Css$pseudoClass = function (_class) {
-	return $rtfeldman$elm_css$Css$Preprocess$ExtendSelector(
-		$rtfeldman$elm_css$Css$Structure$PseudoClassSelector(_class));
-};
-var $rtfeldman$elm_css$Css$hover = $rtfeldman$elm_css$Css$pseudoClass('hover');
-var $elm$core$Basics$gt = _Utils_gt;
-var $elm$core$List$reverse = function (list) {
-	return A3($elm$core$List$foldl, $elm$core$List$cons, _List_Nil, list);
-};
-var $elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							$elm$core$List$foldl,
-							fn,
-							acc,
-							$elm$core$List$reverse(r4)) : A4($elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var $elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
-var $elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						$elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var $author$project$Color$primary500 = $rtfeldman$elm_css$Css$hex('#28a0a6');
-var $author$project$Color$primary600 = $rtfeldman$elm_css$Css$hex('#287387');
-var $author$project$Color$secondary500 = $rtfeldman$elm_css$Css$hex('#364286');
-var $author$project$Color$warn = $rtfeldman$elm_css$Css$hex('#fa876a');
-var $author$project$Button$color = function (buttonColor) {
-	var _v0 = function () {
-		switch (buttonColor.$) {
-			case 'Primary':
-				return _Utils_Tuple2($author$project$Color$primary500, $author$project$Color$primary600);
-			case 'Secondary':
-				return _Utils_Tuple2($author$project$Color$secondary500, $author$project$Color$secondary500);
-			default:
-				return _Utils_Tuple2($author$project$Color$warn, $author$project$Color$warn);
-		}
-	}();
-	var bgColor = _v0.a;
-	var hoverColor = _v0.b;
-	return A2(
-		$elm$core$List$map,
-		$author$project$Button$ButtonStyle,
-		_List_fromArray(
-			[
-				$rtfeldman$elm_css$Css$backgroundColor(bgColor),
-				$rtfeldman$elm_css$Css$hover(
-				_List_fromArray(
-					[
-						$rtfeldman$elm_css$Css$backgroundColor(hoverColor)
-					]))
-			]));
 };
 var $rtfeldman$elm_css$VirtualDom$Styled$Attribute = F3(
 	function (a, b, c) {
@@ -5885,6 +5765,65 @@ var $rtfeldman$elm_css$Css$Structure$compactHelp = F2(
 		}
 	});
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Basics$gt = _Utils_gt;
+var $elm$core$List$reverse = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$List$cons, _List_Nil, list);
+};
+var $elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							$elm$core$List$foldl,
+							fn,
+							acc,
+							$elm$core$List$reverse(r4)) : A4($elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var $elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
 var $rtfeldman$elm_css$Css$Structure$Keyframes = function (a) {
 	return {$: 'Keyframes', a: a};
 };
@@ -5895,6 +5834,20 @@ var $elm$core$List$append = F2(
 		} else {
 			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
 		}
+	});
+var $elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						$elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
 	});
 var $rtfeldman$elm_css$Css$Structure$withKeyframeDeclarations = F2(
 	function (keyframesByName, compactedDeclarations) {
@@ -7460,6 +7413,9 @@ var $rtfeldman$elm_css$Css$Preprocess$Resolve$compile = function (styles) {
 		'\n\n',
 		A2($elm$core$List$map, $rtfeldman$elm_css$Css$Preprocess$Resolve$compileHelp, styles));
 };
+var $elm$core$Basics$identity = function (x) {
+	return x;
+};
 var $rtfeldman$elm_css$Css$Preprocess$Snippet = function (a) {
 	return {$: 'Snippet', a: a};
 };
@@ -7973,6 +7929,9 @@ var $author$project$Explorer$Helpers$colorSwatchGroup = $rtfeldman$elm_css$Html$
 					A2($rtfeldman$elm_css$Css$property, 'gap', '20px')
 				]))
 		]));
+var $rtfeldman$elm_css$Css$column = _Utils_update(
+	$rtfeldman$elm_css$Css$row,
+	{value: 'column'});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -8009,6 +7968,7 @@ var $kalutheo$elm_ui_explorer$UIExplorer$logoFromHtml = function (logo) {
 		$kalutheo$elm_ui_explorer$UIExplorer$FromHtml(logo));
 };
 var $rtfeldman$elm_css$Css$marginLeft = $rtfeldman$elm_css$Css$prop1('margin-left');
+var $author$project$Color$primary500 = $rtfeldman$elm_css$Css$hex('#28a0a6');
 var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
 	function (key, value) {
 		return A3(
@@ -8529,7 +8489,7 @@ var $author$project$Explorer$config = _Utils_update(
 										]))
 								]),
 							_List_Nil))),
-				title: 'Substance Design System',
+				title: 'Design System',
 				titleColor: $elm$core$Maybe$Just(
 					$author$project$Color$Internal$toHexString($author$project$Color$primary500))
 			})
@@ -14792,29 +14752,7 @@ var $kalutheo$elm_ui_explorer$UIExplorer$explore = F2(
 			config,
 			$kalutheo$elm_ui_explorer$UIExplorer$fromUIList(uiList));
 	});
-var $author$project$Color$focus = $rtfeldman$elm_css$Css$hex('#FABE2C');
-var $author$project$Color$grey050 = $rtfeldman$elm_css$Css$hex('#FCFCFC');
-var $author$project$Color$grey100 = $rtfeldman$elm_css$Css$hex('#f8f8f8');
-var $author$project$Color$grey200 = $rtfeldman$elm_css$Css$hex('#E3E3E3');
-var $author$project$Color$grey300 = $rtfeldman$elm_css$Css$hex('#e8e8e8');
-var $author$project$Color$grey500 = $rtfeldman$elm_css$Css$hex('#858585');
-var $author$project$Color$grey800 = $rtfeldman$elm_css$Css$hex('#464646');
-var $author$project$Color$primary050 = $rtfeldman$elm_css$Css$hex('#CAE8E9');
-var $author$project$Button$Primary = {$: 'Primary'};
-var $author$project$Shadow$Small = {$: 'Small'};
 var $rtfeldman$elm_css$Css$bold = {fontWeight: $rtfeldman$elm_css$Css$Structure$Compatible, value: 'bold'};
-var $rtfeldman$elm_css$Css$prop5 = F6(
-	function (key, argA, argB, argC, argD, argE) {
-		return A2(
-			$rtfeldman$elm_css$Css$property,
-			key,
-			A2(
-				$elm$core$String$join,
-				' ',
-				_List_fromArray(
-					[argA.value, argB.value, argC.value, argD.value, argE.value])));
-	});
-var $rtfeldman$elm_css$Css$boxShadow5 = $rtfeldman$elm_css$Css$prop5('box-shadow');
 var $rtfeldman$elm_css$Html$Styled$button = $rtfeldman$elm_css$Html$Styled$node('button');
 var $tesk9$accessible_html_with_css$Accessibility$Styled$button = $rtfeldman$elm_css$Html$Styled$button;
 var $tesk9$accessible_html_with_css$Accessibility$Styled$Utils$Button = {$: 'Button'};
@@ -14963,6 +14901,18 @@ var $tesk9$accessible_html_with_css$Accessibility$Styled$Role$button = $tesk9$ac
 var $rtfeldman$elm_css$Css$color = function (c) {
 	return A2($rtfeldman$elm_css$Css$property, 'color', c.value);
 };
+var $author$project$Color$focus = $rtfeldman$elm_css$Css$hex('#172D69');
+var $rtfeldman$elm_css$Css$Preprocess$ExtendSelector = F2(
+	function (a, b) {
+		return {$: 'ExtendSelector', a: a, b: b};
+	});
+var $rtfeldman$elm_css$Css$Structure$PseudoClassSelector = function (a) {
+	return {$: 'PseudoClassSelector', a: a};
+};
+var $rtfeldman$elm_css$Css$pseudoClass = function (_class) {
+	return $rtfeldman$elm_css$Css$Preprocess$ExtendSelector(
+		$rtfeldman$elm_css$Css$Structure$PseudoClassSelector(_class));
+};
 var $rtfeldman$elm_css$Css$focus = $rtfeldman$elm_css$Css$pseudoClass('focus');
 var $rtfeldman$elm_css$Css$fontWeight = function (_v0) {
 	var value = _v0.value;
@@ -14994,7 +14944,19 @@ var $tesk9$accessible_html_with_css$Accessibility$Styled$img = F2(
 				$tesk9$accessible_html_with_css$Accessibility$Styled$Utils$nonInteractive(attributes)),
 			_List_Nil);
 	});
-var $rtfeldman$elm_css$Css$outline = $rtfeldman$elm_css$Css$prop1('outline');
+var $rtfeldman$elm_css$Css$prop3 = F4(
+	function (key, argA, argB, argC) {
+		return A2(
+			$rtfeldman$elm_css$Css$property,
+			key,
+			A2(
+				$elm$core$String$join,
+				' ',
+				_List_fromArray(
+					[argA.value, argB.value, argC.value])));
+	});
+var $rtfeldman$elm_css$Css$outline3 = $rtfeldman$elm_css$Css$prop3('outline');
+var $rtfeldman$elm_css$Css$outlineOffset = $rtfeldman$elm_css$Css$prop1('outline-offset');
 var $rtfeldman$elm_css$Css$prop2 = F3(
 	function (key, argA, argB) {
 		return A2(
@@ -15012,6 +14974,179 @@ var $rtfeldman$elm_css$Css$rem = A2($rtfeldman$elm_css$Css$Internal$lengthConver
 var $dzuk_mutant$elm_responsive_pixels$Rpx$rpx = function (num) {
 	return $rtfeldman$elm_css$Css$rem(num / 16);
 };
+var $rtfeldman$elm_css$Css$solid = {borderStyle: $rtfeldman$elm_css$Css$Structure$Compatible, textDecorationStyle: $rtfeldman$elm_css$Css$Structure$Compatible, value: 'solid'};
+var $tesk9$accessible_html_with_css$Accessibility$Styled$text = $rtfeldman$elm_css$Html$Styled$text;
+var $author$project$Color$white = $rtfeldman$elm_css$Css$hex('#ffffff');
+var $author$project$Button$button = F3(
+	function (customStyle, attrs, buttonContent) {
+		var baseStyle = _List_fromArray(
+			[
+				A2(
+				$rtfeldman$elm_css$Css$padding2,
+				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(10),
+				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(16)),
+				$rtfeldman$elm_css$Css$borderRadius(
+				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(24)),
+				$rtfeldman$elm_css$Css$fontWeight($rtfeldman$elm_css$Css$bold),
+				$rtfeldman$elm_css$Css$color($author$project$Color$white),
+				$rtfeldman$elm_css$Css$focus(
+				_List_fromArray(
+					[
+						A3(
+						$rtfeldman$elm_css$Css$outline3,
+						$rtfeldman$elm_css$Css$px(2),
+						$rtfeldman$elm_css$Css$solid,
+						$author$project$Color$focus),
+						$rtfeldman$elm_css$Css$outlineOffset(
+						$rtfeldman$elm_css$Css$px(2))
+					]))
+			]);
+		var style = _Utils_ap(baseStyle, customStyle);
+		return A2(
+			$tesk9$accessible_html_with_css$Accessibility$Styled$button,
+			A2(
+				$elm$core$List$cons,
+				$rtfeldman$elm_css$Html$Styled$Attributes$css(style),
+				_Utils_ap(
+					attrs,
+					_List_fromArray(
+						[$tesk9$accessible_html_with_css$Accessibility$Styled$Role$button]))),
+			function () {
+				if (buttonContent.$ === 'Text') {
+					var s = buttonContent.a;
+					return _List_fromArray(
+						[
+							$tesk9$accessible_html_with_css$Accessibility$Styled$text(s)
+						]);
+				} else {
+					var s = buttonContent.a;
+					var i = buttonContent.b;
+					return _List_fromArray(
+						[
+							A2(
+							$tesk9$accessible_html_with_css$Accessibility$Styled$img,
+							'button-icon',
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$src(i)
+								])),
+							$tesk9$accessible_html_with_css$Accessibility$Styled$text(s)
+						]);
+				}
+			}());
+	});
+var $rtfeldman$elm_css$Css$hover = $rtfeldman$elm_css$Css$pseudoClass('hover');
+var $rtfeldman$elm_css$VirtualDom$Styled$on = F2(
+	function (eventName, handler) {
+		return A3(
+			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
+			A2($elm$virtual_dom$VirtualDom$on, eventName, handler),
+			_List_Nil,
+			'');
+	});
+var $rtfeldman$elm_css$Html$Styled$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$rtfeldman$elm_css$VirtualDom$Styled$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $rtfeldman$elm_css$Html$Styled$Events$onClick = function (msg) {
+	return A2(
+		$rtfeldman$elm_css$Html$Styled$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Color$primary050 = $rtfeldman$elm_css$Css$hex('#CAE8E9');
+var $author$project$Color$secondary050 = $rtfeldman$elm_css$Css$hex('#E6E8F5');
+var $author$project$Color$secondary500 = $rtfeldman$elm_css$Css$hex('#364286');
+var $author$project$Color$warn050 = $rtfeldman$elm_css$Css$hex('#FEEFEC');
+var $author$project$Color$warn500 = $rtfeldman$elm_css$Css$hex('#fa876a');
+var $author$project$Button$flat = F3(
+	function (buttonColor, onClick, content) {
+		var _v0 = function () {
+			switch (buttonColor.$) {
+				case 'Primary':
+					return _Utils_Tuple2($author$project$Color$primary500, $author$project$Color$primary050);
+				case 'Secondary':
+					return _Utils_Tuple2($author$project$Color$secondary500, $author$project$Color$secondary050);
+				default:
+					return _Utils_Tuple2($author$project$Color$warn500, $author$project$Color$warn050);
+			}
+		}();
+		var textColor = _v0.a;
+		var hoverColor = _v0.b;
+		return A3(
+			$author$project$Button$button,
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Css$color(textColor),
+					$rtfeldman$elm_css$Css$fontWeight($rtfeldman$elm_css$Css$bold),
+					$rtfeldman$elm_css$Css$hover(
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Css$backgroundColor(hoverColor)
+						]))
+				]),
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$Events$onClick(onClick)
+				]),
+			content);
+	});
+var $rtfeldman$elm_css$Css$border3 = $rtfeldman$elm_css$Css$prop3('border');
+var $rtfeldman$elm_css$Css$borderBox = {backgroundClip: $rtfeldman$elm_css$Css$Structure$Compatible, boxSizing: $rtfeldman$elm_css$Css$Structure$Compatible, value: 'border-box'};
+var $rtfeldman$elm_css$Css$boxSizing = $rtfeldman$elm_css$Css$prop1('box-sizing');
+var $author$project$Button$ghost = F3(
+	function (buttonColor, onClick, content) {
+		var _v0 = function () {
+			switch (buttonColor.$) {
+				case 'Primary':
+					return _Utils_Tuple2($author$project$Color$primary500, $author$project$Color$primary050);
+				case 'Secondary':
+					return _Utils_Tuple2($author$project$Color$secondary500, $author$project$Color$secondary050);
+				default:
+					return _Utils_Tuple2($author$project$Color$warn500, $author$project$Color$warn050);
+			}
+		}();
+		var baseColor = _v0.a;
+		var hoverColor = _v0.b;
+		return A3(
+			$author$project$Button$button,
+			_List_fromArray(
+				[
+					A2(
+					$rtfeldman$elm_css$Css$padding2,
+					$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(8),
+					$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(14)),
+					A3(
+					$rtfeldman$elm_css$Css$border3,
+					$rtfeldman$elm_css$Css$px(2),
+					$rtfeldman$elm_css$Css$solid,
+					baseColor),
+					$rtfeldman$elm_css$Css$boxSizing($rtfeldman$elm_css$Css$borderBox),
+					$rtfeldman$elm_css$Css$color(baseColor),
+					$rtfeldman$elm_css$Css$hover(
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Css$backgroundColor(hoverColor)
+						]))
+				]),
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$Events$onClick(onClick)
+				]),
+			content);
+	});
+var $author$project$Color$grey050 = $rtfeldman$elm_css$Css$hex('#FCFCFC');
+var $author$project$Color$grey100 = $rtfeldman$elm_css$Css$hex('#f8f8f8');
+var $author$project$Color$grey200 = $rtfeldman$elm_css$Css$hex('#E3E3E3');
+var $author$project$Color$grey300 = $rtfeldman$elm_css$Css$hex('#e8e8e8');
+var $author$project$Color$grey500 = $rtfeldman$elm_css$Css$hex('#858585');
+var $author$project$Color$grey800 = $rtfeldman$elm_css$Css$hex('#464646');
+var $author$project$Color$primary600 = $rtfeldman$elm_css$Css$hex('#287387');
+var $author$project$Shadow$Small = {$: 'Small'};
+var $author$project$Color$secondary600 = $rtfeldman$elm_css$Css$hex('#2F3974');
 var $mgold$elm_nonempty_list$List$Nonempty$Nonempty = F2(
 	function (a, b) {
 		return {$: 'Nonempty', a: a, b: b};
@@ -15168,105 +15303,33 @@ var $author$project$Shadow$shadow = function (size) {
 			}
 		}());
 };
-var $tesk9$accessible_html_with_css$Accessibility$Styled$text = $rtfeldman$elm_css$Html$Styled$text;
-var $author$project$Color$white = $rtfeldman$elm_css$Css$hex('#ffffff');
-var $rtfeldman$elm_css$Css$UnitlessInteger = {$: 'UnitlessInteger'};
-var $rtfeldman$elm_css$Css$zero = {length: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrAuto: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrAutoOrCoverOrContain: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrMinMaxDimension: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrNone: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrNoneOrMinMaxDimension: $rtfeldman$elm_css$Css$Structure$Compatible, lengthOrNumber: $rtfeldman$elm_css$Css$Structure$Compatible, number: $rtfeldman$elm_css$Css$Structure$Compatible, numericValue: 0, outline: $rtfeldman$elm_css$Css$Structure$Compatible, unitLabel: '', units: $rtfeldman$elm_css$Css$UnitlessInteger, value: '0'};
-var $author$project$Button$button = F3(
-	function (buttonStyle, attrs, buttonContent) {
-		var customStyle = A2(
-			$elm$core$List$map,
-			function (_v1) {
-				var attr = _v1.a;
-				return attr;
-			},
-			buttonStyle);
-		var baseStyle = _List_fromArray(
-			[
-				A2(
-				$rtfeldman$elm_css$Css$padding2,
-				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(10),
-				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(16)),
-				$rtfeldman$elm_css$Css$borderRadius(
-				$dzuk_mutant$elm_responsive_pixels$Rpx$rpx(24)),
-				$rtfeldman$elm_css$Css$fontWeight($rtfeldman$elm_css$Css$bold),
-				$rtfeldman$elm_css$Css$color($author$project$Color$white),
-				$author$project$Shadow$shadow($author$project$Shadow$Small),
-				$rtfeldman$elm_css$Css$focus(
-				_List_fromArray(
-					[
-						$rtfeldman$elm_css$Css$outline($rtfeldman$elm_css$Css$zero),
-						A5(
-						$rtfeldman$elm_css$Css$boxShadow5,
-						$rtfeldman$elm_css$Css$zero,
-						$rtfeldman$elm_css$Css$zero,
-						$rtfeldman$elm_css$Css$px(2),
-						$rtfeldman$elm_css$Css$px(2),
-						$author$project$Color$focus)
-					]))
-			]);
-		var style = _Utils_ap(baseStyle, customStyle);
-		return A2(
-			$tesk9$accessible_html_with_css$Accessibility$Styled$button,
-			A2(
-				$elm$core$List$cons,
-				$rtfeldman$elm_css$Html$Styled$Attributes$css(style),
-				_Utils_ap(
-					attrs,
-					_List_fromArray(
-						[$tesk9$accessible_html_with_css$Accessibility$Styled$Role$button]))),
-			function () {
-				if (buttonContent.$ === 'Text') {
-					var s = buttonContent.a;
-					return _List_fromArray(
-						[
-							$tesk9$accessible_html_with_css$Accessibility$Styled$text(s)
-						]);
-				} else {
-					var s = buttonContent.a;
-					var i = buttonContent.b;
-					return _List_fromArray(
-						[
-							A2(
-							$tesk9$accessible_html_with_css$Accessibility$Styled$img,
-							'button-icon',
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$Attributes$src(i)
-								])),
-							$tesk9$accessible_html_with_css$Accessibility$Styled$text(s)
-						]);
-				}
-			}());
-	});
-var $rtfeldman$elm_css$VirtualDom$Styled$on = F2(
-	function (eventName, handler) {
-		return A3(
-			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
-			A2($elm$virtual_dom$VirtualDom$on, eventName, handler),
-			_List_Nil,
-			'');
-	});
-var $rtfeldman$elm_css$Html$Styled$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$rtfeldman$elm_css$VirtualDom$Styled$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $rtfeldman$elm_css$Html$Styled$Events$onClick = function (msg) {
-	return A2(
-		$rtfeldman$elm_css$Html$Styled$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
+var $author$project$Color$warn600 = $rtfeldman$elm_css$Css$hex('#D95E3F');
 var $author$project$Button$raised = F3(
-	function (attrs, onClick, content) {
+	function (buttonColor, onClick, content) {
+		var _v0 = function () {
+			switch (buttonColor.$) {
+				case 'Primary':
+					return _Utils_Tuple2($author$project$Color$primary500, $author$project$Color$primary600);
+				case 'Secondary':
+					return _Utils_Tuple2($author$project$Color$secondary500, $author$project$Color$secondary600);
+				default:
+					return _Utils_Tuple2($author$project$Color$warn500, $author$project$Color$warn600);
+			}
+		}();
+		var bgColor = _v0.a;
+		var hoverColor = _v0.b;
 		return A3(
 			$author$project$Button$button,
-			_Utils_ap(
-				$author$project$Button$color($author$project$Button$Primary),
-				attrs),
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Css$backgroundColor(bgColor),
+					$author$project$Shadow$shadow($author$project$Shadow$Small),
+					$rtfeldman$elm_css$Css$hover(
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Css$backgroundColor(hoverColor)
+						]))
+				]),
 			_List_fromArray(
 				[
 					$rtfeldman$elm_css$Html$Styled$Events$onClick(onClick)
@@ -15315,27 +15378,102 @@ var $author$project$Explorer$main = A2(
 										_List_fromArray(
 											[
 												$rtfeldman$elm_css$Css$displayFlex,
-												$rtfeldman$elm_css$Css$flexDirection($rtfeldman$elm_css$Css$row),
-												A2($rtfeldman$elm_css$Css$property, 'gap', '20px')
+												$rtfeldman$elm_css$Css$flexDirection($rtfeldman$elm_css$Css$column),
+												A2($rtfeldman$elm_css$Css$property, 'gap', '25px')
 											]))
 									]),
 								_List_fromArray(
 									[
-										A3(
-										$author$project$Button$raised,
-										_List_Nil,
-										$author$project$Explorer$Noop,
-										$author$project$Button$Text('Primary')),
-										A3(
-										$author$project$Button$raised,
-										$author$project$Button$color($author$project$Button$Secondary),
-										$author$project$Explorer$Noop,
-										$author$project$Button$Text('Secondary')),
-										A3(
-										$author$project$Button$raised,
-										$author$project$Button$color($author$project$Button$Warn),
-										$author$project$Explorer$Noop,
-										$author$project$Button$Text('Warn'))
+										A2(
+										$rtfeldman$elm_css$Html$Styled$div,
+										_List_fromArray(
+											[
+												$rtfeldman$elm_css$Html$Styled$Attributes$css(
+												_List_fromArray(
+													[
+														$rtfeldman$elm_css$Css$displayFlex,
+														$rtfeldman$elm_css$Css$flexDirection($rtfeldman$elm_css$Css$row),
+														A2($rtfeldman$elm_css$Css$property, 'gap', '20px')
+													]))
+											]),
+										_List_fromArray(
+											[
+												A3(
+												$author$project$Button$raised,
+												$author$project$Button$Primary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Primary')),
+												A3(
+												$author$project$Button$raised,
+												$author$project$Button$Secondary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Secondary')),
+												A3(
+												$author$project$Button$raised,
+												$author$project$Button$Warn,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Warn'))
+											])),
+										A2(
+										$rtfeldman$elm_css$Html$Styled$div,
+										_List_fromArray(
+											[
+												$rtfeldman$elm_css$Html$Styled$Attributes$css(
+												_List_fromArray(
+													[
+														$rtfeldman$elm_css$Css$displayFlex,
+														$rtfeldman$elm_css$Css$flexDirection($rtfeldman$elm_css$Css$row),
+														A2($rtfeldman$elm_css$Css$property, 'gap', '20px')
+													]))
+											]),
+										_List_fromArray(
+											[
+												A3(
+												$author$project$Button$ghost,
+												$author$project$Button$Primary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Primary')),
+												A3(
+												$author$project$Button$ghost,
+												$author$project$Button$Secondary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Secondary')),
+												A3(
+												$author$project$Button$ghost,
+												$author$project$Button$Warn,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Warn'))
+											])),
+										A2(
+										$rtfeldman$elm_css$Html$Styled$div,
+										_List_fromArray(
+											[
+												$rtfeldman$elm_css$Html$Styled$Attributes$css(
+												_List_fromArray(
+													[
+														$rtfeldman$elm_css$Css$displayFlex,
+														$rtfeldman$elm_css$Css$flexDirection($rtfeldman$elm_css$Css$row),
+														A2($rtfeldman$elm_css$Css$property, 'gap', '20px')
+													]))
+											]),
+										_List_fromArray(
+											[
+												A3(
+												$author$project$Button$flat,
+												$author$project$Button$Primary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Primary')),
+												A3(
+												$author$project$Button$flat,
+												$author$project$Button$Secondary,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Secondary')),
+												A3(
+												$author$project$Button$flat,
+												$author$project$Button$Warn,
+												$author$project$Explorer$Noop,
+												$author$project$Button$Text('Warn'))
+											]))
 									])));
 					},
 					{})
@@ -15371,7 +15509,9 @@ var $author$project$Explorer$main = A2(
 									'secondary',
 									_List_fromArray(
 										[
-											_Utils_Tuple2($author$project$Color$secondary500, 500)
+											_Utils_Tuple2($author$project$Color$secondary050, 50),
+											_Utils_Tuple2($author$project$Color$secondary500, 500),
+											_Utils_Tuple2($author$project$Color$secondary600, 600)
 										]))));
 					},
 					{}),
@@ -15405,12 +15545,21 @@ var $author$project$Explorer$main = A2(
 					function (_v4) {
 						return $rtfeldman$elm_css$Html$Styled$toUnstyled(
 							$author$project$Explorer$Helpers$colorSwatchGroup(
-								_List_fromArray(
-									[
-										A2($author$project$Explorer$Helpers$colorSwatch, 'warn', $author$project$Color$warn),
-										A2($author$project$Explorer$Helpers$colorSwatch, 'success', $author$project$Color$success),
-										A2($author$project$Explorer$Helpers$colorSwatch, 'focus', $author$project$Color$focus)
-									])));
+								_Utils_ap(
+									A2(
+										$author$project$Explorer$Helpers$toneGroup,
+										'warn',
+										_List_fromArray(
+											[
+												_Utils_Tuple2($author$project$Color$warn050, 50),
+												_Utils_Tuple2($author$project$Color$warn500, 500),
+												_Utils_Tuple2($author$project$Color$warn600, 600)
+											])),
+									_List_fromArray(
+										[
+											A2($author$project$Explorer$Helpers$colorSwatch, 'success', $author$project$Color$success),
+											A2($author$project$Explorer$Helpers$colorSwatch, 'focus', $author$project$Color$focus)
+										]))));
 					},
 					{})
 				]))
