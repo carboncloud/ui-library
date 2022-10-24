@@ -1,9 +1,6 @@
 module Stories.Button exposing (..)
 
 import Html exposing (Html)
-import Html.Styled exposing (toUnstyled)
-import Json.Decode as JD
-import Json.Encode
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Button exposing (ButtonEmphasis(..))
