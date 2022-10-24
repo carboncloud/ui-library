@@ -6,4 +6,4 @@ repl-temp-*
 # node
 node_modules
 
-explorer.js
+public/explorer.js

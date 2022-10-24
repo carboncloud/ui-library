@@ -63,7 +63,7 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                     ( bgColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.3 )
+                                ( palette.primary500, palette.primary600 )
 
                             Secondary ->
                                 ( palette.secondary500, palette.secondary600 )

@@ -1,11 +1,9 @@
-module Shadow exposing
+module Ui.Shadow exposing
     ( ShadowSize(..)
     , shadow
     )
 
 import Css exposing (Color)
-import Html.Styled
-import Html.Styled.Attributes
 import List.Nonempty as Nonempty exposing (Nonempty(..))
 
 

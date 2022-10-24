@@ -4,11 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "uie": "elm-live src/Explorer.elm --open --dir=public --start-page=index.html -- --output=public/explorer.js --debug"
+    "uie": "elm-live src/Explorer.elm --open --dir=public --start-page=index.html -- --output=public/explorer.js --debug",
+    "storybook": "start-storybook -p 6006",
+    "storybook:build": "build-storybook -o dist"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "elm-live": "^4.0.2"
+    "@babel/core": "7.17.5",
+    "@storybook/addon-a11y": "6.4.19",
+    "@storybook/addon-actions": "6.5.0-alpha.47",
+    "@storybook/addon-essentials": "6.5.0-alpha.47",
+    "@storybook/html": "6.5.0-alpha.47",
+    "babel-loader": "8.2.3",
+    "elm": "0.19.1-5",
+    "elm-live": "^4.0.2",
+    "storybook-builder-vite": "0.1.18",
+    "vite": "2.8.6",
+    "vite-plugin-elm": "2.5.1"
   }
 }
