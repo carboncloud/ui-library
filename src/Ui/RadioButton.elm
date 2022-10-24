@@ -1,17 +1,21 @@
-module Ui.RadioButton exposing (dynamic, static, custom)
+module Ui.RadioButton exposing (custom, dynamic, static)
 
-import Html exposing (Attribute)
 import Accessibility.Styled as A11y exposing (Html)
-import Ui.Css.Palette exposing (palette)
 import Css
 import Css.Transitions as Transitions
 import Dict exposing (Dict)
+import Html exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
+import Ui.Css.Palette exposing (palette)
 
 
+{-
+    This is useful when the options need to be created dynamically.
+    E.g. options are fetched from a remote location
+-}
 dynamic :
     { onChange : a -> msg
     , items : List ( String, a )
@@ -19,18 +23,24 @@ dynamic :
     , selected : Maybe a
     }
     -> Html msg
-dynamic = custom []
+dynamic =
+    custom []
 
 
+{-
+    This is a fallback for when you need to ahve complete control of the component.
+    Avoid using this if not necessary.
+-}
 custom :
     List (Attribute Never)
-    -> { onChange : a -> msg
-    , items : List ( String, a )
-    , label : String
-    , selected : Maybe a
-    }
+    ->
+        { onChange : a -> msg
+        , items : List ( String, a )
+        , label : String
+        , selected : Maybe a
+        }
     -> Html msg
-custom attrs config  =
+custom attrs config =
     let
         itemView : Int -> ( String, a ) -> Html msg
         itemView idx ( itemLabel, value ) =
@@ -78,20 +88,23 @@ custom attrs config  =
                     ]
                 , A11y.span [ Attributes.css [ Css.marginLeft (Css.px 5), Css.fontWeight Css.bold ] ] [ A11y.text itemLabel ]
                 ]
-
-            
     in
     A11y.fieldset
         (Attributes.css
-               [ Css.displayFlex
-               , Css.property "gap" "20px"
-               ]
-           :: List.map Attributes.fromUnstyled attrs)
+            [ Css.displayFlex
+            , Css.property "gap" "20px"
+            ]
+            :: List.map Attributes.fromUnstyled attrs
+        )
     <|
         A11y.legend [] [ A11y.text config.label ]
             :: List.indexedMap itemView config.items
 
 
+
+{-
+   This is the most type safe version and should be used when possible
+-}
 static :
     { onChange : a -> msg
     , items : Dict String a
