@@ -14,6 +14,8 @@ import Ui.Css.Palette exposing (palette)
 import Ui.Shadow exposing (shadow)
 import Ui.DataAttributes as DataAttributes
 
+-- TODO: Add custom fallback
+
 type ButtonColor
     = Primary
     | Secondary
