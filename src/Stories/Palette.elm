@@ -25,16 +25,19 @@ colorSwatch name color =
         [ Styled.div
             [ Attributes.css
                 [ Css.backgroundColor color
-                , Css.height (Css.px 100)
-                , Css.width (Css.px 100)
+                , Css.height (Css.px 150)
+                , Css.width (Css.px 150)
                 , Css.margin2 (Css.px 10) Css.zero
+                , Css.padding (Css.px 10)
+                , Css.fontWeight Css.bold
+                , Css.displayFlex
+                , Css.flexDirection Css.column
+                , Css.justifyContent Css.end
                 ]
             ]
-            []
-        , Styled.h5 [ Attributes.css [ Css.margin2 (Css.px 5) Css.zero ] ]
-            [ Styled.text name
-            ]
-        , Styled.h6 [] [ Styled.text <| toHexString color ]
+            [ Styled.text <| toHexString color ]
+        , Styled.h5 [ Attributes.css [ Css.fontSize (Css.px 14), Css.margin2 (Css.px 5) (Css.px 10) ] ]
+            [ Styled.text name ]
         ]
 
 
@@ -56,7 +59,7 @@ toneGroup name =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div []
+        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor palette.white] ]
             [ colorSwatchGroup <|
                 toneGroup "primary"
                     [ ( palette.primary050, 50 )

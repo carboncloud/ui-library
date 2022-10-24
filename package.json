@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "uie": "elm-live src/Explorer.elm --open --dir=public --start-page=index.html -- --output=public/explorer.js --debug",
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook -o dist"
   },
@@ -18,7 +17,6 @@
     "@storybook/html": "6.5.0-alpha.47",
     "babel-loader": "8.2.3",
     "elm": "0.19.1-5",
-    "elm-live": "^4.0.2",
     "storybook-builder-vite": "0.1.18",
     "vite": "2.8.6",
     "vite-plugin-elm": "2.5.1"

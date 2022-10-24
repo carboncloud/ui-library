@@ -2,7 +2,7 @@ module Ui.Button exposing (..)
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Border
+import Ui.Border
 import Css exposing (border, pct, solid)
 import Html exposing (Html)
 import Html.Styled.Attributes as Attributes

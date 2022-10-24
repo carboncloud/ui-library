@@ -1,4 +1,5 @@
 import './storybook.css'
+import './reset.css';
 
 export const parameters = {
   layout: 'centered',

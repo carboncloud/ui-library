@@ -7,7 +7,7 @@ export default {
   parameters: { elmSource },
   argTypes: {
     label: { control: { type: "text" } },
-    onAction: { action: "Elm he" },
+    onAction: { action: "Elm" },
   },
 };
 

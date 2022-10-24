@@ -1,4 +1,4 @@
-module Border exposing (rounded)
+module Ui.Border exposing (rounded)
 
 import Css
 
