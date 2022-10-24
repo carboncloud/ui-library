@@ -1,6 +1,7 @@
-module Ui.RadioButton exposing (..)
+module Ui.RadioButton exposing (dynamic, static, custom)
 
-import Accessibility.Styled as Html exposing (Html)
+import Html exposing (Attribute)
+import Accessibility.Styled as A11y exposing (Html)
 import Ui.Css.Palette exposing (palette)
 import Css
 import Css.Transitions as Transitions
@@ -18,7 +19,18 @@ dynamic :
     , selected : Maybe a
     }
     -> Html msg
-dynamic config =
+dynamic = custom []
+
+
+custom :
+    List (Attribute Never)
+    -> { onChange : a -> msg
+    , items : List ( String, a )
+    , label : String
+    , selected : Maybe a
+    }
+    -> Html msg
+custom attrs config  =
     let
         itemView : Int -> ( String, a ) -> Html msg
         itemView idx ( itemLabel, value ) =
@@ -29,8 +41,8 @@ dynamic config =
                 isSelected =
                     config.selected == Just value
             in
-            Html.label [ Attributes.css [ Css.displayFlex ] ]
-                [ Html.radio itemId
+            A11y.label [ Attributes.css [ Css.displayFlex ] ]
+                [ A11y.radio itemId
                     itemLabel
                     isSelected
                     [ Events.onClick <| config.onChange value
@@ -64,17 +76,19 @@ dynamic config =
                             ]
                         ]
                     ]
-                , Html.span [ Attributes.css [ Css.marginLeft (Css.px 5), Css.fontWeight Css.bold ] ] [ Html.text itemLabel ]
+                , A11y.span [ Attributes.css [ Css.marginLeft (Css.px 5), Css.fontWeight Css.bold ] ] [ A11y.text itemLabel ]
                 ]
+
+            
     in
-    Html.fieldset
-        [ Attributes.css
-            [ Css.displayFlex
-            , Css.property "gap" "20px"
-            ]
-        ]
+    A11y.fieldset
+        (Attributes.css
+               [ Css.displayFlex
+               , Css.property "gap" "20px"
+               ]
+           :: List.map Attributes.fromUnstyled attrs)
     <|
-        Html.legend [] [ Html.text config.label ]
+        A11y.legend [] [ A11y.text config.label ]
             :: List.indexedMap itemView config.items
 
 
