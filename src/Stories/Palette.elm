@@ -7,8 +7,9 @@ import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color exposing (Color)
-import Ui.Css.Palette exposing (palette)
+import Ui.Palette exposing (palette)
 import Color.Internal exposing (toHexString)
+import Ui.Css
 
 
 main : Component () msg
@@ -59,37 +60,37 @@ toneGroup name =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor palette.white] ]
+        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Ui.Css.fromColor palette.white] ]
             [ colorSwatchGroup <|
                 toneGroup "primary"
-                    [ ( palette.primary050, 50 )
-                    , ( palette.primary500, 500 )
-                    , ( palette.primary600, 600 )
+                    [ ( Ui.Css.fromColor palette.primary050, 50 )
+                    , ( Ui.Css.fromColor palette.primary500, 500 )
+                    , ( Ui.Css.fromColor palette.primary600, 600 )
                     ]
             , colorSwatchGroup <|
                 toneGroup "secondary"
-                    [ ( palette.secondary050, 50 )
-                    , ( palette.secondary500, 500 )
-                    , ( palette.secondary600, 600 )
+                    [ ( Ui.Css.fromColor palette.secondary050, 50 )
+                    , ( Ui.Css.fromColor palette.secondary500, 500 )
+                    , ( Ui.Css.fromColor palette.secondary600, 600 )
                     ]
             , colorSwatchGroup <|
-                [ colorSwatch "black" palette.black, colorSwatch "white" palette.white ]
+                [ colorSwatch "black" <| Ui.Css.fromColor palette.black, colorSwatch "white" <| Ui.Css.fromColor palette.white ]
                     ++ toneGroup "grey"
-                        [ ( palette.grey050, 50 )
-                        , ( palette.grey100, 100 )
-                        , ( palette.grey200, 200 )
-                        , ( palette.grey300, 300 )
-                        , ( palette.grey500, 500 )
-                        , ( palette.grey800, 800 )
+                        [ ( Ui.Css.fromColor palette.grey050, 50 )
+                        , ( Ui.Css.fromColor palette.grey100, 100 )
+                        , ( Ui.Css.fromColor palette.grey200, 200 )
+                        , ( Ui.Css.fromColor palette.grey300, 300 )
+                        , ( Ui.Css.fromColor palette.grey500, 500 )
+                        , ( Ui.Css.fromColor palette.grey800, 800 )
                         ]
             , colorSwatchGroup
                 (toneGroup "warn"
-                    [ ( palette.warn050, 50 )
-                    , ( palette.warn500, 500 )
-                    , ( palette.warn600, 600 )
+                    [ ( Ui.Css.fromColor palette.warn050, 50 )
+                    , ( Ui.Css.fromColor palette.warn500, 500 )
+                    , ( Ui.Css.fromColor palette.warn600, 600 )
                     ]
-                    ++ [ colorSwatch "success" palette.success
-                       , colorSwatch "focus" palette.focus
+                    ++ [ colorSwatch "success" <| Ui.Css.fromColor palette.success
+                       , colorSwatch "focus" <| Ui.Css.fromColor palette.focus
                        ]
                 )
             ]
