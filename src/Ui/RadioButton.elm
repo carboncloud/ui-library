@@ -1,28 +1,31 @@
-module Ui.RadioButton exposing (dynamic, static, custom)
+module Ui.RadioButton exposing (view, static, customView)
 
 import Html exposing (Attribute)
 import Accessibility.Styled as A11y exposing (Html)
-import Ui.Css.Palette exposing (palette)
+import Ui.Palette exposing (palette)
 import Css
+import Ui.Css
 import Css.Transitions as Transitions
 import Dict exposing (Dict)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
+import Stories.Button exposing (Msg)
+import Ui.Styled.Text as Text
+import Ui.Typography as Typography exposing (Typography(..))
 
-
-dynamic :
+view :
     { onChange : a -> msg
     , items : List ( String, a )
     , label : String
     , selected : Maybe a
     }
     -> Html msg
-dynamic = custom []
+view = customView []
 
 
-custom :
+customView :
     List (Attribute Never)
     -> { onChange : a -> msg
     , items : List ( String, a )
@@ -30,7 +33,7 @@ custom :
     , selected : Maybe a
     }
     -> Html msg
-custom attrs config  =
+customView attrs config  =
     let
         itemView : Int -> ( String, a ) -> Html msg
         itemView idx ( itemLabel, value ) =
@@ -54,19 +57,19 @@ custom attrs config  =
                         , Css.width (rpx 20)
                         , Css.height (rpx 20)
                         , Css.borderRadius (rpx 10)
-                        , Css.hover [ Css.backgroundColor palette.primary050 ]
+                        , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor palette.primary050 ]
                         , Css.focus
-                            [ Css.outline3 (Css.px 2) Css.solid palette.focus
+                            [ Css.outline3 (Css.px 2) Css.solid <| Ui.Css.fromColor palette.focus
                             , Css.outlineOffset (Css.px 2)
                             ]
-                        , Css.border3 (Css.px 2) Css.solid palette.primary500
+                        , Css.border3 (Css.px 2) Css.solid <| Ui.Css.fromColor palette.primary500
                         , Css.cursor Css.pointer
                         , Css.before
                             [ Css.property "content" "\"\""
                             , Css.height (rpx 10)
                             , Css.width (rpx 10)
                             , Css.borderRadius (rpx 5)
-                            , Css.boxShadow4 Css.inset (rpx 10) (rpx 10) palette.primary500
+                            , Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Ui.Css.fromColor palette.primary500
                             , if isSelected then
                                 Css.transform (Css.scale 1)
 
@@ -76,7 +79,7 @@ custom attrs config  =
                             ]
                         ]
                     ]
-                , A11y.span [ Attributes.css [ Css.marginLeft (Css.px 5), Css.fontWeight Css.bold ] ] [ A11y.text itemLabel ]
+                , optionLabel itemLabel
                 ]
 
             
@@ -100,9 +103,12 @@ static :
     }
     -> Html msg
 static { onChange, items, label, selected } =
-    dynamic
+    view
         { onChange = onChange
         , items = Dict.toList items
         , label = label
         , selected = selected
         }
+
+optionLabel : String -> Html msg
+optionLabel = Text.customView [ Attributes.css [ Css.margin2 Css.auto (Css.px 5), Css.fontWeight Css.bold ] ] (Typography Typography.poppins Typography.normal Typography.regular palette.white)

@@ -5,14 +5,18 @@ import Accessibility.Styled.Role as Role
 import Ui.Border
 import Css exposing (border, pct, solid)
 import Html exposing (Html)
+import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Encode as JE
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Css.Palette exposing (palette)
 import Ui.Shadow exposing (shadow)
 import Ui.DataAttributes as DataAttributes
+import Ui.Styled.Text as Text
+import Ui.Typography as Typography exposing (Typography(..))
+import Ui.Css
+import Ui.Palette exposing (palette)
 
 -- TODO: Add custom fallback
 
@@ -23,15 +27,17 @@ type ButtonColor
 
 
 type ButtonEmphasis
-    = Raised
-    | Ghost
-    | Flat
+    = High
+    | Mid
+    | Low
 
 
 type ButtonContent
     = Text String
     | TextAndIcon String String
 
+buttonText : String -> Styled.Html msg
+buttonText = Text.view (Typography Typography.poppins Typography.normal Typography.bold palette.white)
 
 view :
     { onClick : msg
@@ -60,7 +66,7 @@ viewWithDataAttributes :
 viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
     A11y.toUnstyled <|
         case emphasis of
-            Raised ->
+            High ->
                 let
                     ( bgColor, hoverColor ) =
                         case color of
@@ -74,16 +80,16 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                                 ( palette.warn500, palette.warn600 )
                 in
                 button
-                    [ Css.backgroundColor bgColor
+                    [ Css.backgroundColor <| Ui.Css.fromColor bgColor
                     , shadow Ui.Shadow.Small
                     , Css.border Css.zero
-                    , Css.color palette.white
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.color <| Ui.Css.fromColor palette.white
+                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
 
-            Ghost ->
+            Mid ->
                 let
                     ( baseColor, hoverColor ) =
                         case color of
@@ -98,15 +104,15 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                 in
                 button
                     [ Css.padding2 (rpx 8) (rpx 14)
-                    , Css.border3 (Css.px 2) Css.solid baseColor
+                    , Css.border3 (Css.px 2) Css.solid <| Ui.Css.fromColor baseColor
                     , Css.boxSizing Css.borderBox
-                    , Css.color baseColor
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.color <| Ui.Css.fromColor baseColor
+                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
 
-            Flat ->
+            Low ->
                 let
                     ( textColor, hoverColor ) =
                         case color of
@@ -120,9 +126,9 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                                 ( palette.warn500, palette.warn050 )
                 in
                 button
-                    [ Css.color textColor
+                    [ Css.color <| Ui.Css.fromColor textColor
                     , Css.fontWeight Css.bold
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
@@ -137,10 +143,10 @@ button customStyle attrs buttonContent =
             , Css.padding2 (rpx 10) (rpx 16)
             , Css.borderRadius (rpx 24)
             , Css.fontWeight Css.bold
-            , Css.color palette.white
+            , Css.color <| Ui.Css.fromColor palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid palette.focus
+                [ Css.outline3 (Css.px 2) Css.solid (Ui.Css.fromColor palette.focus)
                 , Css.outlineOffset (Css.px 2)
                 ]
             ]
