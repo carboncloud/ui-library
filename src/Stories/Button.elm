@@ -17,8 +17,8 @@ main =
                     }
                 |> Storybook.Controls.withEnum
                     { name = "type"
-                    , options = [ ( "Raised", Raised ), ( "Ghost", Ghost ), ( "Flat", Flat ) ]
-                    , fallback = Raised
+                    , options = [ ( "Raised", High ), ( "Ghost", Mid ), ( "Flat", Low ) ]
+                    , fallback = High
                     }
         , view = view
         }

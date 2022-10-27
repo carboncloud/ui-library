@@ -7,6 +7,7 @@ export default {
   parameters: { elmSource },
   argTypes: {
     label: { control: { type: "text" } },
+    direction: { control: { type: "radio" }, options: ["Horizontal", "Vertical"]},
     onAction: { action: "Elm" },
   },
 };

@@ -1,14 +1,16 @@
 module Stories.Palette exposing (..)
 
+import Color.Internal exposing (toHexString)
 import Css
 import Html exposing (Html)
 import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
-import Ui.Color as Color exposing (Color)
-import Ui.Css.Palette exposing (palette)
-import Color.Internal exposing (toHexString)
+import Ui.Color as Color
+import Ui.Palette as Palette
+import Ui.Text
+import Ui.Typography
 
 
 main : Component () msg
@@ -35,9 +37,8 @@ colorSwatch name color =
                 , Css.justifyContent Css.end
                 ]
             ]
-            [ Styled.text <| toHexString color ]
-        , Styled.h5 [ Attributes.css [ Css.fontSize (Css.px 14), Css.margin2 (Css.px 5) (Css.px 10) ] ]
-            [ Styled.text name ]
+            [ Ui.Text.customView [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.Typography.label <| toHexString color ]
+        , Ui.Text.customView [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.Typography.label name
         ]
 
 
@@ -46,50 +47,59 @@ colorSwatchGroup =
     Styled.div
         [ Attributes.css
             [ Css.displayFlex
-            , Css.flexDirection Css.row
+            , Css.flexDirection Css.column
             ]
         ]
 
 
 toneGroup : String -> List ( Css.Color, Int ) -> List (Styled.Html msg)
-toneGroup name =
-    List.map (\( color, tone ) -> colorSwatch (name ++ "-" ++ String.fromInt tone) color)
+toneGroup name tones =
+    [ Ui.Text.view Ui.Typography.h2 name
+    , Styled.div
+        [ Attributes.css
+            [ Css.displayFlex
+            , Css.flexDirection Css.row
+            ]
+        ]
+      <|
+        List.map (\( color, tone ) -> colorSwatch (String.fromInt tone) color) tones
+    ]
 
 
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor palette.white] ]
+        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Color.toCssColor Palette.white ] ]
             [ colorSwatchGroup <|
-                toneGroup "primary"
-                    [ ( palette.primary050, 50 )
-                    , ( palette.primary500, 500 )
-                    , ( palette.primary600, 600 )
+                toneGroup "Primary"
+                    [ ( Color.toCssColor Palette.primary050, 50 )
+                    , ( Color.toCssColor Palette.primary500, 500 )
+                    , ( Color.toCssColor Palette.primary600, 600 )
                     ]
             , colorSwatchGroup <|
-                toneGroup "secondary"
-                    [ ( palette.secondary050, 50 )
-                    , ( palette.secondary500, 500 )
-                    , ( palette.secondary600, 600 )
+                toneGroup "Secondary"
+                    [ ( Color.toCssColor Palette.secondary050, 50 )
+                    , ( Color.toCssColor Palette.secondary500, 500 )
+                    , ( Color.toCssColor Palette.secondary600, 600 )
                     ]
             , colorSwatchGroup <|
-                [ colorSwatch "black" palette.black, colorSwatch "white" palette.white ]
-                    ++ toneGroup "grey"
-                        [ ( palette.grey050, 50 )
-                        , ( palette.grey100, 100 )
-                        , ( palette.grey200, 200 )
-                        , ( palette.grey300, 300 )
-                        , ( palette.grey500, 500 )
-                        , ( palette.grey800, 800 )
+                [ colorSwatch "black" <| Color.toCssColor Palette.black, colorSwatch "white" <| Color.toCssColor Palette.white ]
+                    ++ toneGroup "Grey"
+                        [ ( Color.toCssColor Palette.grey050, 50 )
+                        , ( Color.toCssColor Palette.grey100, 100 )
+                        , ( Color.toCssColor Palette.grey200, 200 )
+                        , ( Color.toCssColor Palette.grey300, 300 )
+                        , ( Color.toCssColor Palette.grey500, 500 )
+                        , ( Color.toCssColor Palette.grey800, 800 )
                         ]
             , colorSwatchGroup
-                (toneGroup "warn"
-                    [ ( palette.warn050, 50 )
-                    , ( palette.warn500, 500 )
-                    , ( palette.warn600, 600 )
+                (toneGroup "Status"
+                    [ ( Color.toCssColor Palette.warn050, 50 )
+                    , ( Color.toCssColor Palette.warn500, 500 )
+                    , ( Color.toCssColor Palette.warn600, 600 )
                     ]
-                    ++ [ colorSwatch "success" palette.success
-                       , colorSwatch "focus" palette.focus
+                    ++ [ colorSwatch "success" <| Color.toCssColor Palette.success
+                       , colorSwatch "focus" <| Color.toCssColor Palette.focus
                        ]
                 )
             ]

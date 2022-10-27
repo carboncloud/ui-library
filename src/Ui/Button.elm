@@ -2,19 +2,24 @@ module Ui.Button exposing (..)
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Ui.Border
 import Css exposing (border, pct, solid)
 import Html exposing (Html)
+import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Encode as JE
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Css.Palette exposing (palette)
-import Ui.Shadow exposing (shadow)
 import Ui.DataAttributes as DataAttributes
+import Ui.Palette as Palette
+import Ui.Shadow exposing (shadow)
+import Ui.Text as Text
+import Ui.Font as Font exposing (Font(..))
+import Ui.Color as Color
+
 
 -- TODO: Add custom fallback
+
 
 type ButtonColor
     = Primary
@@ -23,14 +28,26 @@ type ButtonColor
 
 
 type ButtonEmphasis
-    = Raised
-    | Ghost
-    | Flat
+    = High
+    | Mid
+    | Low
 
 
 type ButtonContent
     = Text String
     | TextAndIcon String String
+
+
+buttonText : String -> Styled.Html msg
+buttonText =
+    Text.view
+        (Font
+            { family = Font.primary
+            , size = Font.normal
+            , weight = Font.bold
+            , color = Font.white
+            }
+        )
 
 
 view :
@@ -60,69 +77,68 @@ viewWithDataAttributes :
 viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
     A11y.toUnstyled <|
         case emphasis of
-            Raised ->
+            High ->
                 let
                     ( bgColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary600 )
+                                ( Palette.primary500, Palette.primary600 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary600 )
+                                ( Palette.secondary500, Palette.secondary600 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn600 )
+                                ( Palette.warn500, Palette.warn600 )
                 in
                 button
-                    [ Css.backgroundColor bgColor
+                    [ Css.backgroundColor <| Color.toCssColor bgColor
                     , shadow Ui.Shadow.Small
                     , Css.border Css.zero
-                    , Css.color palette.white
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.color <| Color.toCssColor Palette.white
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
 
-            Ghost ->
+            Mid ->
                 let
                     ( baseColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary050 )
+                                ( Palette.primary500, Palette.primary050 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary050 )
+                                ( Palette.secondary500, Palette.secondary050 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn050 )
+                                ( Palette.warn500, Palette.warn050 )
                 in
                 button
                     [ Css.padding2 (rpx 8) (rpx 14)
-                    , Css.border3 (Css.px 2) Css.solid baseColor
-                    , Css.boxSizing Css.borderBox
-                    , Css.color baseColor
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
+                    , Css.color <| Color.toCssColor baseColor
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
 
-            Flat ->
+            Low ->
                 let
                     ( textColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary050 )
+                                ( Palette.primary500, Palette.primary050 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary050 )
+                                ( Palette.secondary500, Palette.secondary050 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn050 )
+                                ( Palette.warn500, Palette.warn050 )
                 in
                 button
-                    [ Css.color textColor
+                    [ Css.color <| Color.toCssColor textColor
                     , Css.fontWeight Css.bold
-                    , Css.hover [ Css.backgroundColor hoverColor ]
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
@@ -137,12 +153,10 @@ button customStyle attrs buttonContent =
             , Css.padding2 (rpx 10) (rpx 16)
             , Css.borderRadius (rpx 24)
             , Css.fontWeight Css.bold
-            , Css.color palette.white
+            , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid palette.focus
-                , Css.outlineOffset (Css.px 2)
-                ]
+                [ Css.outline3 (Css.px 2) Css.solid (Color.toCssColor Palette.focus)]
             ]
 
         style =
