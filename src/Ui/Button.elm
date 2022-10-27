@@ -2,7 +2,6 @@ module Ui.Button exposing (..)
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Ui.Border
 import Css exposing (border, pct, solid)
 import Html exposing (Html)
 import Html.Styled as Styled
@@ -11,14 +10,18 @@ import Html.Styled.Events as Events
 import Json.Encode as JE
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Shadow exposing (shadow)
+import Ui.Border
+import Ui.Css
 import Ui.DataAttributes as DataAttributes
+import Ui.Palette exposing (palette)
+import Ui.Shadow exposing (shadow)
 import Ui.Styled.Text as Text
 import Ui.Typography as Typography exposing (Typography(..))
-import Ui.Css
-import Ui.Palette exposing (palette)
+
+
 
 -- TODO: Add custom fallback
+
 
 type ButtonColor
     = Primary
@@ -36,8 +39,18 @@ type ButtonContent
     = Text String
     | TextAndIcon String String
 
+
 buttonText : String -> Styled.Html msg
-buttonText = Text.view (Typography Typography.poppins Typography.normal Typography.bold palette.white)
+buttonText =
+    Text.view
+        (Typography
+            { family = Typography.poppins
+            , size = Typography.normal
+            , weight = Typography.bold
+            , color = palette.white
+            }
+        )
+
 
 view :
     { onClick : msg

@@ -1,19 +1,20 @@
-module Ui.RadioButton exposing (view, static, customView)
+module Ui.RadioButton exposing (customView, static, view)
 
-import Html exposing (Attribute)
 import Accessibility.Styled as A11y exposing (Html)
-import Ui.Palette exposing (palette)
 import Css
-import Ui.Css
 import Css.Transitions as Transitions
 import Dict exposing (Dict)
+import Html exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Rpx exposing (rpx)
-import String.Extra exposing (dasherize)
 import Stories.Button exposing (Msg)
+import String.Extra exposing (dasherize)
+import Ui.Css
+import Ui.Palette exposing (palette)
 import Ui.Styled.Text as Text
 import Ui.Typography as Typography exposing (Typography(..))
+
 
 view :
     { onChange : a -> msg
@@ -22,18 +23,20 @@ view :
     , selected : Maybe a
     }
     -> Html msg
-view = customView []
+view =
+    customView []
 
 
 customView :
     List (Attribute Never)
-    -> { onChange : a -> msg
-    , items : List ( String, a )
-    , label : String
-    , selected : Maybe a
-    }
+    ->
+        { onChange : a -> msg
+        , items : List ( String, a )
+        , label : String
+        , selected : Maybe a
+        }
     -> Html msg
-customView attrs config  =
+customView attrs config =
     let
         itemView : Int -> ( String, a ) -> Html msg
         itemView idx ( itemLabel, value ) =
@@ -81,15 +84,14 @@ customView attrs config  =
                     ]
                 , optionLabel itemLabel
                 ]
-
-            
     in
     A11y.fieldset
         (Attributes.css
-               [ Css.displayFlex
-               , Css.property "gap" "20px"
-               ]
-           :: List.map Attributes.fromUnstyled attrs)
+            [ Css.displayFlex
+            , Css.property "gap" "20px"
+            ]
+            :: List.map Attributes.fromUnstyled attrs
+        )
     <|
         A11y.legend [] [ A11y.text config.label ]
             :: List.indexedMap itemView config.items
@@ -110,5 +112,19 @@ static { onChange, items, label, selected } =
         , selected = selected
         }
 
+
 optionLabel : String -> Html msg
-optionLabel = Text.customView [ Attributes.css [ Css.margin2 Css.auto (Css.px 5), Css.fontWeight Css.bold ] ] (Typography Typography.poppins Typography.normal Typography.regular palette.white)
+optionLabel =
+    Text.customView
+        [ Attributes.css
+            [ Css.margin2 Css.auto (Css.px 5)
+            , Css.fontWeight Css.bold
+            ]
+        ]
+        (Typography
+            { family = Typography.poppins
+            , size = Typography.normal
+            , weight = Typography.regular
+            , color = palette.white
+            }
+        )

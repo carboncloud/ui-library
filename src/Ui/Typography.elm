@@ -1,78 +1,130 @@
 module Ui.Typography exposing (..)
 
-import Css exposing (FontWeight)
 import Ui.Color exposing (Color)
 import Ui.Palette exposing (palette)
 
 
 type Typography
-    = Typography Family Size Weight Color
+    = Typography
+        { family : Family
+        , size : Size
+        , weight : Weight
+        , color : Color
+        }
 
 
 type Family
     = Family String
 
 
-family : Typography -> String
-family (Typography (Family x) _ _ _) =
+unwrapFamily : Family -> String
+unwrapFamily (Family x) =
     x
+
+
+fontFamily : Typography -> String
+fontFamily (Typography { family }) =
+    unwrapFamily family
 
 
 type Size
     = Size Float
 
 
-size : Typography -> Float
-size (Typography _ (Size x) _ _) =
+unwrapSize : Size -> Float
+unwrapSize (Size x) =
     x
+
+
+fontSize : Typography -> Float
+fontSize (Typography { size }) =
+    unwrapSize size
 
 
 type Weight
     = Weight Int
 
 
-weight : Typography -> Int
-weight (Typography _ _ (Weight x) _) =
+unwrapWeight : Weight -> Int
+unwrapWeight (Weight x) =
     x
 
 
-color : Typography -> Color
-color (Typography _ _ _ x) =
-    x
+fontWeight : Typography -> Int
+fontWeight (Typography { weight }) =
+    unwrapWeight weight
 
 
+fontColor : Typography -> Color
+fontColor (Typography { color }) =
+    color
+
+
+poppins : Family
 poppins =
     Family "Poppins"
 
 
+small : Size
 small =
     Size 14
 
 
+normal : Size
 normal =
     Size 16
 
 
+large : Size
 large =
     Size 18
 
 
+regular : Weight
 regular =
     Weight 500
 
 
+bold : Weight
 bold =
     Weight 800
 
 
+bodyS : Typography
 bodyS =
-    Typography poppins small regular palette.grey200
+    Typography
+        { family = poppins
+        , size = small
+        , weight = regular
+        , color = palette.grey200
+        }
 
 
+body : Typography
 body =
-    Typography poppins normal regular palette.grey500
+    Typography
+        { family = poppins
+        , size = normal
+        , weight = regular
+        , color = palette.grey500
+        }
 
-bodyL = Typography poppins large regular palette.grey500
 
+bodyL : Typography
+bodyL =
+    Typography
+        { family = poppins
+        , size = large
+        , weight = regular
+        , color = palette.grey500
+        }
+
+
+header : Typography
 header =
-    Typography poppins large bold palette.grey800
+    Typography
+        { family = poppins
+        , size = large
+        , weight = bold
+        , color = palette.grey800
+        }

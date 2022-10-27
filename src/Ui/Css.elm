@@ -21,22 +21,22 @@ fromTypography typography =
 
 fontFamily : Typography -> Css.Style
 fontFamily =
-    Css.fontFamilies << List.singleton << Css.qt << Typography.family
+    Css.fontFamilies << List.singleton << Css.qt << Typography.fontFamily
 
 
 fontSize : Typography -> Css.Style
 fontSize =
-    Css.fontSize << rpx << Typography.size
+    Css.fontSize << rpx << Typography.fontSize
 
 
 fontWeight : Typography -> Css.Style
 fontWeight =
-    Css.fontWeight << Css.int << Typography.weight
+    Css.fontWeight << Css.int << Typography.fontWeight
 
 
 color : Typography -> Css.Style
 color =
-    Css.color << fromColor << Typography.color
+    Css.color << fromColor << Typography.fontColor
 
 
 
