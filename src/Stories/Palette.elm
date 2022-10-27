@@ -1,5 +1,6 @@
 module Stories.Palette exposing (..)
 
+import Color.Internal exposing (toHexString)
 import Css
 import Html exposing (Html)
 import Html.Styled as Styled
@@ -7,9 +8,8 @@ import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color exposing (Color)
-import Ui.Palette exposing (palette)
-import Color.Internal exposing (toHexString)
 import Ui.Css
+import Ui.Palette as Palette
 
 
 main : Component () msg
@@ -60,37 +60,37 @@ toneGroup name =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Ui.Css.fromColor palette.white] ]
+        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Ui.Css.fromColor Palette.white ] ]
             [ colorSwatchGroup <|
                 toneGroup "primary"
-                    [ ( Ui.Css.fromColor palette.primary050, 50 )
-                    , ( Ui.Css.fromColor palette.primary500, 500 )
-                    , ( Ui.Css.fromColor palette.primary600, 600 )
+                    [ ( Ui.Css.fromColor Palette.primary050, 50 )
+                    , ( Ui.Css.fromColor Palette.primary500, 500 )
+                    , ( Ui.Css.fromColor Palette.primary600, 600 )
                     ]
             , colorSwatchGroup <|
                 toneGroup "secondary"
-                    [ ( Ui.Css.fromColor palette.secondary050, 50 )
-                    , ( Ui.Css.fromColor palette.secondary500, 500 )
-                    , ( Ui.Css.fromColor palette.secondary600, 600 )
+                    [ ( Ui.Css.fromColor Palette.secondary050, 50 )
+                    , ( Ui.Css.fromColor Palette.secondary500, 500 )
+                    , ( Ui.Css.fromColor Palette.secondary600, 600 )
                     ]
             , colorSwatchGroup <|
-                [ colorSwatch "black" <| Ui.Css.fromColor palette.black, colorSwatch "white" <| Ui.Css.fromColor palette.white ]
+                [ colorSwatch "black" <| Ui.Css.fromColor Palette.black, colorSwatch "white" <| Ui.Css.fromColor Palette.white ]
                     ++ toneGroup "grey"
-                        [ ( Ui.Css.fromColor palette.grey050, 50 )
-                        , ( Ui.Css.fromColor palette.grey100, 100 )
-                        , ( Ui.Css.fromColor palette.grey200, 200 )
-                        , ( Ui.Css.fromColor palette.grey300, 300 )
-                        , ( Ui.Css.fromColor palette.grey500, 500 )
-                        , ( Ui.Css.fromColor palette.grey800, 800 )
+                        [ ( Ui.Css.fromColor Palette.grey050, 50 )
+                        , ( Ui.Css.fromColor Palette.grey100, 100 )
+                        , ( Ui.Css.fromColor Palette.grey200, 200 )
+                        , ( Ui.Css.fromColor Palette.grey300, 300 )
+                        , ( Ui.Css.fromColor Palette.grey500, 500 )
+                        , ( Ui.Css.fromColor Palette.grey800, 800 )
                         ]
             , colorSwatchGroup
                 (toneGroup "warn"
-                    [ ( Ui.Css.fromColor palette.warn050, 50 )
-                    , ( Ui.Css.fromColor palette.warn500, 500 )
-                    , ( Ui.Css.fromColor palette.warn600, 600 )
+                    [ ( Ui.Css.fromColor Palette.warn050, 50 )
+                    , ( Ui.Css.fromColor Palette.warn500, 500 )
+                    , ( Ui.Css.fromColor Palette.warn600, 600 )
                     ]
-                    ++ [ colorSwatch "success" <| Ui.Css.fromColor palette.success
-                       , colorSwatch "focus" <| Ui.Css.fromColor palette.focus
+                    ++ [ colorSwatch "success" <| Ui.Css.fromColor Palette.success
+                       , colorSwatch "focus" <| Ui.Css.fromColor Palette.focus
                        ]
                 )
             ]

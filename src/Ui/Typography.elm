@@ -1,8 +1,7 @@
 module Ui.Typography exposing (..)
 
 import Ui.Color exposing (Color)
-import Ui.Palette exposing (palette)
-
+import Ui.Palette as Palette
 
 type Typography
     = Typography
@@ -96,7 +95,7 @@ bodyS =
         { family = poppins
         , size = small
         , weight = regular
-        , color = palette.grey200
+        , color = Palette.grey200
         }
 
 
@@ -106,7 +105,7 @@ body =
         { family = poppins
         , size = normal
         , weight = regular
-        , color = palette.grey500
+        , color = Palette.grey500
         }
 
 
@@ -116,7 +115,7 @@ bodyL =
         { family = poppins
         , size = large
         , weight = regular
-        , color = palette.grey500
+        , color = Palette.grey500
         }
 
 
@@ -126,5 +125,5 @@ header =
         { family = poppins
         , size = large
         , weight = bold
-        , color = palette.grey800
+        , color = Palette.grey800
         }

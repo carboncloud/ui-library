@@ -11,7 +11,7 @@ import Rpx exposing (rpx)
 import Stories.Button exposing (Msg)
 import String.Extra exposing (dasherize)
 import Ui.Css
-import Ui.Palette exposing (palette)
+import Ui.Palette as Palette
 import Ui.Styled.Text as Text
 import Ui.Typography as Typography exposing (Typography(..))
 
@@ -60,19 +60,19 @@ customView attrs config =
                         , Css.width (rpx 20)
                         , Css.height (rpx 20)
                         , Css.borderRadius (rpx 10)
-                        , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor palette.primary050 ]
+                        , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor Palette.primary050 ]
                         , Css.focus
-                            [ Css.outline3 (Css.px 2) Css.solid <| Ui.Css.fromColor palette.focus
+                            [ Css.outline3 (Css.px 2) Css.solid <| Ui.Css.fromColor Palette.focus
                             , Css.outlineOffset (Css.px 2)
                             ]
-                        , Css.border3 (Css.px 2) Css.solid <| Ui.Css.fromColor palette.primary500
+                        , Css.border3 (Css.px 2) Css.solid <| Ui.Css.fromColor Palette.primary500
                         , Css.cursor Css.pointer
                         , Css.before
                             [ Css.property "content" "\"\""
                             , Css.height (rpx 10)
                             , Css.width (rpx 10)
                             , Css.borderRadius (rpx 5)
-                            , Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Ui.Css.fromColor palette.primary500
+                            , Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Ui.Css.fromColor Palette.primary500
                             , if isSelected then
                                 Css.transform (Css.scale 1)
 
@@ -125,6 +125,6 @@ optionLabel =
             { family = Typography.poppins
             , size = Typography.normal
             , weight = Typography.regular
-            , color = palette.white
+            , color = Palette.white
             }
         )

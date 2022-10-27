@@ -13,7 +13,7 @@ import String.Extra exposing (dasherize)
 import Ui.Border
 import Ui.Css
 import Ui.DataAttributes as DataAttributes
-import Ui.Palette exposing (palette)
+import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
 import Ui.Styled.Text as Text
 import Ui.Typography as Typography exposing (Typography(..))
@@ -47,7 +47,7 @@ buttonText =
             { family = Typography.poppins
             , size = Typography.normal
             , weight = Typography.bold
-            , color = palette.white
+            , color = Palette.white
             }
         )
 
@@ -84,19 +84,19 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                     ( bgColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary600 )
+                                ( Palette.primary500, Palette.primary600 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary600 )
+                                ( Palette.secondary500, Palette.secondary600 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn600 )
+                                ( Palette.warn500, Palette.warn600 )
                 in
                 button
                     [ Css.backgroundColor <| Ui.Css.fromColor bgColor
                     , shadow Ui.Shadow.Small
                     , Css.border Css.zero
-                    , Css.color <| Ui.Css.fromColor palette.white
+                    , Css.color <| Ui.Css.fromColor Palette.white
                     , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
@@ -107,13 +107,13 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                     ( baseColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary050 )
+                                ( Palette.primary500, Palette.primary050 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary050 )
+                                ( Palette.secondary500, Palette.secondary050 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn050 )
+                                ( Palette.warn500, Palette.warn050 )
                 in
                 button
                     [ Css.padding2 (rpx 8) (rpx 14)
@@ -130,13 +130,13 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                     ( textColor, hoverColor ) =
                         case color of
                             Primary ->
-                                ( palette.primary500, palette.primary050 )
+                                ( Palette.primary500, Palette.primary050 )
 
                             Secondary ->
-                                ( palette.secondary500, palette.secondary050 )
+                                ( Palette.secondary500, Palette.secondary050 )
 
                             Warn ->
-                                ( palette.warn500, palette.warn050 )
+                                ( Palette.warn500, Palette.warn050 )
                 in
                 button
                     [ Css.color <| Ui.Css.fromColor textColor
@@ -156,10 +156,10 @@ button customStyle attrs buttonContent =
             , Css.padding2 (rpx 10) (rpx 16)
             , Css.borderRadius (rpx 24)
             , Css.fontWeight Css.bold
-            , Css.color <| Ui.Css.fromColor palette.white
+            , Css.color <| Ui.Css.fromColor Palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid (Ui.Css.fromColor palette.focus)
+                [ Css.outline3 (Css.px 2) Css.solid (Ui.Css.fromColor Palette.focus)
                 , Css.outlineOffset (Css.px 2)
                 ]
             ]
