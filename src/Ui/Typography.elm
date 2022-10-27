@@ -11,14 +11,34 @@ import Ui.Font as Font exposing (Font(..))
 
 
 
--- Styled
+{-
+
+   # Typography
+
+    This module defines components that has to do with our typography.
+
+    Typography is defined as:
+        _Typography is the art of arranging letters and text in a way that makes the copy legible, clear, and visually appealing to the reader._
+
+    ## Styled components
+    @docs styledText, styledCustomText, styledParagraph, styledCustomParagraph
+
+    ## Element component
+    @docs elementText
+
+-}
 
 
+{-| Returns a text view
+This is preferred over `styledCustomText` when no custom style is needed
+-}
 styledText : Font -> String -> Styled.Html msg
 styledText font =
     styledCustomText [] font
 
 
+{-| Returns a custom text view
+-}
 styledCustomText : List (Styled.Attribute msg) -> Font -> String -> Styled.Html msg
 styledCustomText attrs font s =
     Styled.span ((Attributes.css <| Font.toCssStyle font) :: attrs) [ Styled.text s ]
