@@ -10,7 +10,7 @@ import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
 import Ui.Text as Text
-import Ui.Typography as Typography
+import Ui.Font as Font
 
 
 main : Component () msg
@@ -32,11 +32,11 @@ view =
                 , Css.backgroundColor <| Color.toCssColor Palette.white
                 ]
             ]
-            [ Text.view Typography.h1 "H1 Headline"
-            , Text.view Typography.h2 "H2 Headline"
-            , Text.view Typography.h3 "H3 Headline"
-            , Text.view Typography.h4 "H4 Headline"
-            , Text.view Typography.bodyS "Body small"
-            , Text.view Typography.body "Body"
-            , Text.view Typography.bodyL "Body large"
+            [ Text.view Font.h1 "H1 Headline"
+            , Text.view Font.h2 "H2 Headline"
+            , Text.view Font.h3 "H3 Headline"
+            , Text.view Font.h4 "H4 Headline"
+            , Text.view Font.bodyS "Body small"
+            , Text.view Font.body "Body"
+            , Text.view Font.bodyL "Body large"
             ]

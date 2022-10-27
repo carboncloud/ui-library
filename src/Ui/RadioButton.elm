@@ -12,7 +12,7 @@ import Ui.Color as Color
 import Ui.Font as Font exposing (Font(..))
 import Ui.Palette as Palette
 import Ui.Text as Text
-import Ui.Typography as Typography
+import Ui.Font as Font
 
 
 type Direction
@@ -139,5 +139,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.margin2 (rpx 20) Css.zero ] ] [ Text.view Typography.label config.label ]
+        A11y.legend [ Attributes.css [ Css.margin2 (rpx 20) Css.zero ] ] [ Text.view Font.label config.label ]
             :: List.indexedMap itemView config.options

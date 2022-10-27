@@ -1,25 +1,25 @@
 module Ui.Font exposing
     ( Font(..)
-    ,  FontFamily
-       -- Keep opaque
-
-    ,  FontSize
-       -- Keep opaque
-
-    ,  FontWeight
-       -- Keep opaque
-
+    , FontFamily
+    , FontSize
+    , FontWeight
+    , black
     , bodyFamily
     , bold
+    , disabled
     , fontColorToCssStyle
     , large
     , light
     , normal
     , primary
     , regular
+    , semiBold
     , small
     , toCssStyle
-    , toElementAttribute, black, disabled, white, semiBold, xxl, xl
+    , toElementAttribute
+    , white
+    , xl
+    , xxl, bodyS, body, bodyL, label, h1, h2, h3, h4
     )
 
 import Color exposing (Color)
@@ -94,6 +94,7 @@ unwrapFontWeight : FontWeight -> Int
 unwrapFontWeight (FontWeight x) =
     x
 
+
 unwrapFontColor : FontColor -> Color
 unwrapFontColor (FontColor x) =
     x
@@ -116,7 +117,7 @@ fontWeight (Font { weight }) =
 
 fontColor : Font -> Color
 fontColor (Font { color }) =
-    unwrapFontColor  color
+    unwrapFontColor color
 
 
 primary : FontFamily
@@ -145,11 +146,14 @@ large =
 
 
 xl : FontSize
-xl = FontSize <| rpx 43
+xl =
+    FontSize <| rpx 43
 
 
 xxl : FontSize
-xxl = FontSize <| rpx 53
+xxl =
+    FontSize <| rpx 53
+
 
 light : FontWeight
 light =
@@ -165,18 +169,104 @@ semiBold : FontWeight
 semiBold =
     FontWeight 600
 
+
 bold : FontWeight
 bold =
     FontWeight 700
 
+
 white : FontColor
-white = FontColor <| Ui.Color.fromHex "#FCFCFC"
+white =
+    FontColor <| Ui.Color.fromHex "#FCFCFC"
+
 
 black : FontColor
-black = FontColor <| Ui.Color.fromHex "#161616"
+black =
+    FontColor <| Ui.Color.fromHex "#161616"
+
 
 disabled : FontColor
-disabled = FontColor <| Ui.Color.fromHex "#757575"
+disabled =
+    FontColor <| Ui.Color.fromHex "#757575"
+
+bodyS : Font
+bodyS =
+    Font
+        { family = bodyFamily
+        , size = small
+        , weight = regular
+        , color = black
+        }
+
+
+body : Font
+body =
+    Font
+        { family = bodyFamily
+        , size = normal
+        , weight = regular
+        , color = black
+        }
+
+
+bodyL : Font
+bodyL =
+    Font
+        { family = bodyFamily
+        , size = large
+        , weight = regular
+        , color = black
+        }
+
+
+label : Font
+label =
+    Font
+        { family = primary
+        , size = large
+        , weight = semiBold
+        , color = black
+        }
+
+
+h1 : Font
+h1 =
+    Font
+        { family = primary
+        , size = xxl
+        , weight = semiBold
+        , color = black
+        }
+
+
+h2 : Font
+h2 =
+    Font
+        { family = primary
+        , size = xl
+        , weight = semiBold
+        , color = black
+        }
+
+
+h3 : Font
+h3 =
+    Font
+        { family = primary
+        , size = large
+        , weight = semiBold
+        , color = black
+        }
+
+
+h4 : Font
+h4 =
+    Font
+        { family = primary
+        , size = normal
+        , weight = semiBold
+        , color = black
+        }
 
 
 toCssStyle : Font -> List Css.Style
