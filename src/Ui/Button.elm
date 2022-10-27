@@ -13,7 +13,7 @@ import String.Extra exposing (dasherize)
 import Ui.DataAttributes as DataAttributes
 import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
-import Ui.Text as Text
+import Ui.Typography as Typography
 import Ui.Font as Font exposing (Font(..))
 import Ui.Color as Color
 
@@ -40,9 +40,9 @@ type ButtonContent
 
 buttonText : String -> Styled.Html msg
 buttonText =
-    Text.view
+    Typography.styledText
         (Font
-            { family = Font.primary
+            { family = Font.primaryFamily
             , size = Font.normal
             , weight = Font.bold
             , color = Font.white

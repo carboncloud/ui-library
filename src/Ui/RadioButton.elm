@@ -11,7 +11,7 @@ import String.Extra exposing (dasherize)
 import Ui.Color as Color
 import Ui.Font as Font exposing (Font(..))
 import Ui.Palette as Palette
-import Ui.Text as Text
+import Ui.Typography as Typography
 import Ui.Font as Font
 
 
@@ -111,7 +111,7 @@ customView attrs config =
                                             ]
                                        )
                            ]
-                , Text.customView
+                , Typography.styledCustomText
                     [ Attributes.css <|
                         Css.margin2 Css.auto (Css.px 10)
                             :: (if disabled then
@@ -121,7 +121,7 @@ customView attrs config =
                                     []
                                )
                     ]
-                    (Font { family = Font.primary, weight = Font.regular, size = Font.small, color = Font.black })
+                    (Font { family = Font.primaryFamily, weight = Font.regular, size = Font.small, color = Font.primaryColor })
                     optionLabel
                 ]
     in
@@ -139,5 +139,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.margin2 (rpx 20) Css.zero ] ] [ Text.view Font.label config.label ]
+        A11y.legend [ Attributes.css [ Css.margin2 (rpx 20) Css.zero ] ] [ Typography.styledText Font.label config.label ]
             :: List.indexedMap itemView config.options

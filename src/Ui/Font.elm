@@ -3,15 +3,26 @@ module Ui.Font exposing
     , FontFamily
     , FontSize
     , FontWeight
-    , black
+    , body
     , bodyFamily
+    , bodyLarge
+    , bodySmall
     , bold
-    , disabled
+    , disabledColor
     , fontColorToCssStyle
+    , fontFamilyToCssStyle
+    , fontSizeToCssStyle
+    , fontWeightToCssStyle
+    , heading1
+    , heading2
+    , heading3
+    , heading4
+    , label
     , large
     , light
     , normal
-    , primary
+    , primaryColor
+    , primaryFamily
     , regular
     , semiBold
     , small
@@ -19,7 +30,7 @@ module Ui.Font exposing
     , toElementAttribute
     , white
     , xl
-    , xxl, bodyS, body, bodyL, label, h1, h2, h3, h4
+    , xxl, fontFamilyToElementAttribute, fontSizeToElementAttribute, fontWeightToElementAttribute, fontColorToElementAttribute
     )
 
 import Color exposing (Color)
@@ -33,17 +44,35 @@ import Ui.Color
 
 
 {-
-   This module defines the data structure of a `Font`
-   and defines the available font properties.
+   # Font
+
+   This module defines a `Font`
+   and the available font properties.
 
    Type constructors for the font properties are kept
    opque intentionally to prevent the typography to
    become inconsistent.
 
 
-   # Types
+   ## Types
 
     @docs Font, Family, Size, Weight
+
+    ## Body
+
+    @docs bodySmall, body, bodyLarge
+
+    ## Heading
+
+    @docs heading1, heading2, heading3, heading4
+
+    ## Converters
+
+    ### Css
+    @docs toCssStyle, fontFamilyToCssStyle, fontSizeToCssStyle, fontWeightToCssStyle, fontColorToCssStyle
+
+    ### Element
+    @docs toElementAttribute, fontFamilyToElementAttribute, fontSizeToElementAttribute, fontWeightToElementAttribute, fontColorToElementAttribute
 -}
 
 
@@ -62,10 +91,20 @@ type FontFamily
     = FontFamily String
 
 
+unwrapFontFamily : FontFamily -> String
+unwrapFontFamily (FontFamily x) =
+    x
+
+
 {-| Represents a font size
 -}
 type FontSize
     = FontSize Rem
+
+
+unwrapFontSize : FontSize -> Rem
+unwrapFontSize (FontSize x) =
+    x
 
 
 {-| Represents a font weight
@@ -74,25 +113,15 @@ type FontWeight
     = FontWeight Int
 
 
+unwrapFontWeight : FontWeight -> Int
+unwrapFontWeight (FontWeight x) =
+    x
+
+
 {-| Represents a font color
 -}
 type FontColor
     = FontColor Color
-
-
-unwrapFontFamily : FontFamily -> String
-unwrapFontFamily (FontFamily x) =
-    x
-
-
-unwrapFontSize : FontSize -> Rem
-unwrapFontSize (FontSize x) =
-    x
-
-
-unwrapFontWeight : FontWeight -> Int
-unwrapFontWeight (FontWeight x) =
-    x
 
 
 unwrapFontColor : FontColor -> Color
@@ -100,31 +129,52 @@ unwrapFontColor (FontColor x) =
     x
 
 
+{-|
+
+    Gives back the font family of a specific `Font`
+
+-}
 fontFamily : Font -> String
 fontFamily (Font { family }) =
     unwrapFontFamily family
 
 
+{-| Return the size of a font
+-}
 fontSize : Font -> Rem
 fontSize (Font { size }) =
     unwrapFontSize size
 
 
+{-| Return the weight of a font
+-}
 fontWeight : Font -> Int
 fontWeight (Font { weight }) =
     unwrapFontWeight weight
 
 
+{-| Return the color of a font
+-}
 fontColor : Font -> Color
 fontColor (Font { color }) =
     unwrapFontColor color
 
 
-primary : FontFamily
-primary =
+{-| The primary font family.
+
+    Typically used for headings, buttons, labels ect.
+
+-}
+primaryFamily : FontFamily
+primaryFamily =
     FontFamily "Poppins"
 
 
+{-| The body font family.
+
+    Typically used for body text.
+
+-}
 bodyFamily : FontFamily
 bodyFamily =
     FontFamily "Merriweather"
@@ -180,22 +230,33 @@ white =
     FontColor <| Ui.Color.fromHex "#FCFCFC"
 
 
-black : FontColor
-black =
+{-| The primary font color.
+
+    Should be used for things of importance.
+
+-}
+primaryColor : FontColor
+primaryColor =
     FontColor <| Ui.Color.fromHex "#161616"
 
 
-disabled : FontColor
-disabled =
+{-| The disabled font color.
+
+    Should be used to indicate that no actions are available.
+
+-}
+disabledColor : FontColor
+disabledColor =
     FontColor <| Ui.Color.fromHex "#757575"
 
-bodyS : Font
-bodyS =
+
+bodySmall : Font
+bodySmall =
     Font
         { family = bodyFamily
         , size = small
         , weight = regular
-        , color = black
+        , color = primaryColor
         }
 
 
@@ -205,70 +266,72 @@ body =
         { family = bodyFamily
         , size = normal
         , weight = regular
-        , color = black
+        , color = primaryColor
         }
 
 
-bodyL : Font
-bodyL =
+bodyLarge : Font
+bodyLarge =
     Font
         { family = bodyFamily
         , size = large
         , weight = regular
-        , color = black
+        , color = primaryColor
         }
 
 
 label : Font
 label =
     Font
-        { family = primary
+        { family = primaryFamily
         , size = large
         , weight = semiBold
-        , color = black
+        , color = primaryColor
         }
 
 
-h1 : Font
-h1 =
+heading1 : Font
+heading1 =
     Font
-        { family = primary
+        { family = primaryFamily
         , size = xxl
         , weight = semiBold
-        , color = black
+        , color = primaryColor
         }
 
 
-h2 : Font
-h2 =
+heading2 : Font
+heading2 =
     Font
-        { family = primary
+        { family = primaryFamily
         , size = xl
         , weight = semiBold
-        , color = black
+        , color = primaryColor
         }
 
 
-h3 : Font
-h3 =
+heading3 : Font
+heading3 =
     Font
-        { family = primary
+        { family = primaryFamily
         , size = large
         , weight = semiBold
-        , color = black
+        , color = primaryColor
         }
 
 
-h4 : Font
-h4 =
+heading4 : Font
+heading4 =
     Font
-        { family = primary
+        { family = primaryFamily
         , size = normal
         , weight = semiBold
-        , color = black
+        , color = primaryColor
         }
 
-
+{-|
+    Converts a font to its Css Style representation
+-}
 toCssStyle : Font -> List Css.Style
 toCssStyle font =
     List.map (\f -> f font) [ fontSizeToCssStyle, fontFamilyToCssStyle, fontWeightToCssStyle, fontColorToCssStyle ]

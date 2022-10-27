@@ -8,9 +8,9 @@ import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
-import Ui.Palette as Palette
-import Ui.Text as Text
 import Ui.Font as Font
+import Ui.Palette as Palette
+import Ui.Typography as Typography
 
 
 main : Component () msg
@@ -27,16 +27,41 @@ view =
         Styled.div
             [ Attributes.css
                 [ Css.displayFlex
-                , Css.flexDirection Css.column
-                , Css.property "gap" "35px"
+                , Css.property "gap" "45px"
                 , Css.backgroundColor <| Color.toCssColor Palette.white
+                , Css.justifyContent Css.center
                 ]
             ]
-            [ Text.view Font.h1 "H1 Headline"
-            , Text.view Font.h2 "H2 Headline"
-            , Text.view Font.h3 "H3 Headline"
-            , Text.view Font.h4 "H4 Headline"
-            , Text.view Font.bodyS "Body small"
-            , Text.view Font.body "Body"
-            , Text.view Font.bodyL "Body large"
+            [ Styled.div
+                [ Attributes.css
+                    [ Css.displayFlex
+                    , Css.flexDirection Css.column
+                    , Css.backgroundColor <| Color.toCssColor Palette.white
+                    ]
+                ]
+                [ Typography.styledText Font.heading1 "H1 Headline"
+                , Typography.styledText Font.heading2 "H2 Headline"
+                , Typography.styledText Font.heading3 "H3 Headline"
+                , Typography.styledText Font.heading4 "H4 Headline"
+                , Typography.styledText Font.bodyLarge "Body large"
+                , Typography.styledText Font.body "Body"
+                , Typography.styledText Font.bodySmall "Body small"
+                ]
+            , Styled.div
+                [ Attributes.css
+                    [ Css.displayFlex
+                    , Css.flexDirection Css.column
+                    , Css.backgroundColor <| Color.toCssColor Palette.white
+                    , Css.width (Css.pct 50)
+                    ]
+                ]
+                [ Typography.styledText Font.heading1 "Headline 1"
+                , Typography.styledText Font.heading2 "Headline 2"
+                , Typography.styledParagraph Font.body """
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non magna lorem. Integer ultrices, odio sit amet tincidunt semper, augue odio elementum tellus, sollicitudin varius nisi magna vitae nunc. Nulla ornare tincidunt ultrices. Nulla pulvinar ligula volutpat tellus commodo, ut lobortis nisl aliquet. Suspendisse scelerisque pharetra risus, ac ultricies ligula sodales ac. Pellentesque tempor, ligula sit amet lacinia egestas, velit nunc bibendum erat, vel ornare mi sem non lacus. Pellentesque congue sagittis sem laoreet vulputate. Aliquam erat volutpat. 
+                    """
+                , Typography.styledParagraph Font.body """
+                    In sed risus enim. Sed lobortis rutrum ante ac posuere. Vestibulum nec sem eget justo blandit porttitor ac ac ipsum. Integer et justo ac orci tristique accumsan. Nullam dictum, nulla at malesuada sodales, sapien lorem venenatis justo, id luctus nisi mauris eu ex. Etiam in maximus felis. Nullam sed ipsum vulputate, venenatis massa ac, volutpat lectus. Morbi pretium hendrerit orci vitae mollis. 
+                    """
+                ]
             ]
