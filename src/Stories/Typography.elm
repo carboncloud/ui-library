@@ -7,10 +7,9 @@ import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
-import Ui.Color as Color exposing (Color)
-import Ui.Css
+import Ui.Color as Color
 import Ui.Palette as Palette
-import Ui.Styled.Text as Text
+import Ui.Text as Text
 import Ui.Typography as Typography
 
 
@@ -25,9 +24,19 @@ main =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Ui.Css.fromColor Palette.white ] ]
-            [ Text.view Typography.bodyS "Body small"
+        Styled.div
+            [ Attributes.css
+                [ Css.displayFlex
+                , Css.flexDirection Css.column
+                , Css.property "gap" "35px"
+                , Css.backgroundColor <| Color.toCssColor Palette.white
+                ]
+            ]
+            [ Text.view Typography.h1 "H1 Headline"
+            , Text.view Typography.h2 "H2 Headline"
+            , Text.view Typography.h3 "H3 Headline"
+            , Text.view Typography.h4 "H4 Headline"
+            , Text.view Typography.bodyS "Body small"
             , Text.view Typography.body "Body"
             , Text.view Typography.bodyL "Body large"
-            , Text.view Typography.header "Header"
             ]

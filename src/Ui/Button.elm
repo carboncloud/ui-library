@@ -10,14 +10,12 @@ import Html.Styled.Events as Events
 import Json.Encode as JE
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Border
-import Ui.Css
 import Ui.DataAttributes as DataAttributes
 import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
-import Ui.Styled.Text as Text
-import Ui.Typography as Typography exposing (Typography(..))
-
+import Ui.Text as Text
+import Ui.Font as Font exposing (Font(..))
+import Ui.Color as Color
 
 
 -- TODO: Add custom fallback
@@ -43,11 +41,11 @@ type ButtonContent
 buttonText : String -> Styled.Html msg
 buttonText =
     Text.view
-        (Typography
-            { family = Typography.poppins
-            , size = Typography.normal
-            , weight = Typography.bold
-            , color = Palette.white
+        (Font
+            { family = Font.primary
+            , size = Font.normal
+            , weight = Font.bold
+            , color = Font.white
             }
         )
 
@@ -93,11 +91,11 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                                 ( Palette.warn500, Palette.warn600 )
                 in
                 button
-                    [ Css.backgroundColor <| Ui.Css.fromColor bgColor
+                    [ Css.backgroundColor <| Color.toCssColor bgColor
                     , shadow Ui.Shadow.Small
                     , Css.border Css.zero
-                    , Css.color <| Ui.Css.fromColor Palette.white
-                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
+                    , Css.color <| Color.toCssColor Palette.white
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
@@ -117,10 +115,9 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                 in
                 button
                     [ Css.padding2 (rpx 8) (rpx 14)
-                    , Css.border3 (Css.px 2) Css.solid <| Ui.Css.fromColor baseColor
-                    , Css.boxSizing Css.borderBox
-                    , Css.color <| Ui.Css.fromColor baseColor
-                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
+                    , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
+                    , Css.color <| Color.toCssColor baseColor
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
@@ -139,9 +136,9 @@ viewWithDataAttributes { emphasis, color, onClick, dataAttributes } content =
                                 ( Palette.warn500, Palette.warn050 )
                 in
                 button
-                    [ Css.color <| Ui.Css.fromColor textColor
+                    [ Css.color <| Color.toCssColor textColor
                     , Css.fontWeight Css.bold
-                    , Css.hover [ Css.backgroundColor <| Ui.Css.fromColor hoverColor ]
+                    , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
                     ]
                     (Events.onClick onClick :: List.map DataAttributes.asStyledAttribute dataAttributes)
                     content
@@ -156,12 +153,10 @@ button customStyle attrs buttonContent =
             , Css.padding2 (rpx 10) (rpx 16)
             , Css.borderRadius (rpx 24)
             , Css.fontWeight Css.bold
-            , Css.color <| Ui.Css.fromColor Palette.white
+            , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid (Ui.Css.fromColor Palette.focus)
-                , Css.outlineOffset (Css.px 2)
-                ]
+                [ Css.outline3 (Css.px 2) Css.solid (Color.toCssColor Palette.focus)]
             ]
 
         style =

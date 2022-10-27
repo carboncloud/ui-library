@@ -1,4 +1,8 @@
-# CarbonCloud Design System
+# CarbonCloud UI Library
+
+This library is used internally at CarbonCloud to create a uniform user experience across multiple elm applications.
+
+It might be useful for others as a resource. This library is by design not very customizable.  
 
 ## Setup
 1. Make sure you have nix installed!

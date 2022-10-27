@@ -15,7 +15,12 @@ main =
             Storybook.Controls.new Controls
                 |> Storybook.Controls.withString
                     { name = "label"
-                    , fallback = "Radio button"
+                    , fallback = "Choose your option"
+                    }
+                |> Storybook.Controls.withEnum
+                    { name = "direction"
+                    , options = [ ( "Horizontal", Ui.RadioButton.Horizontal ), ( "Vertical", Ui.RadioButton.Vertical ) ]
+                    , fallback = Ui.RadioButton.Horizontal
                     }
         , view = view
         , init = init
@@ -25,6 +30,7 @@ main =
 
 type alias Controls =
     { label : String
+    , direction : Ui.RadioButton.Direction
     }
 
 
@@ -33,7 +39,7 @@ type alias Model =
 
 
 init =
-    { selectedOption = Just Item1 }
+    { selectedOption = Just Option3 }
 
 
 type Msg
@@ -48,17 +54,31 @@ update msg model =
 
 
 type RadioOption
-    = Item1
-    | Item2
-    | Item3
+    = Option1
+    | Option2
+    | Option3
 
 
 view : Controls -> Model -> Html Msg
 view controls model =
     toUnstyled <|
-        Ui.RadioButton.static
+        Ui.RadioButton.view
             { onChange = UserSelectedOption
             , label = controls.label
-            , items = Dict.fromList [ ( "item 1", Item1 ), ( "item 2", Item2 ) ]
+            , options =
+                [ { optionLabel = "Option 1"
+                  , value = Option1
+                  , disabled = False
+                  }
+                , { optionLabel = "Option 2"
+                  , value = Option2
+                  , disabled = False
+                  }
+                , { optionLabel = "Option 3"
+                  , value = Option3
+                  , disabled = True
+                  }
+                ]
             , selected = model.selectedOption
+            , direction = controls.direction
             }

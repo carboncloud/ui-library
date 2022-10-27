@@ -1,129 +1,89 @@
 module Ui.Typography exposing (..)
 
-import Ui.Color exposing (Color)
+import Ui.Font as Font exposing (Font(..))
 import Ui.Palette as Palette
 
-type Typography
-    = Typography
-        { family : Family
-        , size : Size
-        , weight : Weight
-        , color : Color
-        }
+{-|
+    This module defines our Typography
 
-
-type Family
-    = Family String
-
-
-unwrapFamily : Family -> String
-unwrapFamily (Family x) =
-    x
-
-
-fontFamily : Typography -> String
-fontFamily (Typography { family }) =
-    unwrapFamily family
-
-
-type Size
-    = Size Float
-
-
-unwrapSize : Size -> Float
-unwrapSize (Size x) =
-    x
-
-
-fontSize : Typography -> Float
-fontSize (Typography { size }) =
-    unwrapSize size
-
-
-type Weight
-    = Weight Int
-
-
-unwrapWeight : Weight -> Int
-unwrapWeight (Weight x) =
-    x
-
-
-fontWeight : Typography -> Int
-fontWeight (Typography { weight }) =
-    unwrapWeight weight
-
-
-fontColor : Typography -> Color
-fontColor (Typography { color }) =
-    color
-
-
-poppins : Family
-poppins =
-    Family "Poppins"
-
-
-small : Size
-small =
-    Size 14
-
-
-normal : Size
-normal =
-    Size 16
-
-
-large : Size
-large =
-    Size 18
-
-
-regular : Weight
-regular =
-    Weight 500
-
-
-bold : Weight
-bold =
-    Weight 800
-
-
-bodyS : Typography
+    ### What is Typography?
+    Typography is the art of arranging letters and text in a way that makes the copy legible, clear, and visually appealing to the reader.
+-}
+bodyS : Font
 bodyS =
-    Typography
-        { family = poppins
-        , size = small
-        , weight = regular
-        , color = Palette.grey200
+    Font
+        { family = Font.bodyFamily
+        , size = Font.small
+        , weight = Font.regular
+        , color = Font.black
         }
 
 
-body : Typography
+body : Font
 body =
-    Typography
-        { family = poppins
-        , size = normal
-        , weight = regular
-        , color = Palette.grey500
+    Font
+        { family = Font.bodyFamily
+        , size = Font.normal
+        , weight = Font.regular
+        , color = Font.black
         }
 
 
-bodyL : Typography
+bodyL : Font
 bodyL =
-    Typography
-        { family = poppins
-        , size = large
-        , weight = regular
-        , color = Palette.grey500
+    Font
+        { family = Font.bodyFamily
+        , size = Font.large
+        , weight = Font.regular
+        , color = Font.black
         }
 
 
-header : Typography
-header =
-    Typography
-        { family = poppins
-        , size = large
-        , weight = bold
-        , color = Palette.grey800
+label : Font
+label =
+    Font
+        { family = Font.primary
+        , size = Font.large
+        , weight = Font.semiBold
+        , color = Font.black
+        }
+
+
+h1 : Font
+h1 =
+    Font
+        { family = Font.primary
+        , size = Font.xxl
+        , weight = Font.semiBold
+        , color = Font.black
+        }
+
+
+h2 : Font
+h2 =
+    Font
+        { family = Font.primary
+        , size = Font.xl
+        , weight = Font.semiBold
+        , color = Font.black
+        }
+
+
+h3 : Font
+h3 =
+    Font
+        { family = Font.primary
+        , size = Font.large
+        , weight = Font.semiBold
+        , color = Font.black
+        }
+
+
+h4 : Font
+h4 =
+    Font
+        { family = Font.primary
+        , size = Font.normal
+        , weight = Font.semiBold
+        , color = Font.black
         }
