@@ -2,8 +2,10 @@
 
 This UI library is used internally at CarbonCloud to create a uniform user experience across multiple Elm applications.
 
-## Setup
-1. Make sure you have nix installed!
+
+## Development
+### Setup
+1. Make sure you have nix installed
 2. Enter repo with nix shell in the root of the repository
    ```
    nix-shell
@@ -13,12 +15,12 @@ This UI library is used internally at CarbonCloud to create a uniform user exper
    npm install
    ```
 
-## Serve locally
+### Serve locally
 ```
 npm run storybook
 ```
 
-## Build project
+### Build project
 ```
 npm run storybook:build
 ```

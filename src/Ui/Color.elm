@@ -4,11 +4,17 @@ module Ui.Color exposing
     , toElementColor
     )
 
-import Color exposing (Color, fromHsla, fromRgba, hsl, hsla, rgb, rgb255, rgba, toCssString, toHsla, toRgba)
+{-| Color helper functions
+@docs toCssColor, toElementColor, fromHex
+-}
+
+import Color exposing (Color, fromRgba, toRgba)
 import Css
 import Element
 
 
+{-| Interprets a color as a CSS color
+-}
 toCssColor : Color -> Css.Color
 toCssColor =
     (\{ red, green, blue, alpha } ->
@@ -20,7 +26,8 @@ toCssColor =
     )
         << toRgba
 
-
+{-| Interprets a color as an Element Color
+-}
 toElementColor : Color -> Element.Color
 toElementColor =
     (\{ red, green, blue, alpha } ->
@@ -33,6 +40,8 @@ toElementColor =
         << toRgba
 
 
+{-| Returns a Color given a valid hex `String`
+-}
 fromHex : String -> Color
 fromHex hexString =
     let

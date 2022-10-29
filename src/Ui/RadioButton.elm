@@ -1,5 +1,14 @@
 module Ui.RadioButton exposing (Direction(..), customView, view)
 
+{-|
+Defines a RadioButton component
+
+## Types
+@docs Direction
+
+## Views
+@docs view, customView
+-}
 import Accessibility.Styled as A11y exposing (Html)
 import Css exposing (disabled)
 import Css.Transitions as Transitions
@@ -9,17 +18,26 @@ import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
 import Ui.Color as Color
-import Ui.Font as Font exposing (Font(..))
+import Ui.Internal.FontFamily as FontFamily
+import Ui.Internal.FontSize as FontSize
+import Ui.Internal.FontWeight as FontWeight
+import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
+import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import Ui.Typography as Typography
-import Ui.Font as Font
 
 
+{-| Defines the Direction
+-}
 type Direction
     = Horizontal
     | Vertical
 
-
+{-| Return a view of a radio button group.
+    This should be used whenever possible.
+    You can use `customView` if you need to
+    customize the button.
+-}
 view :
     { onChange : a -> msg
     , options : List { optionLabel : String, value : a, disabled : Bool }
@@ -31,7 +49,9 @@ view :
 view =
     customView []
 
-
+{-| Returns a custom view of a radio button group.
+    Only use this when `view` is not enough.
+-}
 customView :
     List (Attribute Never)
     ->
@@ -80,6 +100,7 @@ customView attrs config =
                 [ Attributes.css
                     [ Css.displayFlex ]
                 ]
+            <|
                 [ A11y.radio itemId
                     optionLabel
                     isSelected
@@ -121,7 +142,7 @@ customView attrs config =
                                     []
                                )
                     ]
-                    (Font { family = Font.primaryFamily, weight = Font.regular, size = Font.small, color = Font.primaryColor })
+                    (TextStyle { family = FontFamily.Primary, weight = FontWeight.Regular, size = FontSize.Small, color = TextColor.Primary })
                     optionLabel
                 ]
     in
@@ -129,6 +150,7 @@ customView attrs config =
         (Attributes.css
             [ Css.displayFlex
             , Css.property "gap" "20px"
+            , Css.border Css.zero
             , case config.direction of
                 Horizontal ->
                     Css.flexDirection Css.row
@@ -139,5 +161,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.margin2 (rpx 20) Css.zero ] ] [ Typography.styledText Font.label config.label ]
+        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Typography.styledText TextStyle.label config.label ]
             :: List.indexedMap itemView config.options

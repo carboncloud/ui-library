@@ -10,7 +10,7 @@ import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
 import Ui.Typography
-import Ui.Font
+import Ui.TextStyle
 
 
 main : Component () msg
@@ -27,8 +27,8 @@ colorSwatch name color =
         [ Styled.div
             [ Attributes.css
                 [ Css.backgroundColor color
-                , Css.height (Css.px 150)
-                , Css.width (Css.px 150)
+                , Css.height (Css.px 50)
+                , Css.width (Css.px 50)
                 , Css.margin2 (Css.px 10) Css.zero
                 , Css.padding (Css.px 10)
                 , Css.fontWeight Css.bold
@@ -37,8 +37,8 @@ colorSwatch name color =
                 , Css.justifyContent Css.end
                 ]
             ]
-            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.Font.label <| toHexString color ]
-        , Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.Font.label name
+            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.fontSize (Css.px 10)] ] Ui.TextStyle.heading5 <| toHexString color ]
+        , Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.TextStyle.heading5 name
         ]
 
 
@@ -54,7 +54,7 @@ colorSwatchGroup =
 
 toneGroup : String -> List ( Css.Color, Int ) -> List (Styled.Html msg)
 toneGroup name tones =
-    [ Ui.Typography.styledText Ui.Font.heading2 name
+    [ Ui.Typography.styledText Ui.TextStyle.heading3 name
     , Styled.div
         [ Attributes.css
             [ Css.displayFlex
@@ -69,7 +69,7 @@ toneGroup name tones =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "35px", Css.backgroundColor <| Color.toCssColor Palette.white ] ]
+        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px", Css.backgroundColor <| Color.toCssColor Palette.white ] ]
             [ colorSwatchGroup <|
                 toneGroup "Primary"
                     [ ( Color.toCssColor Palette.primary050, 50 )

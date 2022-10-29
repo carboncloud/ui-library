@@ -1,7 +1,12 @@
 module Ui.Shadow exposing
-    ( ShadowSize(..)
+    ( Shadow(..)
     , shadow
     )
+
+{-
+    This module defines the `Shadow` type
+    that is an abstraction over layered shadows.
+-}
 
 import Css exposing (Color)
 import List.Nonempty as Nonempty exposing (Nonempty(..))
@@ -11,7 +16,7 @@ type Px
     = Px Int
 
 
-type alias Shadow =
+type alias ShadowSpec =
     { offsetX : Px
     , offsetY : Px
     , blurRadius : Px
@@ -20,12 +25,12 @@ type alias Shadow =
     }
 
 
-type ShadowSize
+type Shadow
     = Large
     | Small
 
 
-shadow : ShadowSize -> Css.Style
+shadow : Shadow -> Css.Style
 shadow size =
     toStyle <|
         case size of
@@ -80,12 +85,12 @@ shadow size =
                     ]
 
 
-toStyle : Nonempty Shadow -> Css.Style
+toStyle : Nonempty ShadowSpec -> Css.Style
 toStyle =
     Css.property "box-shadow" << String.join ", " << List.map toString << Nonempty.toList
 
 
-toString : Shadow -> String
+toString : ShadowSpec -> String
 toString { offsetX, offsetY, blurRadius, spreadRadius, color } =
     let
         cssPixelVal : Px -> String
