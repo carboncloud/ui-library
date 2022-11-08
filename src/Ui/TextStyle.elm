@@ -103,12 +103,11 @@ bodyLarge =
         , color = TextColor.Primary
         }
 
-
 label : TextStyle
 label =
     TextStyle
         { family = FontFamily.Primary
-        , size = FontSize.Large
+        , size = FontSize.Normal
         , weight = FontWeight.SemiBold
         , color = TextColor.Primary
         }
