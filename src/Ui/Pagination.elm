@@ -22,6 +22,7 @@ import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import List.Extra exposing (unfoldr)
+import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
 import Ui.Color as Color
@@ -73,7 +74,7 @@ customView :
     -> Html msg
 customView attrs config =
     let
-        pageNumber =
+        mkPageNumber =
             PageNumber << clamp 1 config.count
 
         unwrapPageNumber (PageNumber number) =
@@ -104,63 +105,112 @@ customView attrs config =
         buttonSize =
             36
 
-        addViewForEachPageNumber i =
+        pageNumberButtonsCount =
+            7
+
+        siblingCount =
+            6
+
+        boundaryCount =
+            5
+
+        siblingsStart =
+            max (boundaryCount + 2) <|
+                min (unwrapPageNumber config.currentPage - siblingCount) (config.count - boundaryCount - siblingCount * 2 - 1)
+
+        siblingsEnd =
+            min (config.count - 1) <| max (unwrapPageNumber config.currentPage + siblingCount) (boundaryCount + siblingCount * 2 + 2)
+
+        addViewForEachPageNumber { index, previousEllipsis } =
             let
+                pageNumber =
+                    index + 1
+
                 selectedStyle =
-                    if unwrapPageNumber config.currentPage /= (i + 1) then
+                    if unwrapPageNumber config.currentPage /= pageNumber then
                         hoverStyle
 
                     else
                         Css.fontWeight Css.bold
 
+                lessThanVisibleRange =
+                    pageNumber < unwrapPageNumber config.currentPage - siblingCount
+
+                greaterThanVisbileRange =
+                    pageNumber > unwrapPageNumber config.currentPage + siblingCount
+
                 withinRange =
-                    unwrapPageNumber config.currentPage - 1 <= (i + 1) && (i + 1) <= unwrapPageNumber config.currentPage + 1
+                    not (lessThanVisibleRange || greaterThanVisbileRange)
+
+                pageNumberView =
+                    Just
+                        ( Just <|
+                            A11y.li []
+                                [ A11y.button
+                                    [ Events.onClick <| config.onNav (PageNumber pageNumber)
+                                    , Attributes.css <|
+                                        selectedStyle
+                                            :: buttonStyle
+                                    ]
+                                    [ A11y.text <| String.fromInt pageNumber ]
+                                ]
+                        , { index = index + 1, previousEllipsis = False }
+                        )
+
+                hiddenRangeView =
+                    Just <|
+                        A11y.li []
+                            [ A11y.button
+                                [ Attributes.css <|
+                                    selectedStyle
+                                        :: buttonStyle
+                                ]
+                                [ A11y.text <| "..." ]
+                            ]
+
+                startPagesEnd =
+                    boundaryCount + siblingCount * 2 + 1
             in
-            if i == config.count then
+            if pageNumber > config.count then
                 Nothing
 
+            else if pageNumber == 1 || pageNumber < boundaryCount + 1 || pageNumber >= config.count - (boundaryCount - 1) || pageNumber == config.count then
+                pageNumberView
+
+            else if pageNumber <= (startPagesEnd + 1) && unwrapPageNumber config.currentPage < (startPagesEnd + 1 - siblingCount) then
+                pageNumberView
+
+            else if pageNumber >= (config.count - startPagesEnd) && unwrapPageNumber config.currentPage > (config.count - startPagesEnd + siblingCount) then
+                pageNumberView
+
             else if withinRange then
+                pageNumberView
+
+            else if not previousEllipsis then
                 Just
-                    ( A11y.li []
-                        [ A11y.button
-                            [ Events.onClick <| config.onNav (PageNumber <| i + 1)
-                            , Attributes.css <|
-                                selectedStyle
-                                    :: buttonStyle
-                            ]
-                            [ A11y.text <| String.fromInt (i + 1) ]
-                        ]
-                    , i + 1
+                    ( hiddenRangeView
+                    , { index = index + 1, previousEllipsis = True }
                     )
 
             else
                 Just
-                    ( A11y.li []
-                        [ A11y.button
-                            [ Events.onClick <| config.onNav (PageNumber <| i + 1)
-                            , Attributes.css <|
-                                selectedStyle
-                                    :: buttonStyle
-                            ]
-                            [ A11y.text "..." ]
-                        ]
-                    , i + 1
+                    ( Nothing
+                    , { index = index + 1, previousEllipsis = previousEllipsis }
                     )
     in
     A11y.nav (Attributes.css baseStyle :: Landmark.navigation :: attrs)
         [ A11y.ul [ Attributes.css ([ Css.displayFlex, Css.property "gap" "20px" ] ++ TextStyle.toCssStyle TextStyle.label) ] <|
-            [ A11y.li []
+            A11y.li []
                 [ A11y.button
-                    [ Events.onClick <| config.onNav (pageNumber <| unwrapPageNumber config.currentPage - 1)
+                    [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage - 1)
                     , Attributes.css iconButtonStyle
                     ]
                     [ Icon.toStyled Icon.chevronLeft ]
                 ]
-            ]
-                ++ unfoldr addViewForEachPageNumber 0
+                :: (Maybe.values <| unfoldr addViewForEachPageNumber { index = 0, previousEllipsis = False })
                 ++ [ A11y.li []
                         [ A11y.button
-                            [ Events.onClick <| config.onNav (pageNumber <| unwrapPageNumber config.currentPage + 1)
+                            [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage + 1)
                             , Attributes.css iconButtonStyle
                             ]
                             [ Icon.toStyled Icon.chevronRight ]
