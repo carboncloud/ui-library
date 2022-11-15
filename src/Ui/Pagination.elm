@@ -18,10 +18,13 @@ import Accessibility.Styled as A11y exposing (Html)
 import Accessibility.Styled.Landmark as Landmark
 import Css exposing (disabled)
 import Css.Transitions as Transitions
+import Extra.A11y as CCA11y
+import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import List.Extra exposing (unfoldr)
+import List.Nonempty as Nonempty exposing (Nonempty)
 import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
@@ -34,6 +37,7 @@ import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import Ui.Typography as Typography
+import ZipList
 
 
 {-| Defines the NavAction
@@ -65,6 +69,138 @@ view =
 unwrapPageNumber : PageNumber -> Int
 unwrapPageNumber (PageNumber number) =
     number
+
+
+type HorizontalDirection
+    = Left
+    | Right
+
+
+customView2 :
+    List (Attribute Never)
+    ->
+        { currentPage : PageNumber
+        , count : Int
+        , onNav : PageNumber -> msg
+        }
+    -> Html msg
+customView2 attrs config =
+    let
+        buttonSize =
+            36
+
+        buttonStyle =
+            [ Css.height (rpx buttonSize)
+            , Css.width (rpx buttonSize)
+            , Css.cursor Css.pointer
+            , Css.border Css.zero
+            , Css.backgroundColor Css.transparent
+            , Css.property "display" "grid"
+            , Css.property "place-items" "center"
+            , Css.borderRadius (rpx <| buttonSize / 2)
+            ]
+
+        hoverStyle =
+            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+
+        iconButtonStyle =
+            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+                :: buttonStyle
+                ++ [ Css.padding (rpx 10) ]
+
+        mkPageNumber =
+            PageNumber << clamp 1 config.count
+
+        ellipsis : Html msg
+        ellipsis =
+            A11y.li []
+                [ A11y.button
+                    [ Attributes.css <| hoverStyle :: buttonStyle
+                    ]
+                    [ A11y.text <| "..." ]
+                ]
+
+        pageButton :
+            { selected : Bool
+            , pageNumber : PageNumber
+            }
+            -> Html msg
+        pageButton { selected, pageNumber } =
+            A11y.li []
+                [ A11y.button
+                    [ Events.onClick <| config.onNav pageNumber
+                    , Attributes.css <|
+                        buttonStyle
+                            ++ TextStyle.toCssStyle pageNumberStyle
+                            ++ [ if selected then
+                                    Css.fontWeight Css.bold
+
+                                 else
+                                    hoverStyle
+                               ]
+                    ]
+                    [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber) ]
+                ]
+
+        viewRange :
+            { range : List PageNumber
+            , ellipsisDirection : HorizontalDirection
+            , elementCapacity : Int -- includes the ellipsis
+            }
+            -> List (Html msg)
+        viewRange { range, ellipsisDirection, elementCapacity } =
+            if List.length range < elementCapacity then
+                List.map (\pn -> pageButton { selected = False, pageNumber = pn }) range
+
+            else
+                case ellipsisDirection of
+                    Left ->
+                        case Nonempty.fromList range of
+                            Just ne ->
+                                pageButton { selected = False, pageNumber = Nonempty.head ne }
+                                    :: ellipsis
+                                    :: (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <| Nonempty.tail ne)
+
+                            Nothing ->
+                                []
+
+                    Right ->
+                        Debug.todo ""
+    in
+    ZipList.fromList (List.range 1 config.count)
+        |> Maybe.map (ZipList.map PageNumber)
+        |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber config.currentPage))
+        |> CCA11y.whenJust
+            (\zipList ->
+                A11y.nav (Landmark.navigation :: attrs)
+                    [ A11y.ul
+                        [ Attributes.css
+                            [ Css.displayFlex
+                            , Css.property "gap" "20px"
+                            , Css.listStyle Css.none
+                            ]
+                        ]
+                      <|
+                        A11y.li []
+                            [ A11y.button
+                                [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage - 1)
+                                , Attributes.css iconButtonStyle
+                                ]
+                                [ Icon.toStyled Icon.chevronLeft ]
+                            ]
+                            :: viewRange { range = CCZipList.getInitial zipList, ellipsisDirection = Left, elementCapacity = Debug.todo "set" }
+                            ++ pageButton { selected = True, pageNumber = ZipList.current zipList }
+                            :: viewRange { range = CCZipList.getTail zipList, ellipsisDirection = Right, elementCapacity = Debug.todo "set" }
+                            ++ [ A11y.li []
+                                    [ A11y.button
+                                        [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage + 1)
+                                        , Attributes.css iconButtonStyle
+                                        ]
+                                        [ Icon.toStyled Icon.chevronRight ]
+                                    ]
+                               ]
+                    ]
+            )
 
 
 {-| Returns a custom view of a radio button group.
