@@ -42,6 +42,7 @@ type PageNumber
     = PageNumber Int
 
 
+init : PageNumber
 init =
     PageNumber 1
 
@@ -61,6 +62,11 @@ view =
     customView []
 
 
+unwrapPageNumber : PageNumber -> Int
+unwrapPageNumber (PageNumber number) =
+    number
+
+
 {-| Returns a custom view of a radio button group.
 Only use this when `view` is not enough.
 -}
@@ -76,12 +82,6 @@ customView attrs config =
     let
         mkPageNumber =
             PageNumber << clamp 1 config.count
-
-        unwrapPageNumber (PageNumber number) =
-            number
-
-        baseStyle =
-            []
 
         buttonStyle =
             [ Css.height (rpx buttonSize)
@@ -105,21 +105,14 @@ customView attrs config =
         buttonSize =
             36
 
-        pageNumberButtonsCount =
-            7
-
         siblingCount =
-            6
-
-        boundaryCount =
             5
 
-        siblingsStart =
-            max (boundaryCount + 2) <|
-                min (unwrapPageNumber config.currentPage - siblingCount) (config.count - boundaryCount - siblingCount * 2 - 1)
+        totalSiblingCount =
+            siblingCount * 2
 
-        siblingsEnd =
-            min (config.count - 1) <| max (unwrapPageNumber config.currentPage + siblingCount) (boundaryCount + siblingCount * 2 + 2)
+        boundaryCount =
+            3
 
         addViewForEachPageNumber { index, previousEllipsis } =
             let
@@ -149,8 +142,9 @@ customView attrs config =
                                 [ A11y.button
                                     [ Events.onClick <| config.onNav (PageNumber pageNumber)
                                     , Attributes.css <|
-                                        selectedStyle
-                                            :: buttonStyle
+                                        buttonStyle
+                                            ++ TextStyle.toCssStyle pageNumberStyle
+                                            ++ [ selectedStyle ]
                                     ]
                                     [ A11y.text <| String.fromInt pageNumber ]
                                 ]
@@ -168,19 +162,46 @@ customView attrs config =
                                 [ A11y.text <| "..." ]
                             ]
 
-                startPagesEnd =
-                    boundaryCount + siblingCount * 2 + 1
+                isFirstPage =
+                    pageNumber == 1
+
+                isLastPage =
+                    pageNumber == config.count
+
+                isWithinStartBoundary =
+                    pageNumber < boundaryCount + 1
+
+                isWithinEndBoundary =
+                    pageNumber >= config.count - (boundaryCount - 1)
+
+                introPageEnd =
+                    boundaryCount + totalSiblingCount + 1 + 1
+
+                isIntroPage =
+                    pageNumber <= introPageEnd
+
+                shouldShowIntroPages =
+                    unwrapPageNumber config.currentPage < introPageEnd - siblingCount
+
+                outroPagesStart =
+                    config.count - (boundaryCount + totalSiblingCount + 1)
+
+                isOutroPage =
+                    pageNumber >= outroPagesStart
+
+                shouldShowOutroPages =
+                    unwrapPageNumber config.currentPage > outroPagesStart + siblingCount
             in
             if pageNumber > config.count then
                 Nothing
 
-            else if pageNumber == 1 || pageNumber < boundaryCount + 1 || pageNumber >= config.count - (boundaryCount - 1) || pageNumber == config.count then
+            else if isFirstPage || isWithinStartBoundary || isWithinEndBoundary || isLastPage then
                 pageNumberView
 
-            else if pageNumber <= (startPagesEnd + 1) && unwrapPageNumber config.currentPage < (startPagesEnd + 1 - siblingCount) then
+            else if shouldShowIntroPages && isIntroPage then
                 pageNumberView
 
-            else if pageNumber >= (config.count - startPagesEnd) && unwrapPageNumber config.currentPage > (config.count - startPagesEnd + siblingCount) then
+            else if shouldShowOutroPages && isOutroPage then
                 pageNumberView
 
             else if withinRange then
@@ -198,8 +219,15 @@ customView attrs config =
                     , { index = index + 1, previousEllipsis = previousEllipsis }
                     )
     in
-    A11y.nav (Attributes.css baseStyle :: Landmark.navigation :: attrs)
-        [ A11y.ul [ Attributes.css ([ Css.displayFlex, Css.property "gap" "20px" ] ++ TextStyle.toCssStyle TextStyle.label) ] <|
+    A11y.nav (Landmark.navigation :: attrs)
+        [ A11y.ul
+            [ Attributes.css
+                [ Css.displayFlex
+                , Css.property "gap" "20px"
+                , Css.listStyle Css.none
+                ]
+            ]
+          <|
             A11y.li []
                 [ A11y.button
                     [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage - 1)
@@ -217,3 +245,13 @@ customView attrs config =
                         ]
                    ]
         ]
+
+
+pageNumberStyle : TextStyle
+pageNumberStyle =
+    TextStyle
+        { family = FontFamily.Primary
+        , size = FontSize.Normal
+        , weight = FontWeight.Regular
+        , color = TextColor.Primary
+        }
