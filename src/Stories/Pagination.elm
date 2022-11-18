@@ -1,4 +1,3 @@
-
 module Stories.Pagination exposing (..)
 
 import Dict
@@ -34,7 +33,7 @@ type alias Model =
 
 
 init =
-    { selectedPageNumber = Ui.Pagination.init }
+    { selectedPageNumber = Ui.Pagination.initPageNumber }
 
 
 type Msg
