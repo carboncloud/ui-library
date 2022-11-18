@@ -155,8 +155,30 @@ customView2 attrs config =
             boundary * 2 + 1 + siblings * 2
 
         placeholderRangeLength =
-            (maxTotal - 1) // 2
+            boundary + siblings + 1
 
+        leftToRightRange :
+            { range : List PageNumber
+            , elementCapacity : Int -- includes the ellipsis
+            , siblingCount : Int
+            , boundaryCount : Int
+            }
+            -> List (Html msg)
+        leftToRightRange { range, elementCapacity, siblingCount, boundaryCount } =
+            if List.length range <= elementCapacity then
+                List.map (\pn -> pageButton { selected = False, pageNumber = pn }) range
+
+            else
+                (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <| List.take siblingCount range)
+                    ++ ellipsis
+                    :: (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <| CCList.takeLast boundaryCount range)
+
+        -- 1 2 SELECTED
+        -- 1 2 3 SELECTED
+        -- 1 .. 3 4 SELECTED
+        -- | boundary 1 | ... | sibling 1 - FOCUSED - sibling 2 | ... | boundary 2 |
+        ---
+        -- | boundary 1 | ... | 96 97 - FOCUSED=98 - 99 100 |
         viewRange :
             { range : List PageNumber
             , ellipsisDirection : HorizontalDirection
@@ -215,9 +237,21 @@ customView2 attrs config =
                                 ]
                                 [ Icon.toStyled Icon.chevronLeft ]
                             ]
-                            :: viewRange { range = CCZipList.getInitial zipList, ellipsisDirection = Left, elementCapacity = placeholderRangeLength }
+                            :: List.reverse
+                                (leftToRightRange
+                                    { range = List.reverse <| CCZipList.getInitial zipList
+                                    , elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getTail zipList)
+                                    , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getTail zipList))
+                                    , boundaryCount = boundary
+                                    }
+                                )
                             ++ pageButton { selected = True, pageNumber = ZipList.current zipList }
-                            :: viewRange { range = CCZipList.getTail zipList, ellipsisDirection = Right, elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getInitial zipList) }
+                            :: leftToRightRange
+                                { range = CCZipList.getTail zipList
+                                , elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getInitial zipList)
+                                , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getInitial zipList))
+                                , boundaryCount = boundary
+                                }
                             ++ [ A11y.li []
                                     [ A11y.button
                                         [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage + 1)
