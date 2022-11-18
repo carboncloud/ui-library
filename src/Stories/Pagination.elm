@@ -52,6 +52,9 @@ view controls model =
     toUnstyled <|
         Ui.Pagination.view
             { currentPage = model.selectedPageNumber
-            , count = 1000
+            , numberOfPages = 10
+            }
+            { siblingCount = 1
+            , boundaryCount = 1
             , onNav = UserSelectedPageNumber
             }

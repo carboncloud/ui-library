@@ -10,4 +10,4 @@ whenJust f ma =
             f a
 
         Nothing ->
-            Debug.todo ""
+            A11y.span [] []

@@ -30,7 +30,7 @@ import List
 import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import Ui.Color as Color
-import Ui.Icon as Icon
+import Ui.Icon as Icon exposing (Icon)
 import Ui.Internal.FontFamily as FontFamily
 import Ui.Internal.FontSize as FontSize
 import Ui.Internal.FontWeight as FontWeight
@@ -44,13 +44,6 @@ type PageNumber
     = PageNumber Int
 
 
-pageNumber : Int -> Maybe PageNumber
-pageNumber i =
-    if i < 1 then
-        Nothing
-
-    else
-        Just <| PageNumber i
 
 
 initPageNumber : PageNumber
@@ -103,6 +96,16 @@ customView :
     -> Html msg
 customView attrs { currentPage, numberOfPages } config =
     let
+
+
+        pageNumber : Int -> Maybe PageNumber
+        pageNumber i =
+            if i < 1 || i > numberOfPages then
+                Nothing
+
+            else
+                Just <| PageNumber i
+
         buttonSize =
             36
 
@@ -121,18 +124,14 @@ customView attrs { currentPage, numberOfPages } config =
             Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
 
         iconButtonStyle =
-            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
-                :: buttonStyle
+            buttonStyle
                 ++ [ Css.padding (rpx 10) ]
-
-        mkPageNumber =
-            PageNumber << clamp 1 numberOfPages
 
         ellipsis : Html msg
         ellipsis =
             A11y.li []
                 [ A11y.button
-                    [ Attributes.css <| hoverStyle :: buttonStyle
+                    [ Attributes.css <| buttonStyle ++ [ Css.cursor Css.default ]
                     ]
                     [ A11y.text <| "..." ]
                 ]
@@ -152,12 +151,12 @@ customView attrs { currentPage, numberOfPages } config =
                                     , color = TextColor.Primary
                                     }
                                 )
-                            ++ [ if selected then
-                                    Css.fontWeight Css.bold
+                            ++ if selected then
+                                    [ Css.fontWeight Css.bold, Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
 
                                  else
-                                    hoverStyle
-                               ]
+                                    [ hoverStyle ]
+                               
                     ]
                     [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber_) ]
                 ]
@@ -183,6 +182,24 @@ customView attrs { currentPage, numberOfPages } config =
                 (List.map (pageButton False) <| List.take (config.siblingCount + extraNumberOfItems) range)
                     ++ ellipsis
                     :: (List.map (pageButton False) <| CCList.takeLast config.boundaryCount range)
+
+        navButton : Icon -> Maybe PageNumber -> Html msg
+        navButton icon mPageNumber =
+            case mPageNumber of
+                Just x ->
+                    A11y.button
+                        [ Events.onClick <| config.onNav x
+                        , Attributes.css <|
+                            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+                                :: iconButtonStyle
+                                ++ []
+                        ]
+                        [ Icon.toStyled icon ]
+
+                Nothing ->
+                    A11y.button
+                        [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
+                        [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
     in
     ZipList.fromList (List.range 1 numberOfPages)
         |> Maybe.map (ZipList.map PageNumber)
@@ -199,11 +216,7 @@ customView attrs { currentPage, numberOfPages } config =
                         ]
                       <|
                         A11y.li []
-                            [ A11y.button
-                                [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber currentPage - 1)
-                                , Attributes.css iconButtonStyle
-                                ]
-                                [ Icon.toStyled Icon.chevronLeft ]
+                            [ navButton Icon.chevronLeft (pageNumber <| unwrapPageNumber currentPage - 1)
                             ]
                             :: List.reverse
                                 (leftToRightRange
@@ -217,11 +230,7 @@ customView attrs { currentPage, numberOfPages } config =
                                 , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getInitial zipList)
                                 }
                             ++ [ A11y.li []
-                                    [ A11y.button
-                                        [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber currentPage + 1)
-                                        , Attributes.css iconButtonStyle
-                                        ]
-                                        [ Icon.toStyled Icon.chevronRight ]
+                                    [ navButton Icon.chevronRight (pageNumber <| unwrapPageNumber currentPage + 1)
                                     ]
                                ]
                     ]
