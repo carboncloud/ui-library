@@ -241,7 +241,7 @@ customView2 attrs config =
                                 (leftToRightRange
                                     { range = List.reverse <| CCZipList.getInitial zipList
                                     , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
-                                    , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getTail zipList))
+                                    , siblingCount = siblings + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
                                     , boundaryCount = boundary
                                     }
                                 )
@@ -249,7 +249,7 @@ customView2 attrs config =
                             :: leftToRightRange
                                 { range = CCZipList.getTail zipList
                                 , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
-                                , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getInitial zipList))
+                                , siblingCount = siblings + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
                                 , boundaryCount = boundary
                                 }
                             ++ [ A11y.li []
