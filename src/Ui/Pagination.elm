@@ -240,7 +240,7 @@ customView2 attrs config =
                             :: List.reverse
                                 (leftToRightRange
                                     { range = List.reverse <| CCZipList.getInitial zipList
-                                    , elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getTail zipList)
+                                    , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
                                     , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getTail zipList))
                                     , boundaryCount = boundary
                                     }
@@ -248,7 +248,7 @@ customView2 attrs config =
                             ++ pageButton { selected = True, pageNumber = ZipList.current zipList }
                             :: leftToRightRange
                                 { range = CCZipList.getTail zipList
-                                , elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getInitial zipList)
+                                , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
                                 , siblingCount = siblings + (placeholderRangeLength - List.length (CCZipList.getInitial zipList))
                                 , boundaryCount = boundary
                                 }
