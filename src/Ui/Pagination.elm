@@ -19,10 +19,13 @@ import Accessibility.Styled.Landmark as Landmark
 import Css exposing (disabled)
 import Css.Transitions as Transitions
 import Extra.A11y as CCA11y
+import Extra.List as CCList
+import Extra.Nonempty as CCNonempty
 import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
+import List exposing (maximum)
 import List.Extra exposing (unfoldr)
 import List.Nonempty as Nonempty exposing (Nonempty)
 import Maybe.Extra as Maybe
@@ -63,7 +66,7 @@ view :
     }
     -> Html msg
 view =
-    customView []
+    customView2 []
 
 
 unwrapPageNumber : PageNumber -> Int
@@ -142,6 +145,18 @@ customView2 attrs config =
                     [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber) ]
                 ]
 
+        boundary =
+            1
+
+        siblings =
+            2
+
+        maxTotal =
+            boundary * 2 + 1 + siblings * 2
+
+        placeholderRangeLength =
+            (maxTotal - 1) // 2
+
         viewRange :
             { range : List PageNumber
             , ellipsisDirection : HorizontalDirection
@@ -149,7 +164,7 @@ customView2 attrs config =
             }
             -> List (Html msg)
         viewRange { range, ellipsisDirection, elementCapacity } =
-            if List.length range < elementCapacity then
+            if List.length range <= elementCapacity then
                 List.map (\pn -> pageButton { selected = False, pageNumber = pn }) range
 
             else
@@ -159,17 +174,29 @@ customView2 attrs config =
                             Just ne ->
                                 pageButton { selected = False, pageNumber = Nonempty.head ne }
                                     :: ellipsis
-                                    :: (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <| Nonempty.tail ne)
+                                    :: (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <| CCList.takeLast (elementCapacity - 1) <| Nonempty.tail ne)
 
                             Nothing ->
                                 []
 
                     Right ->
-                        Debug.todo ""
+                        case Nonempty.fromList range of
+                            Just ne ->
+                                (List.map (\pn -> pageButton { selected = False, pageNumber = pn }) <|
+                                    CCList.takeLast (elementCapacity - 2) <|
+                                        Nonempty.toList <|
+                                            CCNonempty.init ne
+                                )
+                                    ++ [ ellipsis
+                                       , pageButton { selected = False, pageNumber = Nonempty.last ne }
+                                       ]
+
+                            Nothing ->
+                                []
     in
     ZipList.fromList (List.range 1 config.count)
         |> Maybe.map (ZipList.map PageNumber)
-        |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber config.currentPage))
+        |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber config.currentPage - 1))
         |> CCA11y.whenJust
             (\zipList ->
                 A11y.nav (Landmark.navigation :: attrs)
@@ -188,9 +215,9 @@ customView2 attrs config =
                                 ]
                                 [ Icon.toStyled Icon.chevronLeft ]
                             ]
-                            :: viewRange { range = CCZipList.getInitial zipList, ellipsisDirection = Left, elementCapacity = Debug.todo "set" }
+                            :: viewRange { range = CCZipList.getInitial zipList, ellipsisDirection = Left, elementCapacity = placeholderRangeLength }
                             ++ pageButton { selected = True, pageNumber = ZipList.current zipList }
-                            :: viewRange { range = CCZipList.getTail zipList, ellipsisDirection = Right, elementCapacity = Debug.todo "set" }
+                            :: viewRange { range = CCZipList.getTail zipList, ellipsisDirection = Right, elementCapacity = placeholderRangeLength * 2 - (List.length <| CCZipList.getInitial zipList) }
                             ++ [ A11y.li []
                                     [ A11y.button
                                         [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage + 1)

@@ -1,13 +1,13 @@
 module Extra.ZipList exposing (getInitial, getTail)
 
-import ZipList exposing (ZipList)
+import ZipList exposing (ZipList(..))
 
 
 getInitial : ZipList a -> List a
-getInitial =
-    Debug.todo ""
+getInitial (Zipper initial _ _)=
+    List.reverse initial
 
 
 getTail : ZipList a -> List a
-getTail =
-    Debug.todo ""
+getTail (Zipper _ _ tail) =
+    tail

@@ -1,3 +1,4 @@
+
 module Stories.Pagination exposing (..)
 
 import Dict
@@ -52,6 +53,6 @@ view controls model =
     toUnstyled <|
         Ui.Pagination.view
             { currentPage = model.selectedPageNumber
-            , count = 100
+            , count = 10
             , onNav = UserSelectedPageNumber
             }
