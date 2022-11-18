@@ -146,7 +146,7 @@ customView2 attrs config =
                 ]
 
         boundary =
-            1
+            3
 
         siblings =
             2
@@ -240,16 +240,16 @@ customView2 attrs config =
                             :: List.reverse
                                 (leftToRightRange
                                     { range = List.reverse <| CCZipList.getInitial zipList
-                                    , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
-                                    , siblingCount = siblings + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
+                                    , elementCapacity = Debug.log "Element capacity left: " <| placeholderRangeLength + (max 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
+                                    , siblingCount = siblings + (max 0 <| placeholderRangeLength - (List.length <| CCZipList.getTail zipList))
                                     , boundaryCount = boundary
                                     }
                                 )
                             ++ pageButton { selected = True, pageNumber = ZipList.current zipList }
                             :: leftToRightRange
                                 { range = CCZipList.getTail zipList
-                                , elementCapacity = placeholderRangeLength + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
-                                , siblingCount = siblings + (min 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
+                                , elementCapacity = Debug.log "Element capacity right: " <| placeholderRangeLength + (max 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
+                                , siblingCount = siblings + (max 0 <| placeholderRangeLength - (List.length <| CCZipList.getInitial zipList))
                                 , boundaryCount = boundary
                                 }
                             ++ [ A11y.li []
