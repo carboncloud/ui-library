@@ -1,19 +1,25 @@
 module Ui.Pagination exposing
-    ( view, customView
-    , Model, PageNumber, initPageNumber, unwrapPageNumber
+    ( PageNumber, Model
+    , view, customView
+    , initPageNumber
     )
 
-{-| Defines a RadioButton component
+{-| Defines a Pagination component
 
 
 ## Types
 
-@docs Direction
+@docs PageNumber, Model
 
 
 ## Views
 
 @docs view, customView
+
+
+## Other
+
+@docs initPageNumber
 
 -}
 
@@ -40,29 +46,28 @@ import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import ZipList
 
 
+{-| An opaque type wrapper around an Int to prevent it from being set outside of the component
+-}
 type PageNumber
     = PageNumber Int
 
 
-
-
+{-| The intial value of the page number
+-}
 initPageNumber : PageNumber
 initPageNumber =
     PageNumber 1
 
 
-unwrapPageNumber : PageNumber -> Int
-unwrapPageNumber (PageNumber number) =
-    number
-
-
+{-| The Pagination model
+-}
 type alias Model =
     { currentPage : PageNumber
     , numberOfPages : Int
     }
 
 
-{-| Return a view of a pagination view.
+{-| Returns a view of a pagination component.
 This should be used whenever possible.
 You can use `customView` if you need to
 customize the button.
@@ -82,6 +87,9 @@ view =
     customView []
 
 
+{-| Returns a custom view of a pagination component.
+Only use this when `view` is not enough.
+-}
 customView :
     List (Attribute Never)
     -> Model
@@ -96,7 +104,9 @@ customView :
     -> Html msg
 customView attrs { currentPage, numberOfPages } config =
     let
-
+        unwrapPageNumber : PageNumber -> Int
+        unwrapPageNumber (PageNumber number) =
+            number
 
         pageNumber : Int -> Maybe PageNumber
         pageNumber i =
@@ -151,12 +161,12 @@ customView attrs { currentPage, numberOfPages } config =
                                     , color = TextColor.Primary
                                     }
                                 )
-                            ++ if selected then
+                            ++ (if selected then
                                     [ Css.fontWeight Css.bold, Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
 
-                                 else
+                                else
                                     [ hoverStyle ]
-                               
+                               )
                     ]
                     [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber_) ]
                 ]
