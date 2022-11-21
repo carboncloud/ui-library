@@ -1,6 +1,5 @@
 module Stories.Pagination exposing (..)
 
-import Dict
 import Html exposing (Html)
 import Html.Styled exposing (toUnstyled)
 import Storybook.Component exposing (Component)

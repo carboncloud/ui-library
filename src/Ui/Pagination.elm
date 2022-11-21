@@ -19,7 +19,7 @@ module Ui.Pagination exposing
 
 ## Other
 
-@docs initPageNumber
+@docs initPageNumber, unwrapPageNumber
 
 -}
 
@@ -57,6 +57,13 @@ type PageNumber
 initPageNumber : PageNumber
 initPageNumber =
     PageNumber 1
+
+
+{-| Unwrap the page number value
+-}
+unwrapPageNumber : PageNumber -> Int
+unwrapPageNumber (PageNumber number) =
+    number
 
 
 {-| The Pagination model
@@ -104,10 +111,6 @@ customView :
     -> Html msg
 customView attrs { currentPage, numberOfPages } config =
     let
-        unwrapPageNumber : PageNumber -> Int
-        unwrapPageNumber (PageNumber number) =
-            number
-
         pageNumber : Int -> Maybe PageNumber
         pageNumber i =
             if i < 1 || i > numberOfPages then
