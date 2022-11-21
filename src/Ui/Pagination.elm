@@ -1,7 +1,7 @@
 module Ui.Pagination exposing
     ( PageNumber, Model
     , view, customView
-    , initPageNumber
+    , initPageNumber, unwrapPageNumber
     )
 
 {-| Defines a Pagination component
