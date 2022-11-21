@@ -3,12 +3,10 @@
     "name": "carboncloud/ui-library",
     "summary": "UI library we use at CarbonCloud.",
     "license": "BSD-3-Clause",
-    "version": "1.0.0",
-    "source-directories": [
-        "src"
-    ],
+    "version": "1.1.0",
     "exposed-modules": [
-        "Ui.RadioButton"
+        "Ui.RadioButton",
+        "Ui.Pagination"
     ],
     "elm-version": "0.19.1 <= v < 20.0.0",
     "dependencies": {
