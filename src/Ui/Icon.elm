@@ -1,10 +1,13 @@
 module Ui.Icon exposing (..)
 
 import Accessibility.Styled.Role as Role
+import Color exposing (Color)
+import Css
 import Css.Global exposing (children)
 import Html.Styled as Html exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, path, svg, text)
 import Svg.Styled.Attributes as SvgAttr
+import Ui.Color exposing (toCssColor)
 
 
 type Icon
@@ -13,6 +16,11 @@ type Icon
         , attributes : List (Attribute Never)
         , children : List (Svg Never)
         }
+
+
+setBackground : Color -> Icon -> Icon
+setBackground color (Icon ({ attributes } as icon)) =
+    Icon { icon | attributes = attributes ++ [ SvgAttr.css [ Css.fill <| toCssColor color ] ] }
 
 
 toStyled : Icon -> Html msg

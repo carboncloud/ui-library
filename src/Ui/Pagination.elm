@@ -1,4 +1,7 @@
-module Ui.Pagination exposing (..)
+module Ui.Pagination exposing
+    ( view, customView
+    , Model, PageNumber, initPageNumber, unwrapPageNumber
+    )
 
 {-| Defines a RadioButton component
 
@@ -16,34 +19,47 @@ module Ui.Pagination exposing (..)
 
 import Accessibility.Styled as A11y exposing (Html)
 import Accessibility.Styled.Landmark as Landmark
-import Css exposing (disabled)
-import Css.Transitions as Transitions
+import Css
+import Extra.A11y as CCA11y
+import Extra.List as CCList
+import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import List.Extra exposing (unfoldr)
+import List
 import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
-import String.Extra exposing (dasherize)
 import Ui.Color as Color
-import Ui.Icon as Icon
+import Ui.Icon as Icon exposing (Icon)
 import Ui.Internal.FontFamily as FontFamily
 import Ui.Internal.FontSize as FontSize
 import Ui.Internal.FontWeight as FontWeight
 import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
-import Ui.Typography as Typography
+import ZipList
 
 
-{-| Defines the NavAction
--}
 type PageNumber
     = PageNumber Int
 
 
-init =
+
+
+initPageNumber : PageNumber
+initPageNumber =
     PageNumber 1
+
+
+unwrapPageNumber : PageNumber -> Int
+unwrapPageNumber (PageNumber number) =
+    number
+
+
+type alias Model =
+    { currentPage : PageNumber
+    , numberOfPages : Int
+    }
 
 
 {-| Return a view of a pagination view.
@@ -52,36 +68,46 @@ You can use `customView` if you need to
 customize the button.
 -}
 view :
-    { currentPage : PageNumber
-    , count : Int
-    , onNav : PageNumber -> msg
-    }
+    Model
+    ->
+        { -- the amount of numbers shown adjacent to the selected page
+          siblingCount : Int
+
+        -- the amount of numbers shown at the far end of the range
+        , boundaryCount : Int
+        , onNav : PageNumber -> msg
+        }
     -> Html msg
 view =
     customView []
 
 
-{-| Returns a custom view of a radio button group.
-Only use this when `view` is not enough.
--}
 customView :
     List (Attribute Never)
+    -> Model
     ->
-        { currentPage : PageNumber
-        , count : Int
+        { -- the amount of numbers shown adjacent to the selected page
+          siblingCount : Int
+
+        -- the amount of numbers shown at the far end of the range
+        , boundaryCount : Int
         , onNav : PageNumber -> msg
         }
     -> Html msg
-customView attrs config =
+customView attrs { currentPage, numberOfPages } config =
     let
-        mkPageNumber =
-            PageNumber << clamp 1 config.count
 
-        unwrapPageNumber (PageNumber number) =
-            number
 
-        baseStyle =
-            []
+        pageNumber : Int -> Maybe PageNumber
+        pageNumber i =
+            if i < 1 || i > numberOfPages then
+                Nothing
+
+            else
+                Just <| PageNumber i
+
+        buttonSize =
+            36
 
         buttonStyle =
             [ Css.height (rpx buttonSize)
@@ -98,122 +124,114 @@ customView attrs config =
             Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
 
         iconButtonStyle =
-            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
-                :: buttonStyle
+            buttonStyle
                 ++ [ Css.padding (rpx 10) ]
 
-        buttonSize =
-            36
-
-        pageNumberButtonsCount =
-            7
-
-        siblingCount =
-            6
-
-        boundaryCount =
-            5
-
-        siblingsStart =
-            max (boundaryCount + 2) <|
-                min (unwrapPageNumber config.currentPage - siblingCount) (config.count - boundaryCount - siblingCount * 2 - 1)
-
-        siblingsEnd =
-            min (config.count - 1) <| max (unwrapPageNumber config.currentPage + siblingCount) (boundaryCount + siblingCount * 2 + 2)
-
-        addViewForEachPageNumber { index, previousEllipsis } =
-            let
-                pageNumber =
-                    index + 1
-
-                selectedStyle =
-                    if unwrapPageNumber config.currentPage /= pageNumber then
-                        hoverStyle
-
-                    else
-                        Css.fontWeight Css.bold
-
-                lessThanVisibleRange =
-                    pageNumber < unwrapPageNumber config.currentPage - siblingCount
-
-                greaterThanVisbileRange =
-                    pageNumber > unwrapPageNumber config.currentPage + siblingCount
-
-                withinRange =
-                    not (lessThanVisibleRange || greaterThanVisbileRange)
-
-                pageNumberView =
-                    Just
-                        ( Just <|
-                            A11y.li []
-                                [ A11y.button
-                                    [ Events.onClick <| config.onNav (PageNumber pageNumber)
-                                    , Attributes.css <|
-                                        selectedStyle
-                                            :: buttonStyle
-                                    ]
-                                    [ A11y.text <| String.fromInt pageNumber ]
-                                ]
-                        , { index = index + 1, previousEllipsis = False }
-                        )
-
-                hiddenRangeView =
-                    Just <|
-                        A11y.li []
-                            [ A11y.button
-                                [ Attributes.css <|
-                                    selectedStyle
-                                        :: buttonStyle
-                                ]
-                                [ A11y.text <| "..." ]
-                            ]
-
-                startPagesEnd =
-                    boundaryCount + siblingCount * 2 + 1
-            in
-            if pageNumber > config.count then
-                Nothing
-
-            else if pageNumber == 1 || pageNumber < boundaryCount + 1 || pageNumber >= config.count - (boundaryCount - 1) || pageNumber == config.count then
-                pageNumberView
-
-            else if pageNumber <= (startPagesEnd + 1) && unwrapPageNumber config.currentPage < (startPagesEnd + 1 - siblingCount) then
-                pageNumberView
-
-            else if pageNumber >= (config.count - startPagesEnd) && unwrapPageNumber config.currentPage > (config.count - startPagesEnd + siblingCount) then
-                pageNumberView
-
-            else if withinRange then
-                pageNumberView
-
-            else if not previousEllipsis then
-                Just
-                    ( hiddenRangeView
-                    , { index = index + 1, previousEllipsis = True }
-                    )
-
-            else
-                Just
-                    ( Nothing
-                    , { index = index + 1, previousEllipsis = previousEllipsis }
-                    )
-    in
-    A11y.nav (Attributes.css baseStyle :: Landmark.navigation :: attrs)
-        [ A11y.ul [ Attributes.css ([ Css.displayFlex, Css.property "gap" "20px" ] ++ TextStyle.toCssStyle TextStyle.label) ] <|
+        ellipsis : Html msg
+        ellipsis =
             A11y.li []
                 [ A11y.button
-                    [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage - 1)
-                    , Attributes.css iconButtonStyle
+                    [ Attributes.css <| buttonStyle ++ [ Css.cursor Css.default ]
                     ]
-                    [ Icon.toStyled Icon.chevronLeft ]
+                    [ A11y.text <| "..." ]
                 ]
-                :: (Maybe.values <| unfoldr addViewForEachPageNumber { index = 0, previousEllipsis = False })
-                ++ [ A11y.li []
-                        [ A11y.button
-                            [ Events.onClick <| config.onNav (mkPageNumber <| unwrapPageNumber config.currentPage + 1)
-                            , Attributes.css iconButtonStyle
-                            ]
-                            [ Icon.toStyled Icon.chevronRight ]
+
+        pageButton : Bool -> PageNumber -> Html msg
+        pageButton selected pageNumber_ =
+            A11y.li []
+                [ A11y.button
+                    [ Events.onClick <| config.onNav pageNumber_
+                    , Attributes.css <|
+                        buttonStyle
+                            ++ TextStyle.toCssStyle
+                                (TextStyle
+                                    { family = FontFamily.Primary
+                                    , size = FontSize.Normal
+                                    , weight = FontWeight.Regular
+                                    , color = TextColor.Primary
+                                    }
+                                )
+                            ++ if selected then
+                                    [ Css.fontWeight Css.bold, Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+
+                                 else
+                                    [ hoverStyle ]
+                               
+                    ]
+                    [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber_) ]
+                ]
+
+        baseRangeLength =
+            config.boundaryCount
+                + config.siblingCount
+                -- plus 1 to account for the ellipsis
+                + 1
+
+        leftToRightRange :
+            { range : List PageNumber
+
+            -- to compensate for when the other side is shorter
+            , extraNumberOfItems : Int
+            }
+            -> List (Html msg)
+        leftToRightRange { range, extraNumberOfItems } =
+            if List.length range <= (baseRangeLength + extraNumberOfItems) then
+                List.map (pageButton False) range
+
+            else
+                (List.map (pageButton False) <| List.take (config.siblingCount + extraNumberOfItems) range)
+                    ++ ellipsis
+                    :: (List.map (pageButton False) <| CCList.takeLast config.boundaryCount range)
+
+        navButton : Icon -> Maybe PageNumber -> Html msg
+        navButton icon mPageNumber =
+            case mPageNumber of
+                Just x ->
+                    A11y.button
+                        [ Events.onClick <| config.onNav x
+                        , Attributes.css <|
+                            Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+                                :: iconButtonStyle
+                                ++ []
                         ]
-                   ]
-        ]
+                        [ Icon.toStyled icon ]
+
+                Nothing ->
+                    A11y.button
+                        [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
+                        [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
+    in
+    ZipList.fromList (List.range 1 numberOfPages)
+        |> Maybe.map (ZipList.map PageNumber)
+        |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber currentPage - 1))
+        |> CCA11y.whenJust
+            (\zipList ->
+                A11y.nav (Landmark.navigation :: attrs)
+                    [ A11y.ul
+                        [ Attributes.css
+                            [ Css.displayFlex
+                            , Css.property "gap" "20px"
+                            , Css.listStyle Css.none
+                            ]
+                        ]
+                      <|
+                        A11y.li []
+                            [ navButton Icon.chevronLeft (pageNumber <| unwrapPageNumber currentPage - 1)
+                            ]
+                            :: List.reverse
+                                (leftToRightRange
+                                    { range = List.reverse <| CCZipList.getInitial zipList
+                                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getTail zipList)
+                                    }
+                                )
+                            ++ pageButton True (ZipList.current zipList)
+                            :: leftToRightRange
+                                { range = CCZipList.getTail zipList
+                                , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getInitial zipList)
+                                }
+                            ++ [ A11y.li []
+                                    [ navButton Icon.chevronRight (pageNumber <| unwrapPageNumber currentPage + 1)
+                                    ]
+                               ]
+                    ]
+            )

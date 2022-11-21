@@ -33,7 +33,7 @@ type alias Model =
 
 
 init =
-    { selectedPageNumber = Ui.Pagination.init }
+    { selectedPageNumber = Ui.Pagination.initPageNumber }
 
 
 type Msg
@@ -52,6 +52,9 @@ view controls model =
     toUnstyled <|
         Ui.Pagination.view
             { currentPage = model.selectedPageNumber
-            , count = 100
+            , numberOfPages = 10
+            }
+            { siblingCount = 1
+            , boundaryCount = 1
             , onNav = UserSelectedPageNumber
             }
