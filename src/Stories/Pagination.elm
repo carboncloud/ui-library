@@ -1,6 +1,6 @@
 module Stories.Pagination exposing (..)
 
-import Html exposing (Html)
+import Html exposing (Html, span, text)
 import Html.Styled exposing (toUnstyled)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
@@ -48,12 +48,15 @@ update msg model =
 
 view : Controls -> Model -> Html Msg
 view controls model =
-    toUnstyled <|
-        Ui.Pagination.view
-            { currentPage = model.selectedPageNumber
-            , numberOfPages = 10
-            }
-            { siblingCount = 1
-            , boundaryCount = 1
-            , onNav = UserSelectedPageNumber
-            }
+    case Ui.Pagination.mkModel { currentPage = model.selectedPageNumber, numberOfPages = 10 } of
+        Ok paginationModel ->
+            toUnstyled <|
+                Ui.Pagination.view
+                    paginationModel
+                    { siblingCount = 1
+                    , boundaryCount = 1
+                    , onNav = UserSelectedPageNumber
+                    }
+
+        Err message ->
+            span [] [ text message ]

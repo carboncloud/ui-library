@@ -1,8 +1,9 @@
 module Ui.Internal.FontWeight exposing (..)
 
-
 {-| Represents a font weight
 -}
+
+
 type FontWeight
     = Light
     | Regular

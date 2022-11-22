@@ -2,6 +2,8 @@ module Ui.Internal.TextColor exposing (..)
 
 import Color exposing (Color)
 import Ui.Color
+
+
 {-| Represents a font color
 -}
 type TextColor

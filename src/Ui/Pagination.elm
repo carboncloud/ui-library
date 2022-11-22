@@ -1,7 +1,8 @@
 module Ui.Pagination exposing
     ( PageNumber, Model
+    , mkModel
     , view, customView
-    , initPageNumber, unwrapPageNumber
+    , initPageNumber, unwrapPageNumber, pageNumber
     )
 
 {-| Defines a Pagination component
@@ -12,21 +13,25 @@ module Ui.Pagination exposing
 @docs PageNumber, Model
 
 
+## Model
+
+@docs mkModel
+
+
 ## Views
 
 @docs view, customView
 
 
-## Other
+## PageNumber
 
-@docs initPageNumber, unwrapPageNumber
+@docs pageNumber, initPageNumber, unwrapPageNumber
 
 -}
 
 import Accessibility.Styled as A11y exposing (Html)
 import Accessibility.Styled.Landmark as Landmark
 import Css
-import Extra.A11y as CCA11y
 import Extra.List as CCList
 import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
@@ -43,7 +48,7 @@ import Ui.Internal.FontWeight as FontWeight
 import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
-import ZipList
+import ZipList exposing (ZipList)
 
 
 {-| An opaque type wrapper around an Int to prevent it from being set outside of the component
@@ -69,9 +74,36 @@ unwrapPageNumber (PageNumber number) =
 {-| The Pagination model
 -}
 type alias Model =
-    { currentPage : PageNumber
-    , numberOfPages : Int
+    ZipList PageNumber
+
+
+{-| Creates a model for the component
+-}
+mkModel :
+    { numberOfPages : Int
+    , currentPage : PageNumber
     }
+    -> Result String Model
+mkModel { numberOfPages, currentPage } =
+    if numberOfPages < 1 then
+        Err "Provide a value greater than zero for the number of pages."
+
+    else
+        (List.map PageNumber <| List.range 1 numberOfPages)
+            |> ZipList.fromList
+            |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber currentPage - 1))
+            |> Result.fromMaybe "Current page number should be in the range [1,number of pages]"
+
+
+{-| Creates a page number given page number that is within the range [1, number of pages]
+-}
+pageNumber : Int -> Int -> Result String PageNumber
+pageNumber numberOfPages i =
+    if i < 1 || i > numberOfPages then
+        Err "Page number should be in the range [1,number of pages]"
+
+    else
+        Ok <| PageNumber i
 
 
 {-| Returns a view of a pagination component.
@@ -109,16 +141,8 @@ customView :
         , onNav : PageNumber -> msg
         }
     -> Html msg
-customView attrs { currentPage, numberOfPages } config =
+customView attrs zipList config =
     let
-        pageNumber : Int -> Maybe PageNumber
-        pageNumber i =
-            if i < 1 || i > numberOfPages then
-                Nothing
-
-            else
-                Just <| PageNumber i
-
         buttonSize =
             36
 
@@ -213,38 +237,38 @@ customView attrs { currentPage, numberOfPages } config =
                     A11y.button
                         [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
                         [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
+
+        currentPage =
+            ZipList.current zipList
+
+        numberOfPages =
+            ZipList.length zipList
     in
-    ZipList.fromList (List.range 1 numberOfPages)
-        |> Maybe.map (ZipList.map PageNumber)
-        |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber currentPage - 1))
-        |> CCA11y.whenJust
-            (\zipList ->
-                A11y.nav (Landmark.navigation :: attrs)
-                    [ A11y.ul
-                        [ Attributes.css
-                            [ Css.displayFlex
-                            , Css.property "gap" "20px"
-                            , Css.listStyle Css.none
-                            ]
+    A11y.nav (Landmark.navigation :: attrs)
+        [ A11y.ul
+            [ Attributes.css
+                [ Css.displayFlex
+                , Css.property "gap" "20px"
+                , Css.listStyle Css.none
+                ]
+            ]
+          <|
+            A11y.li []
+                [ navButton Icon.chevronLeft (Result.toMaybe <| pageNumber numberOfPages <| unwrapPageNumber currentPage - 1)
+                ]
+                :: List.reverse
+                    (leftToRightRange
+                        { range = List.reverse <| CCZipList.getInitial zipList
+                        , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getTail zipList)
+                        }
+                    )
+                ++ pageButton True (ZipList.current zipList)
+                :: leftToRightRange
+                    { range = CCZipList.getTail zipList
+                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getInitial zipList)
+                    }
+                ++ [ A11y.li []
+                        [ navButton Icon.chevronRight (Result.toMaybe <| pageNumber numberOfPages <| unwrapPageNumber currentPage + 1)
                         ]
-                      <|
-                        A11y.li []
-                            [ navButton Icon.chevronLeft (pageNumber <| unwrapPageNumber currentPage - 1)
-                            ]
-                            :: List.reverse
-                                (leftToRightRange
-                                    { range = List.reverse <| CCZipList.getInitial zipList
-                                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getTail zipList)
-                                    }
-                                )
-                            ++ pageButton True (ZipList.current zipList)
-                            :: leftToRightRange
-                                { range = CCZipList.getTail zipList
-                                , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getInitial zipList)
-                                }
-                            ++ [ A11y.li []
-                                    [ navButton Icon.chevronRight (pageNumber <| unwrapPageNumber currentPage + 1)
-                                    ]
-                               ]
-                    ]
-            )
+                   ]
+        ]

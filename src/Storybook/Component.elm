@@ -113,10 +113,11 @@ update :
 update componentUpdateFn msg model =
     ( { model | component = componentUpdateFn msg model.component }
     , Cmd.none
-    -- , logAction
-    --     { payload = Json.Encode.string (Debug.toString msg)
-    --     }
+      -- , logAction
+      --     { payload = Json.Encode.string (Debug.toString msg)
+      --     }
     )
+
 
 
 -- {-| This port allows us to send messages to JavaScript!

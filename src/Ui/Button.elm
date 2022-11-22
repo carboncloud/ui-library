@@ -1,14 +1,22 @@
-module Ui.Button exposing (ButtonColor(..), ButtonEmphasis(..), ButtonContent(..), view, customView)
+module Ui.Button exposing
+    ( ButtonColor(..), ButtonEmphasis(..), ButtonContent(..)
+    , view, customView
+    )
 
 {-| Defines a Button component
 
+
 # Types
+
 @docs ButtonColor, ButtonEmphasis, ButtonContent
 
+
 # Views
+
 @docs view, customView
 
 -}
+
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
 import Css exposing (border, pct, solid)
@@ -19,16 +27,16 @@ import Html.Styled.Events as Events
 import Json.Encode as JE
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.DataAttributes as DataAttributes
-import Ui.Palette as Palette
-import Ui.Shadow exposing (shadow)
-import Ui.Typography as Typography
-import Ui.TextStyle exposing (TextStyle(..))
 import Ui.Color as Color
+import Ui.DataAttributes as DataAttributes
 import Ui.Internal.FontFamily as FontFamily
 import Ui.Internal.FontSize as FontSize
 import Ui.Internal.FontWeight as FontWeight
 import Ui.Internal.TextColor as TextColor
+import Ui.Palette as Palette
+import Ui.Shadow exposing (shadow)
+import Ui.TextStyle exposing (TextStyle(..))
+import Ui.Typography as Typography
 
 
 
@@ -37,9 +45,10 @@ import Ui.Internal.TextColor as TextColor
 
 {-| Defines the available button colors
 
-- `Primary`: used to get users main focus
-- `Secondary`: used as an accent to `Primary`
-- `Warn`: used to indicate a destructive and/or dangerous action
+  - `Primary`: used to get users main focus
+  - `Secondary`: used as an accent to `Primary`
+  - `Warn`: used to indicate a destructive and/or dangerous action
+
 -}
 type ButtonColor
     = Primary
@@ -54,9 +63,9 @@ type ButtonEmphasis
     | Mid
     | Low
 
+
 {-| Defins the content of the button
 -}
-
 type ButtonContent
     = Text String
     | TextWithLeftIcon String String
@@ -74,10 +83,11 @@ buttonText =
             }
         )
 
+
 {-| Returns a view of a button
-    This should be used whenever possible.
-    You can use `customView` if you need to
-    customize the button.
+This should be used whenever possible.
+You can use `customView` if you need to
+customize the button.
 -}
 view :
     { onClick : msg
@@ -93,15 +103,17 @@ view { onClick, color, emphasis } =
         , emphasis = emphasis
         }
 
+
 {-| Returns a custom view of a button.
-    Only use this when `view` is not enough.
+Only use this when `view` is not enough.
 -}
 customView :
     List (Styled.Attribute msg)
-    -> { onClick : msg
-    , color : ButtonColor
-    , emphasis : ButtonEmphasis
-    }
+    ->
+        { onClick : msg
+        , color : ButtonColor
+        , emphasis : ButtonEmphasis
+        }
     -> ButtonContent
     -> Html msg
 customView attrs { emphasis, color, onClick } content =
@@ -186,7 +198,7 @@ button customStyle attrs buttonContent =
             , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid (Color.toCssColor Palette.focus)]
+                [ Css.outline3 (Css.px 2) Css.solid (Color.toCssColor Palette.focus) ]
             ]
 
         style =
@@ -199,6 +211,6 @@ button customStyle attrs buttonContent =
 
             TextWithLeftIcon s i ->
                 [ A11y.img "button-icon" [ Attributes.src i ], A11y.text s ]
-            
+
             TextWithRightIcon s i ->
                 [ A11y.text s, A11y.img "button-icon" [ Attributes.src i ] ]

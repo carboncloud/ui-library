@@ -2,7 +2,6 @@ module Ui.Typography exposing (..)
 
 import Css
 import Element exposing (Element)
-import Ui.TextStyle exposing (TextStyle)
 import Html.Attributes
 import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
@@ -30,7 +29,7 @@ import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 
 
 {-| Returns a text view
-    This is preferred over `styledCustomText` when no custom styling is needed
+This is preferred over `styledCustomText` when no custom styling is needed
 -}
 styledText : TextStyle -> String -> Styled.Html msg
 styledText font =
@@ -41,7 +40,7 @@ styledText font =
 -}
 styledCustomText : List (Styled.Attribute msg) -> TextStyle -> String -> Styled.Html msg
 styledCustomText attrs font s =
-    Styled.span (attrs ++ [Attributes.css <| TextStyle.toCssStyle font]) [ Styled.text s ]
+    Styled.span (attrs ++ [ Attributes.css <| TextStyle.toCssStyle font ]) [ Styled.text s ]
 
 
 styledParagraph : TextStyle -> String -> Styled.Html msg

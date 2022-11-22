@@ -4,7 +4,7 @@ import ZipList exposing (ZipList(..))
 
 
 getInitial : ZipList a -> List a
-getInitial (Zipper initial _ _)=
+getInitial (Zipper initial _ _) =
     List.reverse initial
 
 

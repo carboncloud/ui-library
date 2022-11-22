@@ -1,11 +1,9 @@
-module Ui.Color exposing
-    ( fromHex
-    , toCssColor
-    , toElementColor
-    )
+module Ui.Color exposing (toCssColor, toElementColor, fromHex)
 
 {-| Color helper functions
+
 @docs toCssColor, toElementColor, fromHex
+
 -}
 
 import Color exposing (Color, fromRgba, toRgba)
@@ -25,6 +23,7 @@ toCssColor =
             alpha
     )
         << toRgba
+
 
 {-| Interprets a color as an Element Color
 -}

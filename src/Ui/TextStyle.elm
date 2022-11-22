@@ -15,9 +15,10 @@ module Ui.TextStyle exposing
     , heading2
     , heading3
     , heading4
+    , heading5
     , label
     , toCssStyle
-    , toElementAttribute, heading5
+    , toElementAttribute
     )
 
 import Css
@@ -103,6 +104,7 @@ bodyLarge =
         , color = TextColor.Primary
         }
 
+
 label : TextStyle
 label =
     TextStyle
@@ -152,6 +154,7 @@ heading4 =
         , color = TextColor.Primary
         }
 
+
 heading5 : TextStyle
 heading5 =
     TextStyle
@@ -160,7 +163,6 @@ heading5 =
         , weight = FontWeight.SemiBold
         , color = TextColor.Primary
         }
-
 
 
 {-|
@@ -191,6 +193,7 @@ fontWeightToCssStyle (TextStyle { weight }) =
 fontColorToCssStyle : TextStyle -> Css.Style
 fontColorToCssStyle (TextStyle { color }) =
     Css.color << Ui.Color.toCssColor <| textColor color
+
 
 {-|
 

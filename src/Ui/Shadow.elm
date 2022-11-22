@@ -4,8 +4,8 @@ module Ui.Shadow exposing
     )
 
 {-
-    This module defines the `Shadow` type
-    that is an abstraction over layered shadows.
+   This module defines the `Shadow` type
+   that is an abstraction over layered shadows.
 -}
 
 import Css exposing (Color)

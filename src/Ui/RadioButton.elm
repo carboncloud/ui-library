@@ -1,14 +1,22 @@
-module Ui.RadioButton exposing (Direction(..), customView, view)
+module Ui.RadioButton exposing
+    ( Direction(..)
+    , view, customView
+    )
 
-{-|
-Defines a RadioButton component
+{-| Defines a RadioButton component
+
 
 ## Types
+
 @docs Direction
 
+
 ## Views
+
 @docs view, customView
+
 -}
+
 import Accessibility.Styled as A11y exposing (Html)
 import Css exposing (disabled)
 import Css.Transitions as Transitions
@@ -33,10 +41,11 @@ type Direction
     = Horizontal
     | Vertical
 
+
 {-| Return a view of a radio button group.
-    This should be used whenever possible.
-    You can use `customView` if you need to
-    customize the button.
+This should be used whenever possible.
+You can use `customView` if you need to
+customize the button.
 -}
 view :
     { onChange : a -> msg
@@ -49,8 +58,9 @@ view :
 view =
     customView []
 
+
 {-| Returns a custom view of a radio button group.
-    Only use this when `view` is not enough.
+Only use this when `view` is not enough.
 -}
 customView :
     List (Attribute Never)

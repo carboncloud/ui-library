@@ -8,8 +8,8 @@ import Html.Styled.Attributes as Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
-import Ui.TextStyle as TextStyle
 import Ui.Palette as Palette
+import Ui.TextStyle as TextStyle
 import Ui.Typography as Typography
 
 

@@ -9,8 +9,8 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
-import Ui.Typography
 import Ui.TextStyle
+import Ui.Typography
 
 
 main : Component () msg
@@ -37,7 +37,7 @@ colorSwatch name color =
                 , Css.justifyContent Css.end
                 ]
             ]
-            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.fontSize (Css.px 10)] ] Ui.TextStyle.heading5 <| toHexString color ]
+            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.heading5 <| toHexString color ]
         , Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.TextStyle.heading5 name
         ]
 

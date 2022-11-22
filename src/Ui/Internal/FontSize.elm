@@ -3,6 +3,7 @@ module Ui.Internal.FontSize exposing (..)
 import Css exposing (Rem)
 import Rpx exposing (rpx)
 
+
 {-| Represents a font size
 -}
 type FontSize
