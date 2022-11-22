@@ -1,8 +1,8 @@
 module Ui.Pagination exposing
-    ( PageNumber, Model
+    ( Model
     , mkModel
     , view, customView
-    , initPageNumber, unwrapPageNumber, pageNumber
+    , init
     )
 
 {-| Defines a Pagination component
@@ -32,6 +32,7 @@ module Ui.Pagination exposing
 import Accessibility.Styled as A11y exposing (Html)
 import Accessibility.Styled.Landmark as Landmark
 import Css
+import Extra.A11y as CCA11y
 import Extra.List as CCList
 import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
@@ -51,59 +52,30 @@ import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import ZipList exposing (ZipList)
 
 
-{-| An opaque type wrapper around an Int to prevent it from being set outside of the component
--}
-type PageNumber
-    = PageNumber Int
-
-
-{-| The intial value of the page number
--}
-initPageNumber : PageNumber
-initPageNumber =
-    PageNumber 1
-
-
-{-| Unwrap the page number value
--}
-unwrapPageNumber : PageNumber -> Int
-unwrapPageNumber (PageNumber number) =
-    number
-
-
 {-| The Pagination model
 -}
-type alias Model =
-    ZipList PageNumber
+type Model
+    = Model (ZipList Int)
+
+
+init : Model
+init =
+    Model <| ZipList.Zipper [4,3,2,1] 5 [6,7]
 
 
 {-| Creates a model for the component
 -}
-mkModel :
-    { numberOfPages : Int
-    , currentPage : PageNumber
-    }
-    -> Result String Model
-mkModel { numberOfPages, currentPage } =
+mkModel : Int -> Int -> Result String Model
+mkModel numberOfPages currentPage_ =
     if numberOfPages < 1 then
         Err "Provide a value greater than zero for the number of pages."
 
     else
-        (List.map PageNumber <| List.range 1 numberOfPages)
+        List.range 1 numberOfPages
             |> ZipList.fromList
-            |> Maybe.andThen (ZipList.goToIndex (unwrapPageNumber currentPage - 1))
+            |> Maybe.andThen (ZipList.goToIndex (currentPage_ - 1))
+            |> Maybe.map Model
             |> Result.fromMaybe "Current page number should be in the range [1,number of pages]"
-
-
-{-| Creates a page number given page number that is within the range [1, number of pages]
--}
-pageNumber : Int -> Int -> Result String PageNumber
-pageNumber numberOfPages i =
-    if i < 1 || i > numberOfPages then
-        Err "Page number should be in the range [1,number of pages]"
-
-    else
-        Ok <| PageNumber i
 
 
 {-| Returns a view of a pagination component.
@@ -119,11 +91,42 @@ view :
 
         -- the amount of numbers shown at the far end of the range
         , boundaryCount : Int
-        , onNav : PageNumber -> msg
+        , onNav : Model -> msg
         }
     -> Html msg
 view =
     customView []
+
+
+previousPage : Model -> Maybe Model
+previousPage (Model model) =
+    Maybe.map Model <| ZipList.maybeJumpBackward 1 model
+
+
+nextPage : Model -> Maybe Model
+nextPage (Model model) =
+    Maybe.map Model <| ZipList.maybeJumpForward 1 model
+
+
+currentPage : Model -> Int
+currentPage (Model (ZipList.Zipper _ current _)) =
+    current
+
+
+setPage : Model -> Int -> Maybe Model
+setPage (Model m) p =
+    Maybe.map Model <| ZipList.goToIndex p m
+
+
+getInitial : Model -> List Int
+getInitial (Model (ZipList.Zipper initial _ _)) =
+    List.reverse initial
+
+
+getTail : Model -> List Int
+getTail (Model (ZipList.Zipper _ _ tail)) =
+    tail
+
 
 
 {-| Returns a custom view of a pagination component.
@@ -138,7 +141,7 @@ customView :
 
         -- the amount of numbers shown at the far end of the range
         , boundaryCount : Int
-        , onNav : PageNumber -> msg
+        , onNav : Model -> msg
         }
     -> Html msg
 customView attrs zipList config =
@@ -173,30 +176,32 @@ customView attrs zipList config =
                     [ A11y.text <| "..." ]
                 ]
 
-        pageButton : Bool -> PageNumber -> Html msg
+        pageButton : Bool -> Int -> Html msg
         pageButton selected pageNumber_ =
-            A11y.li []
-                [ A11y.button
-                    [ Events.onClick <| config.onNav pageNumber_
-                    , Attributes.css <|
-                        buttonStyle
-                            ++ TextStyle.toCssStyle
-                                (TextStyle
-                                    { family = FontFamily.Primary
-                                    , size = FontSize.Normal
-                                    , weight = FontWeight.Regular
-                                    , color = TextColor.Primary
-                                    }
-                                )
-                            ++ (if selected then
-                                    [ Css.fontWeight Css.bold, Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
+            CCA11y.whenJust (setPage zipList pageNumber_) <|
+                \newModel ->
+                    A11y.li []
+                        [ A11y.button
+                            [ Events.onClick <| config.onNav newModel
+                            , Attributes.css <|
+                                buttonStyle
+                                    ++ TextStyle.toCssStyle
+                                        (TextStyle
+                                            { family = FontFamily.Primary
+                                            , size = FontSize.Normal
+                                            , weight = FontWeight.Regular
+                                            , color = TextColor.Primary
+                                            }
+                                        )
+                                    ++ (if selected then
+                                            [ Css.fontWeight Css.bold, Css.backgroundColor <| Color.toCssColor Palette.primary050 ]
 
-                                else
-                                    [ hoverStyle ]
-                               )
-                    ]
-                    [ A11y.text <| String.fromInt (unwrapPageNumber pageNumber_) ]
-                ]
+                                        else
+                                            [ hoverStyle ]
+                                       )
+                            ]
+                            [ A11y.text <| String.fromInt pageNumber_ ]
+                        ]
 
         baseRangeLength =
             config.boundaryCount
@@ -205,7 +210,7 @@ customView attrs zipList config =
                 + 1
 
         leftToRightRange :
-            { range : List PageNumber
+            { range : List Int
 
             -- to compensate for when the other side is shorter
             , extraNumberOfItems : Int
@@ -220,9 +225,9 @@ customView attrs zipList config =
                     ++ ellipsis
                     :: (List.map (pageButton False) <| CCList.takeLast config.boundaryCount range)
 
-        navButton : Icon -> Maybe PageNumber -> Html msg
-        navButton icon mPageNumber =
-            case mPageNumber of
+        navButton : Icon -> Maybe Model -> Html msg
+        navButton icon nextModel =
+            case nextModel of
                 Just x ->
                     A11y.button
                         [ Events.onClick <| config.onNav x
@@ -238,11 +243,6 @@ customView attrs zipList config =
                         [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
                         [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
 
-        currentPage =
-            ZipList.current zipList
-
-        numberOfPages =
-            ZipList.length zipList
     in
     A11y.nav (Landmark.navigation :: attrs)
         [ A11y.ul
@@ -254,21 +254,21 @@ customView attrs zipList config =
             ]
           <|
             A11y.li []
-                [ navButton Icon.chevronLeft (Result.toMaybe <| pageNumber numberOfPages <| unwrapPageNumber currentPage - 1)
+                [ navButton Icon.chevronLeft (previousPage zipList)
                 ]
                 :: List.reverse
                     (leftToRightRange
-                        { range = List.reverse <| CCZipList.getInitial zipList
-                        , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getTail zipList)
+                        { range = List.reverse <| getInitial zipList
+                        , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getTail zipList)
                         }
                     )
-                ++ pageButton True (ZipList.current zipList)
+                ++ pageButton True (currentPage zipList)
                 :: leftToRightRange
-                    { range = CCZipList.getTail zipList
-                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| CCZipList.getInitial zipList)
+                    { range = getTail zipList
+                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getInitial zipList)
                     }
                 ++ [ A11y.li []
-                        [ navButton Icon.chevronRight (Result.toMaybe <| pageNumber numberOfPages <| unwrapPageNumber currentPage + 1)
+                        [ navButton Icon.chevronRight (nextPage zipList)
                         ]
                    ]
         ]

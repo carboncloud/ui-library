@@ -28,35 +28,30 @@ type alias Controls =
 
 
 type alias Model =
-    { selectedPageNumber : Ui.Pagination.PageNumber }
+    { paginationModel : Ui.Pagination.Model }
 
 
 init =
-    { selectedPageNumber = Ui.Pagination.initPageNumber }
+    { paginationModel = Ui.Pagination.init }
 
 
 type Msg
-    = UserSelectedPageNumber Ui.Pagination.PageNumber
+    = UserSelectedPageNumber Ui.Pagination.Model
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        UserSelectedPageNumber pageNumber ->
-            { model | selectedPageNumber = pageNumber }
+        UserSelectedPageNumber newPaginationModel ->
+            { model | paginationModel = newPaginationModel }
 
 
 view : Controls -> Model -> Html Msg
 view controls model =
-    case Ui.Pagination.mkModel { currentPage = model.selectedPageNumber, numberOfPages = 10 } of
-        Ok paginationModel ->
             toUnstyled <|
                 Ui.Pagination.view
-                    paginationModel
-                    { siblingCount = 1
+                    model.paginationModel
+                    { siblingCount = 2
                     , boundaryCount = 1
                     , onNav = UserSelectedPageNumber
                     }
-
-        Err message ->
-            span [] [ text message ]
