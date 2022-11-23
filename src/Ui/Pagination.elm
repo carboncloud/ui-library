@@ -1,8 +1,7 @@
 module Ui.Pagination exposing
     ( Model
-    , mkModel
+    , init, currentPage
     , view, customView
-    , init
     )
 
 {-| Defines a Pagination component
@@ -10,22 +9,17 @@ module Ui.Pagination exposing
 
 ## Types
 
-@docs PageNumber, Model
+@docs Model
 
 
 ## Model
 
-@docs mkModel
+@docs init, currentPage
 
 
 ## Views
 
 @docs view, customView
-
-
-## PageNumber
-
-@docs pageNumber, initPageNumber, unwrapPageNumber
 
 -}
 
@@ -34,11 +28,11 @@ import Accessibility.Styled.Landmark as Landmark
 import Css
 import Extra.A11y as CCA11y
 import Extra.List as CCList
-import Extra.ZipList as CCZipList
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import List
+import List.Extra as List
 import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import Ui.Color as Color
@@ -58,15 +52,10 @@ type Model
     = Model (ZipList Int)
 
 
-init : Model
-init =
-    Model <| ZipList.Zipper [4,3,2,1] 5 [6,7]
-
-
 {-| Creates a model for the component
 -}
-mkModel : Int -> Int -> Result String Model
-mkModel numberOfPages currentPage_ =
+init : Int -> Int -> Result String Model
+init numberOfPages currentPage_ =
     if numberOfPages < 1 then
         Err "Provide a value greater than zero for the number of pages."
 
@@ -98,6 +87,13 @@ view =
     customView []
 
 
+{-| Returns the current page number
+-}
+currentPage : Model -> Int
+currentPage (Model (ZipList.Zipper _ current _)) =
+    current
+
+
 previousPage : Model -> Maybe Model
 previousPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpBackward 1 model
@@ -108,14 +104,9 @@ nextPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpForward 1 model
 
 
-currentPage : Model -> Int
-currentPage (Model (ZipList.Zipper _ current _)) =
-    current
-
-
 setPage : Model -> Int -> Maybe Model
 setPage (Model m) p =
-    Maybe.map Model <| ZipList.goToIndex p m
+    Maybe.map Model <| ZipList.goToIndex (p - 1) m
 
 
 getInitial : Model -> List Int
@@ -126,7 +117,6 @@ getInitial (Model (ZipList.Zipper initial _ _)) =
 getTail : Model -> List Int
 getTail (Model (ZipList.Zipper _ _ tail)) =
     tail
-
 
 
 {-| Returns a custom view of a pagination component.
@@ -144,7 +134,7 @@ customView :
         , onNav : Model -> msg
         }
     -> Html msg
-customView attrs zipList config =
+customView attrs model config =
     let
         buttonSize =
             36
@@ -178,7 +168,7 @@ customView attrs zipList config =
 
         pageButton : Bool -> Int -> Html msg
         pageButton selected pageNumber_ =
-            CCA11y.whenJust (setPage zipList pageNumber_) <|
+            CCA11y.whenJust (setPage model pageNumber_) <|
                 \newModel ->
                     A11y.li []
                         [ A11y.button
@@ -242,7 +232,6 @@ customView attrs zipList config =
                     A11y.button
                         [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
                         [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
-
     in
     A11y.nav (Landmark.navigation :: attrs)
         [ A11y.ul
@@ -254,21 +243,21 @@ customView attrs zipList config =
             ]
           <|
             A11y.li []
-                [ navButton Icon.chevronLeft (previousPage zipList)
+                [ navButton Icon.chevronLeft (previousPage model)
                 ]
                 :: List.reverse
                     (leftToRightRange
-                        { range = List.reverse <| getInitial zipList
-                        , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getTail zipList)
+                        { range = List.reverse <| getInitial model
+                        , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getTail model)
                         }
                     )
-                ++ pageButton True (currentPage zipList)
+                ++ pageButton True (currentPage model)
                 :: leftToRightRange
-                    { range = getTail zipList
-                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getInitial zipList)
+                    { range = getTail model
+                    , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getInitial model)
                     }
                 ++ [ A11y.li []
-                        [ navButton Icon.chevronRight (nextPage zipList)
+                        [ navButton Icon.chevronRight (nextPage model)
                         ]
                    ]
         ]

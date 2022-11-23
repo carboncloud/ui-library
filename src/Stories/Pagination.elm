@@ -28,11 +28,11 @@ type alias Controls =
 
 
 type alias Model =
-    { paginationModel : Ui.Pagination.Model }
+    { paginationModel : Result String Ui.Pagination.Model }
 
 
 init =
-    { paginationModel = Ui.Pagination.init }
+    { paginationModel = Ui.Pagination.init 10 1 }
 
 
 type Msg
@@ -43,15 +43,20 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UserSelectedPageNumber newPaginationModel ->
-            { model | paginationModel = newPaginationModel }
+            { model | paginationModel = Ok newPaginationModel }
 
 
 view : Controls -> Model -> Html Msg
 view controls model =
+    case model.paginationModel of
+        Ok paginationModel ->
             toUnstyled <|
                 Ui.Pagination.view
-                    model.paginationModel
-                    { siblingCount = 2
+                    paginationModel
+                    { siblingCount = 1
                     , boundaryCount = 1
                     , onNav = UserSelectedPageNumber
                     }
+
+        Err s ->
+            span [] [ text s ]
