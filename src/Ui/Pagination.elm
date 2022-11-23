@@ -1,6 +1,6 @@
 module Ui.Pagination exposing
     ( Model
-    , init, currentPage
+    , init, currentPage, previousPage, nextPage, setPage, getTail, getInitial
     , view, customView
     )
 
@@ -14,7 +14,7 @@ module Ui.Pagination exposing
 
 ## Model
 
-@docs init, currentPage
+@docs init, currentPage, previousPage, nextPage, setPage, getTail, getInitial
 
 
 ## Views
@@ -94,26 +94,36 @@ currentPage (Model (ZipList.Zipper _ current _)) =
     current
 
 
+{-| Go to the previous page
+-}
 previousPage : Model -> Maybe Model
 previousPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpBackward 1 model
 
 
+{-| Go to the next page
+-}
 nextPage : Model -> Maybe Model
 nextPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpForward 1 model
 
 
+{-| Set the current page
+-}
 setPage : Model -> Int -> Maybe Model
 setPage (Model m) p =
     Maybe.map Model <| ZipList.goToIndex (p - 1) m
 
 
+{-| Return the left range [1,current page - 1] of the current page
+-}
 getInitial : Model -> List Int
 getInitial (Model (ZipList.Zipper initial _ _)) =
     List.reverse initial
 
 
+{-| Return the right range [current page + 1, number of pages] of the current page
+-}
 getTail : Model -> List Int
 getTail (Model (ZipList.Zipper _ _ tail)) =
     tail
