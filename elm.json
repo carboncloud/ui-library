@@ -3,7 +3,7 @@
     "name": "carboncloud/ui-library",
     "summary": "UI library we use at CarbonCloud.",
     "license": "BSD-3-Clause",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "exposed-modules": [
         "Ui.RadioButton",
         "Ui.Pagination"
@@ -20,9 +20,9 @@
         "elm-community/list-extra": "8.7.0 <= v < 9.0.0",
         "elm-community/maybe-extra": "5.3.0 <= v < 6.0.0",
         "elm-community/string-extra": "4.0.1 <= v < 5.0.0",
-        "mdgriffith/elm-ui": "1.1.7 <= v < 2.0.0",
+        "mdgriffith/elm-ui": "1.1.7 <= v < 1.8.0",
         "mgold/elm-nonempty-list": "4.2.0 <= v < 5.0.0",
-        "rtfeldman/elm-css": "17.0.0 <= v < 17.1.0",
+        "rtfeldman/elm-css": "17.0.0 <= v < 18.0.0",
         "rtfeldman/elm-hex": "1.0.0 <= v < 2.0.0",
         "staeter/ziplist": "3.0.1 <= v < 4.0.0",
         "tesk9/accessible-html-with-css": "2.2.0 <= v < 3.0.0"
