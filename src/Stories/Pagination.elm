@@ -47,7 +47,7 @@ update msg model =
 
 
 view : Controls -> Model -> Html Msg
-view controls model =
+view _ model =
     case model.paginationModel of
         Ok paginationModel ->
             toUnstyled <|

@@ -1,12 +1,10 @@
 module Stories.RadioButton exposing (..)
 
-import Dict
 import Html exposing (Html)
 import Html.Styled exposing (toUnstyled)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.RadioButton
-
 
 main : Component Model Msg
 main =
