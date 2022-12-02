@@ -44,11 +44,11 @@ primary050 =
     Ui.Color.fromHex "#CAE8E9"
 
 
-{-| ![#00787d](https://placehold.co/15x15/00787d/00787d.png) `#00787d`
+{-| ![#28a0a6](https://placehold.co/15x15/28a0a6/28a0a6.png) `#28a0a6`
 -}
 primary500 : Color
 primary500 =
-    Ui.Color.fromHex "#00787d"
+    Ui.Color.fromHex "#28a0a6"
 
 
 {-| ![#287387](https://placehold.co/15x15/287387/287387.png) `#287387`
