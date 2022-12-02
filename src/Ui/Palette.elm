@@ -44,18 +44,18 @@ primary050 =
     Ui.Color.fromHex "#CAE8E9"
 
 
-{-| ![#28a0a6](https://placehold.co/15x15/28a0a6/28a0a6.png) `#28a0a6`
+{-| ![#287386](https://placehold.co/15x15/287386/287386.png) `#287386`
 -}
 primary500 : Color
 primary500 =
-    Ui.Color.fromHex "#28a0a6"
+    Ui.Color.fromHex "#287386"
 
 
-{-| ![#287387](https://placehold.co/15x15/287387/287387.png) `#287387`
+{-| ![#226174](https://placehold.co/15x15/226174/226174.png) `#226174`
 -}
 primary600 : Color
 primary600 =
-    Ui.Color.fromHex "#287387"
+    Ui.Color.fromHex "#226174"
 
 
 {-| ![#E6E8F5](https://placehold.co/15x15/E6E8F5/E6E8F5.png) `#E6E8F5`
