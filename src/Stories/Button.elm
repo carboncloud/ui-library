@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Button exposing (ButtonEmphasis(..))
+import Svg.Styled exposing (toUnstyled)
 
 
 main : Component () Msg
@@ -36,7 +37,7 @@ type Msg
 
 view : Controls -> Html Msg
 view controls =
-    Ui.Button.view
+    toUnstyled <| Ui.Button.view
         { emphasis = controls.emphasis
         , color = Ui.Button.Primary
         , onClick = UserClickedButton

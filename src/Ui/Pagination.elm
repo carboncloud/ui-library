@@ -236,12 +236,12 @@ customView attrs model config =
                                 :: iconButtonStyle
                                 ++ []
                         ]
-                        [ Icon.toStyled icon ]
+                        [ Icon.view icon ]
 
                 Nothing ->
                     A11y.button
                         [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
-                        [ Icon.toStyled (icon |> Icon.setBackground Palette.disabled) ]
+                        [ Icon.view (icon |> Icon.setFill Palette.disabled) ]
     in
     A11y.nav (Landmark.navigation :: attrs)
         [ A11y.ul
