@@ -1,10 +1,11 @@
 module Stories.Button exposing (..)
 
 import Html exposing (Html)
+import Html.Styled as Styled
 import Storybook.Component exposing (Component)
 import Storybook.Controls
-import Ui.Button exposing (ButtonEmphasis(..))
 import Svg.Styled exposing (toUnstyled)
+import Ui.Button exposing (ButtonEmphasis(..))
 
 
 main : Component () Msg
@@ -37,9 +38,42 @@ type Msg
 
 view : Controls -> Html Msg
 view controls =
-    toUnstyled <| Ui.Button.view
-        { emphasis = controls.emphasis
-        , color = Ui.Button.Primary
-        , onClick = UserClickedButton
-        }
-        (Ui.Button.Text controls.label)
+    toUnstyled <|
+        Styled.div []
+            [ Ui.Button.view
+                { emphasis = controls.emphasis
+                , color = Ui.Button.Primary
+                , onClick = Just UserClickedButton
+                }
+                (Ui.Button.Text controls.label)
+            , Ui.Button.view
+                { emphasis = controls.emphasis
+                , color = Ui.Button.Primary
+                , onClick = Nothing
+                }
+                (Ui.Button.Text controls.label)
+            , Ui.Button.view
+                { emphasis = Mid
+                , color = Ui.Button.Primary
+                , onClick = Just UserClickedButton
+                }
+                (Ui.Button.Text controls.label)
+            , Ui.Button.view
+                { emphasis = Mid
+                , color = Ui.Button.Primary
+                , onClick = Nothing
+                }
+                (Ui.Button.Text controls.label)
+            , Ui.Button.view
+                { emphasis = Low
+                , color = Ui.Button.Primary
+                , onClick = Just UserClickedButton
+                }
+                (Ui.Button.Text controls.label)
+            , Ui.Button.view
+                { emphasis = Low
+                , color = Ui.Button.Primary
+                , onClick = Nothing
+                }
+                (Ui.Button.Text controls.label)
+            ]

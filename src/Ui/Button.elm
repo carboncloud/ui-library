@@ -19,10 +19,12 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Css exposing (border, pct, solid)
+import Color
+import Css exposing (border, pct, pointer, solid)
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
+import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
 import Ui.Color as Color
@@ -34,8 +36,6 @@ import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
 import Ui.TextStyle exposing (TextStyle(..), toCssStyle)
-
-
 
 
 {-| Defines the available button colors
@@ -68,14 +68,13 @@ type ButtonContent
     | Icon { icon : Icon, tooltip : String }
 
 
-
 {-| Returns a view of a button
 This should be used whenever possible.
 You can use `customView` if you need to
 customize the button.
 -}
 view :
-    { onClick : msg
+    { onClick : Maybe msg
     , color : ButtonColor
     , emphasis : ButtonEmphasis
     }
@@ -95,7 +94,7 @@ Only use this when `view` is not enough.
 customView :
     List (Styled.Attribute msg)
     ->
-        { onClick : msg
+        { onClick : Maybe msg
         , color : ButtonColor
         , emphasis : ButtonEmphasis
         }
@@ -115,16 +114,30 @@ customView attrs { emphasis, color, onClick } content =
 
                         Warn ->
                             ( Palette.warn500, Palette.warn600 )
+
+                baseStyle =
+                    [ Css.backgroundColor <| Color.toCssColor bgColor
+                    , Css.border Css.zero
+                    , Css.color <| Color.toCssColor Palette.white
+                    ]
+
+                enabledBaseStyle =
+                    baseStyle ++ [ shadow Ui.Shadow.Small, Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ] ]
             in
-            button
-                [ Css.backgroundColor <| Color.toCssColor bgColor
-                , shadow Ui.Shadow.Small
-                , Css.border Css.zero
-                , Css.color <| Color.toCssColor Palette.white
-                , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
-                ]
-                (Events.onClick onClick :: attrs)
-                content
+            case onClick of
+                Just _ ->
+                    button
+                        enabledBaseStyle
+                        attrs
+                        onClick
+                        content
+
+                Nothing ->
+                    button
+                        (baseStyle ++ [ Css.backgroundColor <| Color.toCssColor Palette.grey200, Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ])
+                        attrs
+                        onClick
+                        content
 
         Mid ->
             let
@@ -138,15 +151,35 @@ customView attrs { emphasis, color, onClick } content =
 
                         Warn ->
                             ( Palette.warn500, Palette.warn050 )
+
+                baseStyle =
+                    [ Css.padding2 (rpx 8) (rpx 14)
+                    , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
+                    , Css.color <| Color.toCssColor baseColor
+                    ]
+
+                enabledBaseStyle =
+                    baseStyle ++ [ Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ] ]
             in
-            button
-                [ Css.padding2 (rpx 8) (rpx 14)
-                , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
-                , Css.color <| Color.toCssColor baseColor
-                , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
-                ]
-                (Events.onClick onClick :: attrs)
-                content
+            case onClick of
+                Just _ ->
+                    button
+                        enabledBaseStyle
+                        attrs
+                        onClick
+                        content
+
+                Nothing ->
+                    button
+                        (baseStyle
+                            ++ [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.grey200
+                               , Css.color <| Color.toCssColor Palette.disabled
+                               , Css.cursor Css.notAllowed
+                               ]
+                        )
+                        attrs
+                        onClick
+                        content
 
         Low ->
             let
@@ -160,15 +193,29 @@ customView attrs { emphasis, color, onClick } content =
 
                         Warn ->
                             ( Palette.warn500, Palette.warn050 )
-            in
-            button
-                [ Css.color <| Color.toCssColor textColor
-                , Css.fontWeight Css.bold
-                , Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ]
-                ]
-                (Events.onClick onClick :: attrs)
-                content
 
+                baseStyle =
+                    [ Css.color <| Color.toCssColor textColor
+                    , Css.fontWeight Css.bold
+                    ]
+
+                enabledBaseStyle =
+                    baseStyle ++ [ Css.hover [ Css.backgroundColor <| Color.toCssColor hoverColor ] ]
+            in
+            case onClick of
+                Just _ ->
+                    button
+                        enabledBaseStyle
+                        attrs
+                        onClick
+                        content
+
+                Nothing ->
+                    button
+                        (baseStyle ++ [ Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ])
+                        attrs
+                        onClick
+                        content
 
 
 buttonText : TextStyle
@@ -181,8 +228,8 @@ buttonText =
         }
 
 
-button : List Css.Style -> List (A11y.Attribute msg) -> ButtonContent -> A11y.Html msg
-button customStyle attrs buttonContent =
+button : List Css.Style -> List (A11y.Attribute msg) -> Maybe msg -> ButtonContent -> A11y.Html msg
+button customStyle attrs mOnClick buttonContent =
     let
         baseStyle =
             [ Css.border Css.zero
@@ -201,16 +248,40 @@ button customStyle attrs buttonContent =
 
         iconButtonStyle =
             baseStyle ++ customStyle ++ [ Css.displayFlex, Css.borderRadius (Css.pct 100), Css.padding Css.zero, Css.width (Css.px 36), Css.height (Css.px 36) ]
+
+        baseAttrs =
+            case mOnClick of
+                Just onClick ->
+                    Events.onClick onClick
+                        :: Attributes.disabled False
+                        :: Role.button
+                        :: attrs
+
+                Nothing ->
+                    Attributes.disabled True
+                        :: Role.button
+                        :: attrs
+
+        textBaseAttrs =
+            Attributes.css textButtonStyle :: baseAttrs
     in
     case buttonContent of
         Text s ->
-            A11y.button (Attributes.css textButtonStyle :: attrs ++ [ Role.button ]) [ A11y.text s ]
+            A11y.button
+                textBaseAttrs
+                [ A11y.text s ]
 
         TextWithLeftIcon s i ->
-            A11y.button (Attributes.css textButtonStyle :: attrs ++ [ Role.button ]) [ A11y.img "button-icon" [ Attributes.src i ], A11y.text s ]
+            A11y.button
+                textBaseAttrs
+                [ A11y.img "button-icon" [ Attributes.src i ], A11y.text s ]
 
         TextWithRightIcon s i ->
-            A11y.button (Attributes.css textButtonStyle :: attrs ++ [ Role.button ]) [ A11y.text s, A11y.img "button-icon" [ Attributes.src i ] ]
+            A11y.button
+                textBaseAttrs
+                [ A11y.text s, A11y.img "button-icon" [ Attributes.src i ] ]
 
         Icon { icon, tooltip } ->
-            A11y.button (Attributes.css iconButtonStyle :: attrs ++ [ Role.button, Attributes.title tooltip ]) [ A11y.div [ Attributes.css [ Css.margin Css.auto, Css.width (Css.px 20), Css.height (Css.px 20) ] ] [ Icon.view icon ] ]
+            A11y.button
+                (Attributes.css iconButtonStyle :: Attributes.title tooltip :: baseAttrs)
+                [ A11y.div [ Attributes.css [ Css.margin Css.auto, Css.width (Css.px 20), Css.height (Css.px 20) ] ] [ Icon.view icon ] ]
