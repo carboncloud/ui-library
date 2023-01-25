@@ -1,6 +1,6 @@
-module Storybook.Component exposing
+port module Storybook.Component exposing
     ( Component
-    , stateless, sandbox
+    , stateless, sandbox, logAction
     )
 
 {-|
@@ -112,10 +112,9 @@ update :
     -> ( ComponentModel model, Cmd msg )
 update componentUpdateFn msg model =
     ( { model | component = componentUpdateFn msg model.component }
-    , Cmd.none
-      -- , logAction
-      --     { payload = Json.Encode.string (Debug.toString msg)
-      --     }
+    , logAction
+        { payload = Json.Encode.string (Debug.toString msg)
+        }
     )
 
 
@@ -124,4 +123,4 @@ update componentUpdateFn msg model =
 -- In this case, it means we can tell Storybook about Elm messages so
 -- it can log them in the "Actions" tab
 -- -}
--- port logAction : { payload : Json.Value } -> Cmd msg
+port logAction : { payload : Json.Value } -> Cmd msg

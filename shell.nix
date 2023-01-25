@@ -1,13 +1,17 @@
 let
-  nixos_21_05 = import (fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/refs/tags/21.05.tar.gz") { };
-in nixos_21_05.mkShell {
+  nixos_22_11 = import (fetchTarball {
+        name = "nixpkgs-22.11";
+        url = "https://github.com/NixOS/nixpkgs/archive/4d2b37a84fad1091b9de401eb450aae66f1a741e.tar.gz";
+        sha256 = "11w3wn2yjhaa5pv20gbfbirvjq6i3m7pqrq2msf0g7cv44vijwgw";
+
+      }) { };
+in nixos_22_11.mkShell {
   buildInputs = [
-    nixos_21_05.nodejs-12_x
-    nixos_21_05.elmPackages.elm
-    nixos_21_05.elmPackages.elm-format
-    nixos_21_05.elmPackages.elm-analyse
-    nixos_21_05.elmPackages.elm-test
-    nixos_21_05.nixfmt
+    nixos_22_11.nodejs-14_x
+    nixos_22_11.elmPackages.elm
+    nixos_22_11.elmPackages.elm-format
+    nixos_22_11.elmPackages.elm-analyse
+    nixos_22_11.elmPackages.elm-test
+    nixos_22_11.nixfmt
   ];
 }
