@@ -4,9 +4,10 @@ const folder = path.resolve(__dirname, './elm-storybook');
 module.exports = {
   "stories": ["../src/**/*.stories.@(js|jsx|ts|tsx)"],
   "addons": ["@storybook/addon-a11y", "@storybook/addon-actions", "@storybook/addon-controls", "./elm-storybook/addon/register"],
+  staticDirs: ['../public'],
   "framework": "@storybook/html",
   "core": {
-    "builder": "@storybook/builder-vite"
+    "builder": "@storybook/builder-vite",
   },
   async viteFinal(config) {
     // Allow .elm files to be imported

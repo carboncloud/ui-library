@@ -22,7 +22,8 @@
             "rtfeldman/elm-css": "17.1.1",
             "rtfeldman/elm-hex": "1.0.0",
             "staeter/ziplist": "3.0.1",
-            "tesk9/accessible-html-with-css": "4.1.0"
+            "tesk9/accessible-html-with-css": "4.1.0",
+            "zwilias/elm-rosetree": "1.5.0"
         },
         "indirect": {
             "MartinSStewart/elm-serialize": "1.3.0",

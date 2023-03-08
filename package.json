@@ -6,7 +6,8 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook -o dist",
-    "elm-doc-preview": "npx elm-doc-preview"
+    "elm-doc-preview": "npx elm-doc-preview",
+    "chromatic": "npx chromatic --project-token=fa40d669dd16"
   },
   "author": "",
   "license": "ISC",
@@ -18,11 +19,14 @@
     "@storybook/builder-vite": "^0.3.0",
     "@storybook/html": "6.5.15",
     "babel-loader": "8.2.3",
+    "chromatic": "^6.17.1",
     "elm": "0.19.1-5",
-    "vite-plugin-elm": "2.5.1",
-    "vite": "^4.0.4"
+    "vite": "^4.0.4",
+    "vite-plugin-elm": "2.5.1"
   },
   "dependencies": {
     "react-syntax-highlighter": "^15.5.0"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "@1.0.0"
 }

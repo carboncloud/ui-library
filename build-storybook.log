@@ -1,0 +1,75 @@
+info @storybook/html v6.5.15
+info 
+info => Cleaning outputDir: /tmp/chromatic--51381-qJbkOKzvduFs
+info => Loading presets
+info => Copying static files: /Users/mathiasfrithiofsson/code/ui-library/public at /tmp/chromatic--51381-qJbkOKzvduFs/
+info => Compiling manager..
+vite v4.0.4 building for production...
+transforming...
+Running elm make /Users/mathiasfrithiofsson/code/ui-library/src/Stories/RadioButton.elm --output /tmp/202321-51501-1r30k7v.7c6v.js
+Running elm make /Users/mathiasfrithiofsson/code/ui-library/src/Stories/Palette.elm --output /tmp/202321-51501-1emagjf.kfr7h.js
+Running elm make /Users/mathiasfrithiofsson/code/ui-library/src/Stories/Typography.elm --output /tmp/202321-51501-1ot0ftp.4ti1.js
+Running elm make /Users/mathiasfrithiofsson/code/ui-library/src/Stories/Pagination.elm --output /tmp/202321-51501-1ks5zyc.vbgz.js
+Running elm make /Users/mathiasfrithiofsson/code/ui-library/src/Stories/Button.elm --output /tmp/202321-51501-mzpaiz.q7bwi.js
+Compiling ...             Success!
+
+    Stories.Typography ───> /tmp/202321-51501-1ot0ftp.4ti1.js
+
+
+Compiling ...             Success!
+
+    Stories.Button ───> /tmp/202321-51501-mzpaiz.q7bwi.js
+
+
+Compiling ...             Success!
+
+    Stories.RadioButton ───> /tmp/202321-51501-1r30k7v.7c6v.js
+
+
+Compiling ...             Success!
+
+    Stories.Pagination ───> /tmp/202321-51501-1ks5zyc.vbgz.js
+
+
+Compiling ...             Success!
+
+    Stories.Palette ───> /tmp/202321-51501-1emagjf.kfr7h.js
+
+
+Use of eval in "node_modules/telejson/dist/esm/index.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+Use of eval in "node_modules/telejson/dist/esm/index.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+✓ 1164 modules transformed.
+rendering chunks...
+info => Manager built (8.84 s)
+computing gzip size...
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-700-9338e65f.woff2          7.82 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-300-78bc3aa7.woff2          7.84 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-regular-7d93459d.woff2      7.88 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-600-f4e80d9d.woff2          8.00 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-700-ba196335.eot            8.52 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-300-5eb4d47d.eot            8.60 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-regular-9f6d71bf.eot        8.63 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-600-1c9e0f39.eot            8.75 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-700-da36c916.woff          10.44 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-300-bd834791.woff          10.50 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-regular-49f0742d.woff      10.54 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-600-426316de.woff          10.60 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/iframe.html                                         13.38 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-700-884d2cd5.ttf           15.82 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-600-53eaa58c.ttf           16.04 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-regular-66807e8e.ttf       16.15 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-300-dbeb32e5.ttf           16.17 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-700-96ee799c.svg           51.62 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-600-eb7e562c.svg           52.52 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-300-d6e00d43.svg           52.67 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/poppins-v20-latin-regular-a472c289.svg       52.84 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/iframe-c26e4a0e.css                           2.82 kB │ gzip:   0.85 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/renderDocs-4b456877.js                      129.14 kB │ gzip:  41.74 kB │ map:   310.07 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/axe-1fa998b3.js                             507.67 kB │ gzip: 136.43 kB │ map: 1,716.18 kB
+../../../../tmp/chromatic--51381-qJbkOKzvduFs/assets/iframe-dea34633.js                        1,330.60 kB │ gzip: 309.34 kB │ map: 2,361.11 kB
+
+(!) Some chunks are larger than 500 kBs after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/guide/en/#outputmanualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+info => Output directory: /tmp/chromatic--51381-qJbkOKzvduFs
