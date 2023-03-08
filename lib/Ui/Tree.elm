@@ -84,76 +84,66 @@ type Msg a
 view : { showLabel : a -> String, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
 view { showLabel, liftMsg } model =
     let
+        viewChildren level =
+            Styled.ul [ css [ Css.marginLeft <| (Css.px <| toFloat (level * 35)) ] ] << List.map (viewTree level) << Tree.children
+
         viewTree : Int -> Tree (Node a) -> Styled.Html msg
         viewTree level subtree =
             let
                 node =
                     Tree.label subtree
-                
-                onClick = case node of
-                    Collapsed _ ->
-                        Expand node
-                    Expanded _ ->
-                        Collapse node
-                    Leaf _ ->
-                        Select node
-            in
-            Styled.div [ css [ Css.marginLeft <| (Css.px <| toFloat (level * 10)), Css.cursor Css.pointer ] ] <|
-                Styled.div
-                    [ StyledEvents.onClick <| liftMsg onClick ,
-                    css
-                        [ Css.displayFlex
-                        , Css.backgroundColor <|
-                            toCssColor <|
-                                if Zipper.label model == node then
-                                    Ui.Palette.primary050
 
-                                else
-                                    Ui.Palette.white
+                labelStyle =
+                    css
+                        [ Css.cursor Css.pointer
+                        , Css.padding2 (Css.px 15) (Css.px 15)
+                        , Css.borderRadius (Css.px 5)
+                        , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
                         ]
-                    ]
-                    [ case node of
-                        Collapsed _ ->
-                            Styled.span
-                                [ css
-                                    [ Css.height (Css.px 10)
-                                    , Css.display Css.block
-                                    , Css.marginRight (Css.px 10)
-                                    ]
-                                , StyledEvents.onClick <| liftMsg (Expand node)
+
+
+                chevronStyle =
+                    css
+                        [ Css.height (Css.px 10)
+                        , Css.display Css.inlineBlock
+                        , Css.marginRight (Css.px 10)
+                        ]
+            in
+            case node of
+                Collapsed _ ->
+                    Styled.li [ StyledEvents.onClick <| liftMsg (Expand node) ]
+                        [ Styled.div [ labelStyle ]
+                            [ Styled.span
+                                [ chevronStyle
                                 ]
                                 [ Icon.view Icon.chevronRight ]
+                            , Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level
+                            ]
+                        ]
 
-                        Expanded _ ->
-                            Styled.span
-                                [ css
-                                    [ Css.height (Css.px 10)
-                                    , Css.display Css.block
-                                    , Css.marginRight (Css.px 10)
-                                    ]
-                                , StyledEvents.onClick <| liftMsg (Collapse node)
+                Expanded _ ->
+                    Styled.li [ StyledEvents.onClick <| liftMsg (Collapse node) ]
+                        [ Styled.div [ labelStyle ]
+                            [ Styled.span
+                                [ chevronStyle
                                 ]
                                 [ Icon.view Icon.chevronLeft ]
+                            , Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level
+                            ]
+                        , viewChildren (level + 1) subtree
+                        ]
 
-                        Leaf _ ->
-                            Styled.span
-                                [ css
-                                    [ Css.height (Css.px 10)
-                                    , Css.display Css.block
-                                    , Css.marginRight (Css.px 10)
-                                    ]
+                Leaf _ ->
+                    Styled.li [ StyledEvents.onClick <| liftMsg (Select node) ]
+                        [ Styled.div [ labelStyle ]
+                            [ Styled.span
+                                [ chevronStyle
                                 ]
-                                []
-                    , Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level
-                    ]
-                    :: (if isExpanded node then
-                            List.map (viewTree (level + 1)) <| Tree.children subtree
-
-                        else
-                            []
-                       )
+                                [ Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level ]
+                            ]
+                        ]
     in
-    viewTree 0 (Zipper.toTree model)
+    viewChildren 0 (Zipper.toTree model)
 
 
 update : Msg a -> Model a -> Model a

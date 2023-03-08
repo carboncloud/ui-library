@@ -6,6 +6,8 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Tree exposing (tree, Tree)
 import Ui.Tree as Tree
+import Html.Styled.Attributes exposing (css)
+import Css
 
 
 main : Component Model Msg
@@ -38,7 +40,7 @@ update msg model =
 view :  Model -> Html Msg
 view { treeModel } =
     Styled.toUnstyled <|
-        Styled.div []
+        Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000)]]
             [ Tree.view { showLabel = identity, liftMsg = GotTreeMsg } treeModel ]
 
 defaultTreeModel : Tree String
