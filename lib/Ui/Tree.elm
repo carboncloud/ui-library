@@ -111,8 +111,8 @@ view { showLabel, liftMsg } model =
             in
             case node of
                 Collapsed _ ->
-                    Styled.li [ StyledEvents.onClick <| liftMsg (Expand node) ]
-                        [ Styled.div [ labelStyle ]
+                    Styled.li [  ]
+                        [ Styled.div [ labelStyle, StyledEvents.onClick <| liftMsg (Expand node) ]
                             [ Styled.span
                                 [ chevronStyle
                                 ]
@@ -122,8 +122,8 @@ view { showLabel, liftMsg } model =
                         ]
 
                 Expanded _ ->
-                    Styled.li [ StyledEvents.onClick <| liftMsg (Collapse node) ]
-                        [ Styled.div [ labelStyle ]
+                    Styled.li [ ]
+                        [ Styled.div [ labelStyle,  StyledEvents.onClick <| liftMsg (Collapse node) ]
                             [ Styled.span
                                 [ chevronStyle
                                 ]
@@ -134,8 +134,8 @@ view { showLabel, liftMsg } model =
                         ]
 
                 Leaf _ ->
-                    Styled.li [ StyledEvents.onClick <| liftMsg (Select node) ]
-                        [ Styled.div [ labelStyle ]
+                    Styled.li [  ]
+                        [ Styled.div [ labelStyle, StyledEvents.onClick <| liftMsg (Select node) ]
                             [ Styled.span
                                 [ chevronStyle
                                 ]
