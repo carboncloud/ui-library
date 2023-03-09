@@ -10,6 +10,7 @@ import Tree.Zipper as Zipper exposing (Zipper)
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
+import Ui.TextStyle as TextStyle exposing (label)
 
 
 type alias Model a =
@@ -63,11 +64,6 @@ isExpanded n =
             False
 
 
-isCollapsed : Node a -> Bool
-isCollapsed =
-    not << isExpanded
-
-
 isLeaf : Node a -> Bool
 isLeaf n =
     case n of
@@ -95,6 +91,7 @@ type Msg a
 --     | Up (Zipper a)
 --     | Down (Zipper a)
 
+
 view : { viewNode : a -> Styled.Html msg, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
 view { viewNode, liftMsg } model =
     let
@@ -120,30 +117,31 @@ view { viewNode, liftMsg } model =
                 , Css.marginRight (Css.px 10)
                 ]
 
-        viewChildren level parent =
-            Styled.ul [ css [ Css.marginLeft <| (Css.px <| toFloat (level * 35)) ] ] <|
-                if Tree.label parent == Zipper.label (Zipper.root model) then
-                    []
+        treeLabel parent =
+            if Tree.label parent == Zipper.label (Zipper.root model) then
+                Styled.span [] []
 
-                else
-                    [ Styled.li
-                        [ labelStyle (Zipper.label model == Tree.label parent)
-                        , StyledEvents.onClick <| liftMsg GoToParent
-                        ]
-                        [ Styled.span
-                            [ chevronStyle
-                            ]
-                            [ Icon.view Icon.chevronLeft ]
-                        , viewNode <| unwrapNode <| Tree.label parent
-                        ]
+            else
+                Styled.li
+                    [ labelStyle (Zipper.label model == Tree.label parent)
+                    , css <| TextStyle.toCssStyle TextStyle.label
+                    , StyledEvents.onClick <| liftMsg GoToParent
                     ]
-                        ++ List.map (viewTree level) (Tree.children parent)
- 
-        viewTree : Int -> Tree (Node a) -> Styled.Html msg
-        viewTree level subtree =
+                    [ Styled.span
+                        [ chevronStyle
+                        ]
+                        [ Icon.view Icon.chevronLeft ]
+                    , viewNode <| unwrapNode <| Tree.label parent
+                    ]
+
+        viewTree t =
+            Styled.ul [] <| treeLabel t :: List.map viewTreeNode (Tree.children t)
+
+        viewTreeNode : Tree (Node a) -> Styled.Html msg
+        viewTreeNode t =
             let
                 node =
-                    Tree.label subtree
+                    Tree.label t
 
                 isSelectedNode =
                     Zipper.label model == node
@@ -169,7 +167,7 @@ view { viewNode, liftMsg } model =
                                 [ Icon.view Icon.chevronLeft ]
                             , viewNode <| unwrapNode node
                             ]
-                        , viewChildren (level + 1) subtree
+                        , viewTree t
                         ]
 
                 Leaf _ ->
@@ -191,11 +189,7 @@ view { viewNode, liftMsg } model =
             else
                 tree (Zipper.label model) (Zipper.children model)
     in
-    if Tree.label currentTree == Zipper.label (Zipper.root model) then
-        Styled.ul [] <| List.map (viewTree 0) <| Tree.children currentTree
-
-    else
-        viewChildren 0 currentTree
+    Styled.div [ css <| TextStyle.toCssStyle TextStyle.body ] [ viewTree currentTree ]
 
 
 update : Msg a -> Model a -> Model a

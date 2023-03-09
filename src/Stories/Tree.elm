@@ -8,6 +8,7 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Tree exposing (Tree, tree)
 import Ui.Tree as Tree
+import Ui.SearchInput as SearchInput
 
 
 main : Component Model Msg
@@ -22,16 +23,17 @@ main =
 
 
 type alias Model =
-    { treeModel : Tree.Model Item }
+    { searchValue : String, treeModel : Tree.Model Item }
 
 
 init : Model
 init =
-    { treeModel = Tree.init defaultTreeModel }
+    { searchValue = "", treeModel = Tree.init defaultTreeModel }
 
 
 type Msg
     = GotTreeMsg (Tree.Msg Item)
+    | Search String
 
 
 update : Msg -> Model -> Model
@@ -39,13 +41,16 @@ update msg model =
     case msg of
         GotTreeMsg treeMsg ->
             { model | treeModel = Tree.update treeMsg model.treeModel }
+        Search s ->
+            { model | searchValue = s }
 
 
 view : Model -> Html Msg
-view { treeModel } =
+view { treeModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000) ] ]
-            [ Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem } treeModel
+            [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue }
+            , Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem } treeModel
             , Styled.text <| "Selected: " ++ (Tree.selected treeModel).label
             , Styled.div[] [ case (Tree.selected treeModel).emission of
                 Just _ ->
@@ -71,6 +76,9 @@ viewItem { label, emission } =
             Nothing ->
                 [ Styled.text label ]
 
+
+searchTree : String -> Tree Item -> List (Tree Item)
+searchTree s = Debug.todo ""
 
 defaultTreeModel : Tree Item
 defaultTreeModel =
