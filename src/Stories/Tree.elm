@@ -47,6 +47,11 @@ view { treeModel } =
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000) ] ]
             [ Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem } treeModel
             , Styled.text <| "Selected: " ++ (Tree.selected treeModel).label
+            , Styled.div[] [ case (Tree.selected treeModel).emission of
+                Just _ ->
+                    Styled.text "Valid ingredient selection"
+                Nothing ->
+                    Styled.text "Not a valid ingredient selection" ]
             ]
 
 
@@ -55,27 +60,33 @@ type alias Item =
 
 
 viewItem : Item -> Styled.Html msg
-viewItem { label, emission } = Styled.span [ css [ Css.display Css.inlineFlex, Css.width (Css.pct 100) ]] <| case emission of
-    Just e ->
-        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ]] [ Styled.text label ], Styled.text <| String.fromFloat e]
-    Nothing ->
-        [ Styled.text label ]
+viewItem { label, emission } =
+    Styled.span [ css [ Css.display Css.inlineFlex, Css.flex Css.auto ] ] <|
+        case emission of
+            Just e ->
+                [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text label ]
+                , Styled.text <| String.fromFloat e
+                ]
+
+            Nothing ->
+                [ Styled.text label ]
+
 
 defaultTreeModel : Tree Item
 defaultTreeModel =
-    tree { label = "root", emission = Nothing }
-        [ tree { label = "home", emission = Just 1 }
-            [ tree { label = "user1", emission = Just 2 }
-                [ tree { label = "userX", emission = Just 3 } []
-                , tree { label = "userY", emission = Just 4 }
-                    [ tree { label = "userZ", emission = Just 5 } []
-                    , tree { label = "userH", emission = Just 6 } []
+    tree { label = "Food Products", emission = Nothing }
+        [ tree { label = "Fruits and Vegtables", emission = Just 1 }
+            [ tree { label = "Tomatoes", emission = Just 2 }
+                [ tree { label = "Cherry tomatoes", emission = Just 3 } []
+                , tree { label = "Crushed Tomatoes", emission = Just 4 }
+                    [ tree { label = "Semi Crushed", emission = Just 5 } []
+                    , tree { label = "Veryvery crushed", emission = Just 6 } []
                     ]
                 ]
-            , tree { label = "user2", emission = Just 7 } []
+            , tree { label = "Cucumber", emission = Just 7 } []
             ]
-        , tree { label = "etc", emission = Just 8 } []
-        , tree { label = "var", emission = Just 9 }
-            [ tree { label = "log", emission = Just 10 } []
+        , tree { label = "Meat, poultry and seafood", emission = Just 8 } []
+        , tree { label = "Dairy", emission = Nothing }
+            [ tree { label = "Milk", emission = Just 10 } []
             ]
         ]

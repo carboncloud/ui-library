@@ -127,20 +127,14 @@ view { viewNode, liftMsg } model =
 
                 else
                     [ Styled.li
-                        [ css <|
-                            [ Css.cursor Css.pointer
-                            , Css.padding2 (Css.px 15) (Css.px 15)
-                            , Css.fontWeight (Css.int 700)
-                            ]
+                        [ labelStyle (Zipper.label model == Tree.label parent)
                         , StyledEvents.onClick <| liftMsg GoToParent
                         ]
                         [ Styled.span
                             [ chevronStyle
                             ]
                             [ Icon.view Icon.chevronLeft ]
-                        , Styled.text <|
-                            "Parent: "
-                        ,  viewNode <| unwrapNode <| Tree.label parent
+                        , viewNode <| unwrapNode <| Tree.label parent
                         ]
                     ]
                         ++ List.map (viewTree level) (Tree.children parent)
