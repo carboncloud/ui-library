@@ -18,7 +18,8 @@ type alias Model a =
 
 init : Tree a -> Model a
 init =
-    Zipper.fromTree
+    Zipper.root
+        << Zipper.fromTree
         << Tree.restructure identity
             (\n c ->
                 case c of
@@ -67,10 +68,24 @@ isCollapsed =
     not << isExpanded
 
 
+isLeaf : Node a -> Bool
+isLeaf n =
+    case n of
+        Collapsed _ ->
+            False
+
+        Expanded _ ->
+            False
+
+        Leaf _ ->
+            True
+
+
 type Msg a
     = Expand (Node a)
     | Collapse (Node a)
     | Select (Node a)
+    | GoToParent
 
 
 
@@ -82,10 +97,56 @@ type Msg a
 
 
 view : { showLabel : a -> String, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
-view { showLabel, liftMsg } model =
+view ({ showLabel, liftMsg } as config) model =
     let
-        viewChildren level =
-            Styled.ul [ css [ Css.marginLeft <| (Css.px <| toFloat (level * 35)) ] ] << List.map (viewTree level) << Tree.children
+        labelStyle isSelected =
+            css <|
+                [ Css.cursor Css.pointer
+                , Css.padding2 (Css.px 15) (Css.px 15)
+                , Css.borderRadius (Css.px 5)
+                , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
+                ]
+                    ++ (if isSelected then
+                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+
+                        else
+                            []
+                       )
+
+        chevronStyle =
+            css
+                [ Css.height (Css.px 10)
+                , Css.display Css.inlineBlock
+                , Css.marginRight (Css.px 10)
+                ]
+
+        viewChildren level parent =
+            Styled.ul [ css [ Css.marginLeft <| (Css.px <| toFloat (level * 35)) ] ] <|
+                if Tree.label parent == Zipper.label (Zipper.root model) then
+                    []
+
+                else
+                    [ Styled.li
+                        [ css <|
+                            [ Css.cursor Css.pointer
+                            , Css.padding2 (Css.px 15) (Css.px 15)
+                            , Css.fontWeight (Css.int 700)
+                            ]
+                        , StyledEvents.onClick <| liftMsg GoToParent
+                        ]
+                        [ Styled.span
+                            [ chevronStyle
+                            ]
+                            [ Icon.view Icon.chevronLeft ]
+                        , Styled.text <|
+                            "Parent: "
+                                ++ (showLabel <|
+                                        unwrapNode <|
+                                            Tree.label parent
+                                   )
+                        ]
+                    ]
+                        ++ List.map (viewTree level) (Tree.children parent)
 
         viewTree : Int -> Tree (Node a) -> Styled.Html msg
         viewTree level subtree =
@@ -93,28 +154,13 @@ view { showLabel, liftMsg } model =
                 node =
                     Tree.label subtree
 
-                labelStyle =
-                    css <|
-                        [ Css.cursor Css.pointer
-                        , Css.padding2 (Css.px 15) (Css.px 15)
-                        , Css.borderRadius (Css.px 5)
-                        , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
-                        ] ++ if Zipper.label model == node then
-                                [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
-                            else []
-
-
-                chevronStyle =
-                    css
-                        [ Css.height (Css.px 10)
-                        , Css.display Css.inlineBlock
-                        , Css.marginRight (Css.px 10)
-                        ]
+                isSelectedNode =
+                    Zipper.label model == node
             in
             case node of
                 Collapsed _ ->
-                    Styled.li [  ]
-                        [ Styled.div [ labelStyle, StyledEvents.onClick <| liftMsg (Expand node) ]
+                    Styled.li []
+                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Expand node) ]
                             [ Styled.span
                                 [ chevronStyle
                                 ]
@@ -124,8 +170,8 @@ view { showLabel, liftMsg } model =
                         ]
 
                 Expanded _ ->
-                    Styled.li [ ]
-                        [ Styled.div [ labelStyle,  StyledEvents.onClick <| liftMsg (Collapse node) ]
+                    Styled.li []
+                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Collapse node) ]
                             [ Styled.span
                                 [ chevronStyle
                                 ]
@@ -136,16 +182,31 @@ view { showLabel, liftMsg } model =
                         ]
 
                 Leaf _ ->
-                    Styled.li [  ]
-                        [ Styled.div [ labelStyle, StyledEvents.onClick <| liftMsg (Select node) ]
+                    Styled.li []
+                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Select node) ]
                             [ Styled.span
-                                [ chevronStyle
-                                ]
+                                []
                                 [ Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level ]
                             ]
                         ]
+
+        -- We want to show the parent tree if the focused node is a leaf
+        currentTree =
+            if isLeaf (Zipper.label model) then
+                let
+                    parent =
+                        Zipper.parent model |> Maybe.withDefault model
+                in
+                tree (Zipper.label parent) (Zipper.children parent)
+
+            else
+                tree (Zipper.label model) (Zipper.children model)
     in
-    viewChildren 0 (Zipper.toTree model)
+    if Tree.label currentTree == Zipper.label (Zipper.root model) then
+        Styled.ul [] <| List.map (viewTree 0) <| Tree.children currentTree
+
+    else
+        viewChildren 0 currentTree
 
 
 update : Msg a -> Model a -> Model a
@@ -172,8 +233,23 @@ update msg model =
             selectNode node
                 |> Maybe.withDefault model
 
+        GoToParent ->
+            (if isLeaf <| Zipper.label model then
+                Zipper.parent model
+
+             else
+                Just model
+            )
+                |> updateNodeWith (Collapsed << unwrapNode)
+                |> Maybe.andThen Zipper.parent
+                |> Maybe.withDefault model
+
+
 selected : Model a -> a
-selected = unwrapNode << Zipper.label
+selected =
+    unwrapNode << Zipper.label
+
+
 
 -- update : Msg a comparable -> Model a -> Model a
 -- update _ _ = Debug.todo "implement"
