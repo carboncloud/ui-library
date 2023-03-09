@@ -9,7 +9,7 @@ export const ElmComponent = {
       if (app.ports && app.ports.logAction) {
         app.ports.logAction.subscribe(({ payload }) => {
           if (controls.onAction) {
-            controls.onAction( payload|| null)
+            controls.onAction(payload || null)
           } else {
             if (process.env.NODE_ENV === 'development') {
               window.alert(actionsArgMissingError)

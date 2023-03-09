@@ -93,18 +93,18 @@ grey100 =
     Ui.Color.fromHex "#f8f8f8"
 
 
-{-| ![#E3E3E3](https://placehold.co/15x15/E3E3E3/E3E3E3.png) `#E3E3E3`
+{-| ![#e8e8e8](https://placehold.co/15x15/e8e8e8/e8e8e8.png) `#e8e8e8`
 -}
 grey200 : Color
 grey200 =
-    Ui.Color.fromHex "#E3E3E3"
+    Ui.Color.fromHex "#e8e8e8"
 
 
-{-| ![#e8e8e8](https://placehold.co/15x15/e8e8e8/e8e8e8.png) `#e8e8e8`
+{-| ![#E3E3E3](https://placehold.co/15x15/E3E3E3/E3E3E3.png) `#E3E3E3`
 -}
 grey300 : Color
 grey300 =
-    Ui.Color.fromHex "#e8e8e8"
+    Ui.Color.fromHex "#E3E3E3"
 
 
 {-| ![#858585](https://placehold.co/15x15/858585/858585.png) `#858585`

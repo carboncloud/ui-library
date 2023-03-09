@@ -1,5 +1,4 @@
 import './storybook.css';
-import '../src/assets/main.css';
 import './reset.css';
 
 export const parameters = {

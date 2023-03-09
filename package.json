@@ -12,14 +12,17 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "7.17.5",
-    "@storybook/addon-a11y": "6.4.19",
-    "@storybook/addon-actions": "6.5.0-alpha.47",
-    "@storybook/addon-essentials": "6.5.0-alpha.47",
-    "@storybook/html": "6.5.0-alpha.47",
+    "@storybook/addon-a11y": "6.5.15",
+    "@storybook/addon-actions": "6.5.15",
+    "@storybook/addon-essentials": "6.5.15",
+    "@storybook/builder-vite": "^0.3.0",
+    "@storybook/html": "6.5.15",
     "babel-loader": "8.2.3",
     "elm": "0.19.1-5",
-    "storybook-builder-vite": "0.1.18",
-    "vite": "2.8.6",
-    "vite-plugin-elm": "2.5.1"
+    "vite-plugin-elm": "2.5.1",
+    "vite": "^4.0.4"
+  },
+  "dependencies": {
+    "react-syntax-highlighter": "^15.5.0"
   }
 }
