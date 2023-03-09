@@ -95,13 +95,13 @@ type Msg a
 --     | Up (Zipper a)
 --     | Down (Zipper a)
 
-
-view : { showLabel : a -> String, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
-view ({ showLabel, liftMsg } as config) model =
+view : { viewNode : a -> Styled.Html msg, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
+view { viewNode, liftMsg } model =
     let
         labelStyle isSelected =
             css <|
                 [ Css.cursor Css.pointer
+                , Css.displayFlex
                 , Css.padding2 (Css.px 15) (Css.px 15)
                 , Css.borderRadius (Css.px 5)
                 , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
@@ -140,14 +140,11 @@ view ({ showLabel, liftMsg } as config) model =
                             [ Icon.view Icon.chevronLeft ]
                         , Styled.text <|
                             "Parent: "
-                                ++ (showLabel <|
-                                        unwrapNode <|
-                                            Tree.label parent
-                                   )
+                        ,  viewNode <| unwrapNode <| Tree.label parent
                         ]
                     ]
                         ++ List.map (viewTree level) (Tree.children parent)
-
+ 
         viewTree : Int -> Tree (Node a) -> Styled.Html msg
         viewTree level subtree =
             let
@@ -165,7 +162,7 @@ view ({ showLabel, liftMsg } as config) model =
                                 [ chevronStyle
                                 ]
                                 [ Icon.view Icon.chevronRight ]
-                            , Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level
+                            , viewNode <| unwrapNode node
                             ]
                         ]
 
@@ -176,7 +173,7 @@ view ({ showLabel, liftMsg } as config) model =
                                 [ chevronStyle
                                 ]
                                 [ Icon.view Icon.chevronLeft ]
-                            , Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level
+                            , viewNode <| unwrapNode node
                             ]
                         , viewChildren (level + 1) subtree
                         ]
@@ -184,9 +181,7 @@ view ({ showLabel, liftMsg } as config) model =
                 Leaf _ ->
                     Styled.li []
                         [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Select node) ]
-                            [ Styled.span
-                                []
-                                [ Styled.text <| (showLabel <| unwrapNode node) ++ " - level " ++ String.fromInt level ]
+                            [ viewNode <| unwrapNode node
                             ]
                         ]
 

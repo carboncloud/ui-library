@@ -22,7 +22,7 @@ main =
 
 
 type alias Model =
-    { treeModel : Tree.Model String }
+    { treeModel : Tree.Model Item }
 
 
 init : Model
@@ -31,7 +31,7 @@ init =
 
 
 type Msg
-    = GotTreeMsg (Tree.Msg String)
+    = GotTreeMsg (Tree.Msg Item)
 
 
 update : Msg -> Model -> Model
@@ -45,26 +45,37 @@ view : Model -> Html Msg
 view { treeModel } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000) ] ]
-            [ Tree.view { showLabel = identity, liftMsg = GotTreeMsg } treeModel
-            , Styled.text <| "Selected: " ++ Tree.selected treeModel
+            [ Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem } treeModel
+            , Styled.text <| "Selected: " ++ (Tree.selected treeModel).label
             ]
 
 
-defaultTreeModel : Tree String
+type alias Item =
+    { label : String, emission : Maybe Float }
+
+
+viewItem : Item -> Styled.Html msg
+viewItem { label, emission } = Styled.span [ css [ Css.display Css.inlineFlex, Css.width (Css.pct 100) ]] <| case emission of
+    Just e ->
+        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ]] [ Styled.text label ], Styled.text <| String.fromFloat e]
+    Nothing ->
+        [ Styled.text label ]
+
+defaultTreeModel : Tree Item
 defaultTreeModel =
-    tree "root"
-        [ tree "home"
-            [ tree "user1"
-                [ tree "userX" []
-                , tree "userY"
-                    [ tree "userZ" []
-                    , tree "userH" []
+    tree { label = "root", emission = Nothing }
+        [ tree { label = "home", emission = Just 1 }
+            [ tree { label = "user1", emission = Just 2 }
+                [ tree { label = "userX", emission = Just 3 } []
+                , tree { label = "userY", emission = Just 4 }
+                    [ tree { label = "userZ", emission = Just 5 } []
+                    , tree { label = "userH", emission = Just 6 } []
                     ]
                 ]
-            , tree "user2" []
+            , tree { label = "user2", emission = Just 7 } []
             ]
-        , tree "etc" []
-        , tree "var"
-            [ tree "log" []
+        , tree { label = "etc", emission = Just 8 } []
+        , tree { label = "var", emission = Just 9 }
+            [ tree { label = "log", emission = Just 10 } []
             ]
         ]
