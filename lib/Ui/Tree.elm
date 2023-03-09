@@ -172,7 +172,8 @@ update msg model =
             selectNode node
                 |> Maybe.withDefault model
 
-
+selected : Model a -> a
+selected = unwrapNode << Zipper.label
 
 -- update : Msg a comparable -> Model a -> Model a
 -- update _ _ = Debug.todo "implement"
