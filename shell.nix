@@ -8,6 +8,7 @@ let
 in nixos_22_11.mkShell {
   buildInputs = [
     nixos_22_11.nodejs-14_x
+    nixos_22_11.yarn
     nixos_22_11.elmPackages.elm
     nixos_22_11.elmPackages.elm-format
     nixos_22_11.elmPackages.elm-analyse
