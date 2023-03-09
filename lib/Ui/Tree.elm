@@ -94,12 +94,14 @@ view { showLabel, liftMsg } model =
                     Tree.label subtree
 
                 labelStyle =
-                    css
+                    css <|
                         [ Css.cursor Css.pointer
                         , Css.padding2 (Css.px 15) (Css.px 15)
                         , Css.borderRadius (Css.px 5)
                         , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
-                        ]
+                        ] ++ if Zipper.label model == node then
+                                [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+                            else []
 
 
                 chevronStyle =
