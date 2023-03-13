@@ -5,6 +5,7 @@ import Extra.Tree
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events as StyledEvents
+import List.Extra as List
 import Tree exposing (Tree(..), label, tree)
 import Tree.Zipper as Zipper exposing (Zipper)
 import Ui.Color exposing (toCssColor)
@@ -17,8 +18,8 @@ type alias Model a =
     Zipper (Node a)
 
 
-init : Tree a -> Model a
-init =
+init : (a -> Node a) -> Tree a -> Model a
+init toNode =
     Zipper.root
         << Zipper.fromTree
         << Tree.restructure identity
@@ -28,7 +29,7 @@ init =
                         tree (Leaf n) []
 
                     children ->
-                        tree (Collapsed n) children
+                        tree (toNode n) children
             )
 
 
@@ -118,7 +119,7 @@ view { viewNode, liftMsg } model =
                 ]
 
         treeLabel parent =
-            if Tree.label parent == Zipper.label (Zipper.root model) then
+            if isExpanded (Tree.label parent) || Tree.label parent == Zipper.label (Zipper.root model) then
                 Styled.span [] []
 
             else
@@ -191,6 +192,41 @@ view { viewNode, liftMsg } model =
     in
     Styled.div [ css <| TextStyle.toCssStyle TextStyle.body ] [ viewTree currentTree ]
 
+
+searchTree : (a -> Bool) -> Tree a -> Maybe (Tree a)
+searchTree pred x =
+    let
+        label =
+            Tree.label x
+    in
+    if List.length (Tree.children x) == 0 then
+        if pred label then
+            Just x
+
+        else
+            Nothing
+
+    else if List.any pred <| Tree.flatten x then
+        Just <| tree (Tree.label x) (mapMaybe (searchTree pred) <| Tree.children x)
+
+    else
+        Nothing
+
+{-| Map with a partial function and only keep Justs
+-}
+mapMaybe : (a -> Maybe b) -> List a -> List b
+mapMaybe tryMap list =
+    case list of
+        a :: as_ ->
+            case tryMap a of
+                Just a2 ->
+                    a2 :: mapMaybe tryMap as_
+
+                Nothing ->
+                    mapMaybe tryMap as_
+
+        [] ->
+            []
 
 update : Msg a -> Model a -> Model a
 update msg model =

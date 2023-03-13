@@ -4,11 +4,14 @@ import Css
 import Html exposing (Html)
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
+import List.Extra as List
 import Storybook.Component exposing (Component)
 import Storybook.Controls
+import String exposing (contains, toLower)
 import Tree exposing (Tree, tree)
-import Ui.Tree as Tree
+import Tree.Zipper as Zipper
 import Ui.SearchInput as SearchInput
+import Ui.Tree as Tree
 
 
 main : Component Model Msg
@@ -28,7 +31,7 @@ type alias Model =
 
 init : Model
 init =
-    { searchValue = "", treeModel = Tree.init defaultTreeModel }
+    { searchValue = "", treeModel = Tree.init Tree.Collapsed defaultTreeModel }
 
 
 type Msg
@@ -41,8 +44,18 @@ update msg model =
     case msg of
         GotTreeMsg treeMsg ->
             { model | treeModel = Tree.update treeMsg model.treeModel }
+
         Search s ->
-            { model | searchValue = s }
+            if List.length (String.toList s) >= 2 then
+                { model
+                    | searchValue = s
+                    , treeModel =
+                        searchTree (contains (toLower s) << toLower << .label) (Tree.map Tree.unwrapNode <| Zipper.toTree model.treeModel)
+                            |> Maybe.map (Tree.init Tree.Expanded)
+                            |> Maybe.withDefault (Tree.init Tree.Collapsed defaultTreeModel)
+                }
+            else
+                { model | searchValue = s,  treeModel = Tree.init Tree.Collapsed defaultTreeModel}
 
 
 view : Model -> Html Msg
@@ -52,12 +65,52 @@ view { treeModel, searchValue } =
             [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue }
             , Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem } treeModel
             , Styled.text <| "Selected: " ++ (Tree.selected treeModel).label
-            , Styled.div[] [ case (Tree.selected treeModel).emission of
-                Just _ ->
-                    Styled.text "Valid ingredient selection"
-                Nothing ->
-                    Styled.text "Not a valid ingredient selection" ]
+            , Styled.div []
+                [ case (Tree.selected treeModel).emission of
+                    Just _ ->
+                        Styled.text "Valid ingredient selection"
+
+                    Nothing ->
+                        Styled.text "Not a valid ingredient selection"
+                ]
             ]
+
+
+searchTree : (a -> Bool) -> Tree a -> Maybe (Tree a)
+searchTree pred x =
+    let
+        label =
+            Tree.label x
+    in
+    if List.length (Tree.children x) == 0 then
+        if pred label then
+            Just x
+
+        else
+            Nothing
+
+    else if List.any pred <| Tree.flatten x then
+        Just <| tree (Tree.label x) (mapMaybe (searchTree pred) <| Tree.children x)
+
+    else
+        Nothing
+
+
+{-| Map with a partial function and only keep Justs
+-}
+mapMaybe : (a -> Maybe b) -> List a -> List b
+mapMaybe tryMap list =
+    case list of
+        a :: as_ ->
+            case tryMap a of
+                Just a2 ->
+                    a2 :: mapMaybe tryMap as_
+
+                Nothing ->
+                    mapMaybe tryMap as_
+
+        [] ->
+            []
 
 
 type alias Item =
@@ -76,9 +129,6 @@ viewItem { label, emission } =
             Nothing ->
                 [ Styled.text label ]
 
-
-searchTree : String -> Tree Item -> List (Tree Item)
-searchTree s = Debug.todo ""
 
 defaultTreeModel : Tree Item
 defaultTreeModel =
