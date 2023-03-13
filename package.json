@@ -4,21 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "storybook": "start-storybook -p 6006",
-    "storybook:build": "build-storybook -o dist",
+    "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
+    "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook -o dist",
     "elm-doc-preview": "npx elm-doc-preview",
     "chromatic": "npx chromatic --project-token=fa40d669dd16"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "7.17.5",
     "@storybook/addon-a11y": "6.5.15",
     "@storybook/addon-actions": "6.5.15",
     "@storybook/addon-essentials": "6.5.15",
     "@storybook/builder-vite": "^0.3.0",
     "@storybook/html": "6.5.15",
-    "babel-loader": "8.2.3",
     "chromatic": "^6.17.1",
     "elm": "0.19.1-5",
     "vite": "^4.0.4",
