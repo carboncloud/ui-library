@@ -1,8 +1,8 @@
 {
-  "version": "3.2.0",
+  "name": "",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "packageManager": "yarn@3.2.0",
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook -o dist",
@@ -12,15 +12,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "7.17.5",
     "@storybook/addon-a11y": "6.5.15",
     "@storybook/addon-actions": "6.5.15",
     "@storybook/addon-essentials": "6.5.15",
-    "@storybook/builder-vite": "^0.4.2",
+    "@storybook/builder-vite": "^0.3.0",
     "@storybook/html": "6.5.15",
+    "babel-loader": "8.2.3",
     "chromatic": "^6.17.1",
     "elm": "0.19.1-5",
-    "vite": "^4.1.4",
-    "vite-plugin-elm": "^2.7.2"
+    "vite": "^4.0.4",
+    "vite-plugin-elm": "2.5.1"
   },
   "dependencies": {
     "react-syntax-highlighter": "^15.5.0"
