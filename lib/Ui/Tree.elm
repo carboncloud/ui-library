@@ -1,274 +1,176 @@
 module Ui.Tree exposing (..)
 
 import Css
-import Extra.Tree
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events as StyledEvents
 import List.Extra as List
-import Tree exposing (Tree(..), label, tree)
+import Tree exposing (Tree(..))
 import Tree.Zipper as Zipper exposing (Zipper)
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
-import Ui.TextStyle as TextStyle exposing (label)
+import Ui.TextStyle as TextStyle
 
 
-type alias Model a =
-    Zipper (Node a)
+type Model a
+    = Focus (Zipper a)
+    | Search (Zipper a) String
 
 
-init : (a -> Node a) -> Tree a -> Model a
-init toNode =
-    Zipper.root
-        << Zipper.fromTree
-        << Tree.restructure identity
-            (\n c ->
-                case c of
-                    [] ->
-                        tree (Leaf n) []
+toZipper : Model a -> Zipper a
+toZipper model =
+    case model of
+        Focus x ->
+            x
 
-                    children ->
-                        tree (toNode n) children
-            )
-
-
-type Node a
-    = Collapsed a
-    | Expanded a
-    | Leaf a
-
-
-unwrapNode : Node a -> a
-unwrapNode n =
-    case n of
-        Collapsed a ->
-            a
-
-        Expanded a ->
-            a
-
-        Leaf a ->
-            a
-
-
-isExpanded : Node a -> Bool
-isExpanded n =
-    case n of
-        Collapsed _ ->
-            False
-
-        Expanded _ ->
-            True
-
-        Leaf _ ->
-            False
-
-
-isLeaf : Node a -> Bool
-isLeaf n =
-    case n of
-        Collapsed _ ->
-            False
-
-        Expanded _ ->
-            False
-
-        Leaf _ ->
-            True
+        Search x _ ->
+            x
 
 
 type Msg a
-    = Expand (Node a)
-    | Collapse (Node a)
-    | Select (Node a)
+    = Select a
     | GoToParent
 
 
+labelStyle asd =
+    css <|
+        [ Css.cursor Css.pointer
+        , Css.displayFlex
+        , Css.padding2 (Css.px 15) (Css.px 15)
+        , Css.borderRadius (Css.px 5)
+        , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
+        ]
+            ++ (if asd then
+                    [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
 
--- type Msg a comparable = Collapse comparable
---     | Expand comparable
---     | Select comparable
---     | Up (Zipper a)
---     | Down (Zipper a)
+                else
+                    []
+               )
 
 
-view : { viewNode : a -> Styled.Html msg, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
-view { viewNode, liftMsg } model =
+chevronStyle =
+    css
+        [ Css.height (Css.px 10)
+        , Css.display Css.inlineBlock
+        , Css.marginRight (Css.px 10)
+        ]
+
+
+isFocused : Zipper a -> a -> Bool
+isFocused =
+    (==) << Zipper.label
+
+
+hasChildren : Zipper a -> Bool
+hasChildren =
+    (/=) 0 << List.length << Zipper.children
+
+
+view : { viewNode : a -> Styled.Html msg, show : a -> String, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
+view { viewNode, show, liftMsg } model =
     let
-        labelStyle isSelected =
-            css <|
-                [ Css.cursor Css.pointer
-                , Css.displayFlex
-                , Css.padding2 (Css.px 15) (Css.px 15)
-                , Css.borderRadius (Css.px 5)
-                , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
-                ]
-                    ++ (if isSelected then
-                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+        isSelected node =
+            (Zipper.label <| toZipper model) == node
 
-                        else
-                            []
-                       )
-
-        chevronStyle =
-            css
-                [ Css.height (Css.px 10)
-                , Css.display Css.inlineBlock
-                , Css.marginRight (Css.px 10)
-                ]
-
-        treeLabel parent =
-            if isExpanded (Tree.label parent) || Tree.label parent == Zipper.label (Zipper.root model) then
-                Styled.span [] []
-
-            else
-                Styled.li
-                    [ labelStyle (Zipper.label model == Tree.label parent)
-                    , css <| TextStyle.toCssStyle TextStyle.label
-                    , StyledEvents.onClick <| liftMsg GoToParent
-                    ]
-                    [ Styled.span
-                        [ chevronStyle
-                        ]
-                        [ Icon.view Icon.chevronLeft ]
-                    , viewNode <| unwrapNode <| Tree.label parent
-                    ]
-
-        viewTree t =
-            Styled.ul [] <| treeLabel t :: List.map viewTreeNode (Tree.children t)
-
-        viewTreeNode : Tree (Node a) -> Styled.Html msg
+        viewTreeNode : Tree a -> Styled.Html msg
         viewTreeNode t =
             let
                 node =
                     Tree.label t
 
-                isSelectedNode =
-                    Zipper.label model == node
-            in
-            case node of
-                Collapsed _ ->
-                    Styled.li []
-                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Expand node) ]
+                content =
+                    case Tree.children t of
+                        [] ->
+                            [ viewNode node ]
+
+                        _ ->
                             [ Styled.span
                                 [ chevronStyle
                                 ]
                                 [ Icon.view Icon.chevronRight ]
-                            , viewNode <| unwrapNode node
+                            , viewNode node
                             ]
-                        ]
+            in
+            Styled.li []
+                [ Styled.div [ labelStyle <| isSelected node, StyledEvents.onClick <| liftMsg (Select node) ]
+                    content
+                ]
 
-                Expanded _ ->
-                    Styled.li []
-                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Collapse node) ]
-                            [ Styled.span
-                                [ chevronStyle
-                                ]
-                                [ Icon.view Icon.chevronLeft ]
-                            , viewNode <| unwrapNode node
+        viewTree t =
+            case ( Zipper.parent t, Zipper.children t ) of
+                -- If we are on focused on a leaf we view the parent
+                ( Just parent, [] ) ->
+                    viewTree parent
+
+                -- If we are focused on a node with a parent and children we show a link to the parent and the children
+                ( Just _, children ) ->
+                    Styled.li
+                        [ labelStyle <| isSelected <| Zipper.label t
+                        , css <| TextStyle.toCssStyle TextStyle.label
+                        , StyledEvents.onClick <| liftMsg GoToParent
+                        ]
+                        [ Styled.span
+                            [ chevronStyle
                             ]
-                        , viewTree t
+                            [ Icon.view Icon.chevronLeft ]
+                        , viewNode <| Zipper.label t
                         ]
+                        :: List.map viewTreeNode children
 
-                Leaf _ ->
-                    Styled.li []
-                        [ Styled.div [ labelStyle isSelectedNode, StyledEvents.onClick <| liftMsg (Select node) ]
-                            [ viewNode <| unwrapNode node
-                            ]
-                        ]
+                -- If we are focused on the root node we only show the children
+                ( Nothing, children ) ->
+                    List.map viewTreeNode children
 
-        -- We want to show the parent tree if the focused node is a leaf
-        currentTree =
-            if isLeaf (Zipper.label model) then
-                let
-                    parent =
-                        Zipper.parent model |> Maybe.withDefault model
-                in
-                tree (Zipper.label parent) (Zipper.children parent)
-
-            else
-                tree (Zipper.label model) (Zipper.children model)
+        viewSearch s =
+            List.map viewTreeNode << searchTree (String.contains s << String.toLower << show)
     in
-    Styled.div [ css <| TextStyle.toCssStyle TextStyle.body ] [ viewTree currentTree ]
+    Styled.ul [ css <| TextStyle.toCssStyle TextStyle.body ] <|
+        case model of
+            Focus t ->
+                viewTree t
+
+            Search t s ->
+                viewSearch s (Zipper.toTree t)
 
 
-searchTree : (a -> Bool) -> Tree a -> Maybe (Tree a)
+searchTree : (a -> Bool) -> Tree a -> List (Tree a)
 searchTree pred x =
-    let
-        label =
-            Tree.label x
-    in
-    if List.length (Tree.children x) == 0 then
-        if pred label then
-            Just x
+    (if pred (Tree.label x) then
+        (::) x
 
-        else
-            Nothing
+     else
+        identity
+    )
+    <|
+        List.concatMap (searchTree pred) (Tree.children x)
 
-    else if List.any pred <| Tree.flatten x then
-        Just <| tree (Tree.label x) (mapMaybe (searchTree pred) <| Tree.children x)
-
-    else
-        Nothing
-
-{-| Map with a partial function and only keep Justs
--}
-mapMaybe : (a -> Maybe b) -> List a -> List b
-mapMaybe tryMap list =
-    case list of
-        a :: as_ ->
-            case tryMap a of
-                Just a2 ->
-                    a2 :: mapMaybe tryMap as_
-
-                Nothing ->
-                    mapMaybe tryMap as_
-
-        [] ->
-            []
 
 update : Msg a -> Model a -> Model a
 update msg model =
     let
         selectNode n =
-            Zipper.findFromRoot ((==) n) model
-
-        updateNodeWith f =
-            Maybe.map (Zipper.mapLabel f)
+            (Zipper.findFromRoot ((==) n) <| toZipper model)
+                |> Maybe.map Focus
     in
     case msg of
-        Expand node ->
-            selectNode node
-                |> updateNodeWith (Expanded << unwrapNode)
-                |> Maybe.withDefault model
-
-        Collapse node ->
-            selectNode node
-                |> updateNodeWith (Collapsed << unwrapNode)
-                |> Maybe.withDefault model
-
         Select node ->
             selectNode node
                 |> Maybe.withDefault model
 
         GoToParent ->
-            (if isLeaf <| Zipper.label model then
-                Zipper.parent model
+            -- If we are on a leaf we want to move to the parents parent
+            (if List.length (Zipper.children <| toZipper model) /= 0 then
+                Just <| toZipper model
 
              else
-                Just model
+                Zipper.parent <| toZipper model
             )
-                |> updateNodeWith (Collapsed << unwrapNode)
                 |> Maybe.andThen Zipper.parent
+                |> Maybe.map Focus
                 |> Maybe.withDefault model
 
 
 selected : Model a -> a
 selected =
-    unwrapNode << Zipper.label
-
-
-
--- update : Msg a comparable -> Model a -> Model a
--- update _ _ = Debug.todo "implement"
+    Zipper.label << toZipper

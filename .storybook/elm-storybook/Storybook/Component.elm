@@ -1,6 +1,7 @@
 port module Storybook.Component exposing
     ( Component
-    , stateless, sandbox, logAction
+    , stateless, sandbox
+    , logAction
     )
 
 {-|
@@ -15,7 +16,6 @@ import Html exposing (Html)
 import Json.Decode as Json
 import Json.Encode
 import Storybook.Controls
-import Task
 
 
 type alias Component model msg =
@@ -123,4 +123,6 @@ update componentUpdateFn msg model =
 -- In this case, it means we can tell Storybook about Elm messages so
 -- it can log them in the "Actions" tab
 -- -}
+
+
 port logAction : { payload : Json.Value } -> Cmd msg

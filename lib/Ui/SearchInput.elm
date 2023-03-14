@@ -3,12 +3,12 @@ module Ui.SearchInput exposing (..)
 import Accessibility.Styled as Styled
 import Css
 import Html.Styled.Attributes exposing (css, property)
+import Html.Styled.Events
 import Json.Encode as JE
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
 import Ui.Shadow
-import Html.Styled.Events
 
 
 inputTextBaseStyle : Styled.Attribute msg

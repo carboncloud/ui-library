@@ -1,6 +1,7 @@
 module Ui.Shadow exposing
     ( Shadow(..)
-    , shadow, focus
+    , focus
+    , shadow
     )
 
 {-
@@ -33,15 +34,18 @@ type Shadow
 
 
 focus : Css.Style
-focus = toStyle <| Nonempty
-                    { offsetX = Px 0
-                    , offsetY = Px 0
-                    , blurRadius = Px 5
-                    , spreadRadius = Px 2
-                    , color = toCssColor Ui.Palette.primary500
-                    }
-                    [
-                    ]
+focus =
+    toStyle <|
+        Nonempty
+            { offsetX = Px 0
+            , offsetY = Px 0
+            , blurRadius = Px 5
+            , spreadRadius = Px 2
+            , color = toCssColor Ui.Palette.primary500
+            }
+            []
+
+
 shadow : Shadow -> Css.Style
 shadow size =
     toStyle <|
