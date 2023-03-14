@@ -240,7 +240,7 @@ button customStyle attrs mOnClick buttonContent =
             , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer
             , Css.focus
-                [ Css.outline3 (Css.px 2) Css.solid (Color.toCssColor Palette.focus) ]
+                [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]
             ]
 
         textButtonStyle =
@@ -284,4 +284,4 @@ button customStyle attrs mOnClick buttonContent =
         Icon { icon, tooltip } ->
             A11y.button
                 (Attributes.css iconButtonStyle :: Attributes.title tooltip :: baseAttrs)
-                [ A11y.div [ Attributes.css [ Css.margin Css.auto, Css.width (Css.px 20), Css.height (Css.px 20) ] ] [ Icon.view icon ] ]
+                [ A11y.div [ Attributes.css [ Css.margin Css.auto, Css.padding (Css.px 2), Css.width (Css.pct 60), Css.height (Css.pct 60) ] ] [ Icon.view icon ] ]

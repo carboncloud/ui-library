@@ -53,22 +53,13 @@ view : Model -> Html Msg
 view { treeModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000) ] ]
-            [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue }
+            [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
             , Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem, show = .label } <|
                 if List.length (String.toList searchValue) >= 2 then
                     Tree.Search (Tree.toZipper treeModel) searchValue
 
                 else
                     treeModel
-            , Styled.text <| "Selected: " ++ (Tree.selected treeModel).label
-            , Styled.div []
-                [ case (Tree.selected treeModel).emission of
-                    Just _ ->
-                        Styled.text "Valid ingredient selection"
-
-                    Nothing ->
-                        Styled.text "Not a valid ingredient selection"
-                ]
             ]
 
 

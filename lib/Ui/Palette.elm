@@ -104,7 +104,7 @@ grey200 =
 -}
 grey300 : Color
 grey300 =
-    Ui.Color.fromHex "#E3E3E3"
+    Ui.Color.fromHex "#D0D5DD"
 
 
 {-| ![#858585](https://placehold.co/15x15/858585/858585.png) `#858585`
@@ -166,8 +166,7 @@ warn600 =
 {-| ![#4B5FD1](https://placehold.co/15x15/4B5FD1/4B5FD1.png) `#4B5FD1`
 -}
 focus : Color
-focus =
-    Ui.Color.fromHex "#4B5FD1"
+focus = primary500
 
 
 {-| ![#172D69](https://placehold.co/15x15/172D69/172D69.png) `#172D69`
