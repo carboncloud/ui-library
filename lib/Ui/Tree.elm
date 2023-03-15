@@ -13,48 +13,26 @@ import Ui.Palette
 import Ui.TextStyle as TextStyle
 
 
-type Model a
-    = Focus (Zipper a)
-    | Search (Zipper a) String
+type alias Model a =
+    { tree : Zipper a
+    , state : State a
+    }
 
 
-toZipper : Model a -> Zipper a
-toZipper model =
-    case model of
-        Focus x ->
-            x
+type State a
+    = Focus
+    | Search String (a -> String)
 
-        Search x _ ->
-            x
+
+type alias Content a =
+    { leftAlignedText : a -> String
+    , mRightAlignedText : Maybe (a -> String)
+    }
 
 
 type Msg a
     = Select a
     | GoToParent
-
-
-labelStyle asd =
-    css <|
-        [ Css.cursor Css.pointer
-        , Css.displayFlex
-        , Css.padding2 (Css.px 15) (Css.px 15)
-        , Css.borderRadius (Css.px 5)
-        , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
-        ]
-            ++ (if asd then
-                    [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
-
-                else
-                    []
-               )
-
-
-chevronStyle =
-    css
-        [ Css.height (Css.px 10)
-        , Css.display Css.inlineBlock
-        , Css.marginRight (Css.px 10)
-        ]
 
 
 isFocused : Zipper a -> a -> Bool
@@ -67,19 +45,62 @@ hasChildren =
     (/=) 0 << List.length << Zipper.children
 
 
-view : { viewNode : a -> Styled.Html msg, show : a -> String, liftMsg : Msg a -> msg } -> Model a -> Styled.Html msg
-view { viewNode, show, liftMsg } model =
+view :
+    { liftMsg : Msg a -> msg
+    }
+    -> Model a
+    -> Content a
+    -> Styled.Html msg
+view { liftMsg } model { leftAlignedText, mRightAlignedText } =
     let
+        labelStyle n =
+            css <|
+                [ Css.cursor Css.pointer
+                , Css.displayFlex
+                , Css.padding2 (Css.px 15) (Css.px 15)
+                , Css.borderRadius (Css.px 5)
+                , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey100 ]
+                ]
+                    ++ (if isSelected n then
+                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+
+                        else
+                            []
+                       )
+
+        chevronStyle =
+            css
+                [ Css.height (Css.px 10)
+                , Css.display Css.inlineBlock
+                , Css.marginRight (Css.px 10)
+                ]
+
         isSelected node =
-            (Zipper.label <| toZipper model) == node
+            Zipper.label model.tree == node
+
+        viewNode n =
+            Styled.span [ css [ Css.display Css.inlineFlex, Css.flex Css.auto ] ] <|
+                case mRightAlignedText of
+                    Nothing ->
+                        [ Styled.text <| leftAlignedText n ]
+
+                    Just rightAlignedText ->
+                        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text <| leftAlignedText n ]
+                        , Styled.text <| rightAlignedText n
+                        ]
 
         viewTreeNode : Tree a -> Styled.Html msg
         viewTreeNode t =
             let
                 node =
                     Tree.label t
-
-                content =
+            in
+            Styled.li []
+                [ Styled.div
+                    [ labelStyle node
+                    , StyledEvents.onClick <| liftMsg (Select node)
+                    ]
+                  <|
                     case Tree.children t of
                         [] ->
                             [ viewNode node ]
@@ -91,10 +112,6 @@ view { viewNode, show, liftMsg } model =
                                 [ Icon.view Icon.chevronRight ]
                             , viewNode node
                             ]
-            in
-            Styled.li []
-                [ Styled.div [ labelStyle <| isSelected node, StyledEvents.onClick <| liftMsg (Select node) ]
-                    content
                 ]
 
         viewTree t =
@@ -106,7 +123,7 @@ view { viewNode, show, liftMsg } model =
                 -- If we are focused on a node with a parent and children we show a link to the parent and the children
                 ( Just _, children ) ->
                     Styled.li
-                        [ labelStyle <| isSelected <| Zipper.label t
+                        [ labelStyle <| Zipper.label t
                         , css <| TextStyle.toCssStyle TextStyle.label
                         , StyledEvents.onClick <| liftMsg GoToParent
                         ]
@@ -122,16 +139,16 @@ view { viewNode, show, liftMsg } model =
                 ( Nothing, children ) ->
                     List.map viewTreeNode children
 
-        viewSearch s =
-            List.map viewTreeNode << searchTree (String.contains s << String.toLower << show)
+        viewSearch s searchOn =
+            List.map viewTreeNode << searchTree (String.contains s << String.toLower << searchOn)
     in
-    Styled.ul [ css <| TextStyle.toCssStyle TextStyle.body ] <|
-        case model of
-            Focus t ->
-                viewTree t
+    Styled.ul [ css <| Css.listStyleType Css.none :: TextStyle.toCssStyle TextStyle.body ] <|
+        case model.state of
+            Focus ->
+                viewTree model.tree
 
-            Search t s ->
-                viewSearch s (Zipper.toTree t)
+            Search s searchOn ->
+                viewSearch s searchOn (Zipper.toTree model.tree)
 
 
 searchTree : (a -> Bool) -> Tree a -> List (Tree a)
@@ -150,27 +167,29 @@ update : Msg a -> Model a -> Model a
 update msg model =
     let
         selectNode n =
-            (Zipper.findFromRoot ((==) n) <| toZipper model)
-                |> Maybe.map Focus
+            Zipper.findFromRoot ((==) n) model.tree
+                |> Maybe.withDefault model.tree
     in
     case msg of
         Select node ->
-            selectNode node
-                |> Maybe.withDefault model
+            { model | tree = selectNode node }
 
         GoToParent ->
             -- If we are on a leaf we want to move to the parents parent
-            (if List.length (Zipper.children <| toZipper model) /= 0 then
-                Just <| toZipper model
+            { model
+                | state = Focus
+                , tree =
+                    (if List.length (Zipper.children model.tree) /= 0 then
+                        Just model.tree
 
-             else
-                Zipper.parent <| toZipper model
-            )
-                |> Maybe.andThen Zipper.parent
-                |> Maybe.map Focus
-                |> Maybe.withDefault model
+                     else
+                        Zipper.parent model.tree
+                    )
+                        |> Maybe.andThen Zipper.parent
+                        |> Maybe.withDefault model.tree
+            }
 
 
 selected : Model a -> a
 selected =
-    Zipper.label << toZipper
+    Zipper.label << .tree

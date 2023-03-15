@@ -7,8 +7,8 @@ import Html.Styled.Attributes exposing (css)
 import List.Extra as List
 import Storybook.Component exposing (Component)
 import Storybook.Controls
-import String exposing (contains, toLower)
-import Tree exposing (Tree, tree)
+import String
+import Tree exposing (tree)
 import Tree.Zipper as Zipper
 import Ui.SearchInput as SearchInput
 import Ui.Tree as Tree
@@ -54,12 +54,16 @@ view { treeModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 1000) ] ]
             [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
-            , Tree.view { liftMsg = GotTreeMsg, viewNode = viewItem, show = .label } <|
-                if List.length (String.toList searchValue) >= 2 then
-                    Tree.Search (Tree.toZipper treeModel) searchValue
+            , Tree.view { liftMsg = GotTreeMsg }
+                { tree = treeModel.tree
+                , state =
+                    if List.length (String.toList searchValue) >= 2 then
+                        Tree.Search searchValue .label
 
-                else
-                    treeModel
+                    else
+                        Tree.Focus
+                }
+                viewItem
             ]
 
 
@@ -67,22 +71,17 @@ type alias Item =
     { label : String, emission : Maybe Float }
 
 
-viewItem : Item -> Styled.Html msg
-viewItem { label, emission } =
-    Styled.span [ css [ Css.display Css.inlineFlex, Css.flex Css.auto ] ] <|
-        case emission of
-            Just e ->
-                [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text label ]
-                , Styled.text <| String.fromFloat e
-                ]
-
-            Nothing ->
-                [ Styled.text label ]
+viewItem : Tree.Content Item
+viewItem =
+    { leftAlignedText = .label
+    , mRightAlignedText = Nothing
+    }
 
 
 defaultTreeModel : Tree.Model Item
 defaultTreeModel =
-    Tree.Focus <|
+    { state = Tree.Focus
+    , tree =
         Zipper.fromTree <|
             tree { label = "Food Products", emission = Nothing }
                 [ tree { label = "Fruits and Vegtables", emission = Just 1 }
@@ -100,3 +99,4 @@ defaultTreeModel =
                     [ tree { label = "Milk", emission = Just 10 } []
                     ]
                 ]
+    }
