@@ -18,3 +18,4 @@ build-storybook.log
 !.yarn/versions
 
 dist
+yarn-error.log*
