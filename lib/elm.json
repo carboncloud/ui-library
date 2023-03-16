@@ -10,7 +10,6 @@
         "Ui.Pagination",
         "Ui.Icon"
     ],
-    "source-directories": [],
     "elm-version": "0.19.1 <= v < 20.0.0",
     "dependencies": {
         "avh4/elm-color": "1.0.0 <= v < 2.0.0",
@@ -25,9 +24,11 @@
         "elm-community/string-extra": "4.0.1 <= v < 5.0.0",
         "mdgriffith/elm-ui": "1.1.7 <= v < 1.1.8",
         "mgold/elm-nonempty-list": "4.2.0 <= v < 5.0.0",
+        "ntreu14/elm-stack": "1.1.0 <= v < 2.0.0",
         "rtfeldman/elm-css": "17.0.0 <= v < 18.0.0",
         "rtfeldman/elm-hex": "1.0.0 <= v < 2.0.0",
         "staeter/ziplist": "3.0.1 <= v < 4.0.0",
         "tesk9/accessible-html-with-css": "2.2.0 <= v < 3.0.0"
-    }
+    },
+    "test-dependencies": {}
 }
