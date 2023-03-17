@@ -1,12 +1,21 @@
-module Ui.Tree exposing (..)
+module Ui.Tree exposing (Model, Content, Msg, init, focus, search, view, update)
+
+{-| This module defines a component of a miller column layout
+
+@docs Model, Content, State, Msg, init, focus, search, view, update
+
+-}
 
 import Browser.Dom as Dom
+import Color
 import Css
+import Extra.Tree as Tree
+import Extra.Tree.Zipper as Zipper
 import Html.Styled as Styled
 import Html.Styled.Attributes as StyledAttributes exposing (css)
 import Html.Styled.Events as StyledEvents
 import List.Extra as List
-import Maybe exposing (withDefault)
+import Maybe
 import String.Extra exposing (dasherize)
 import Task
 import Tree as Tree exposing (Tree(..))
@@ -14,62 +23,56 @@ import Tree.Zipper as Zipper exposing (Zipper)
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
+import Ui.Scrollbar exposing (ScrollbarWidth(..), scrollbarColor, scrollbarWidth)
 import Ui.TextStyle as TextStyle
-import ZipList exposing (ZipList)
 
 
+{-| -}
 type alias Model a =
     { tree : Zipper a
     , state : State a
     }
 
 
+{-| -}
 type alias Content a =
     { leftAlignedText : a -> String
     , mRightAlignedText : Maybe (a -> String)
     }
 
 
-init : Tree a -> Model a
-init tree =
-    { tree = Zipper.fromTree tree, state = Focus }
-
-
-focus : Model a -> Model a
-focus m =
-    { m | state = Focus }
-
-
-search : String -> (a -> String) -> Model a -> Model a
-search s searchOn m =
-    { m | state = Search s searchOn }
+{-| -}
+type Msg a
+    = Select (Tree a) String
+    | ScrollTo (Result Dom.Error ())
 
 
 type State a
     = Focus
     | Search String (a -> String)
 
+{-|
+-}
+init : Tree a -> Model a
+init tree =
+    { tree = Zipper.fromTree tree, state = Focus }
 
-type Msg a
-    = Select (Tree a) String
-    | Up (Tree a)
-    | NoOp
-    | ScrollTo String
+{-|
+-}
+focus : Model a -> Model a
+focus m =
+    { m | state = Focus }
+
+{-|
+-}
+search : String -> (a -> String) -> Model a -> Model a
+search s searchOn m =
+    { m | state = Search s searchOn }
 
 
-isFocused : Zipper a -> a -> Bool
-isFocused =
-    (==) << Zipper.label
-
-
-hasChildren : Zipper a -> Bool
-hasChildren x =
-    case Zipper.children x of
-        [] ->
-            False
-
-        _ ->
-            True
+rootId : String
+rootId =
+    "ui-tree-component"
 
 
 view :
@@ -84,12 +87,14 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
             css <|
                 [ Css.cursor Css.pointer
                 , Css.displayFlex
-                , Css.padding2 (Css.px 15) (Css.px 15)
-                , Css.borderRadius (Css.px 5)
+                , Css.padding4 (Css.px 15) (Css.px 0) (Css.px 15) (Css.px 15)
                 , Css.hover [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
                 ]
-                    ++ (if isFocused model.tree n then
-                            [ Css.backgroundColor <| toCssColor Ui.Palette.primary050 ]
+                    ++ (if Zipper.isFocused model.tree n then
+                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey300 ]
+
+                        else if Zipper.isParent model.tree n then
+                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
 
                         else
                             []
@@ -100,6 +105,7 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                 [ Css.width (Css.px 10)
                 , Css.display Css.inlineBlock
                 , Css.marginRight (Css.px 10)
+                , Css.fill <| toCssColor Ui.Palette.grey800
                 ]
 
         viewNode n =
@@ -108,7 +114,7 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                     [ Css.width (Css.px 200)
                     , Css.textOverflow Css.ellipsis
                     , Css.overflow Css.hidden
-                    , Css.whiteSpace Css.noWrap
+                    , Css.whiteSpace Css.normal
                     , Css.flex (Css.num 1)
                     , Css.lineHeight (Css.num 1.3)
                     ]
@@ -138,73 +144,73 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                 , StyledEvents.onClick <| liftMsg <| onSelect t id
                 ]
             <|
-                case Tree.children t of
-                    [] ->
-                        [ viewNode node ]
-
-                    _ ->
-                        [ viewNode node
-                        , Styled.span
-                            [ chevronStyle
-                            ]
-                            [ Icon.view Icon.chevronRight ]
+                if Tree.hasChildren t then
+                    [ viewNode node
+                    , Styled.span
+                        [ chevronStyle
                         ]
+                        [ Icon.view Icon.chevronRight ]
+                    ]
+
+                else
+                    [ viewNode node ]
 
         viewList onSelect children =
-            case children of
-                [] ->
-                    Styled.span [] []
+            Styled.ul
+                [ css <|
+                    [ Css.listStyleType Css.none
+                    , Css.lastChild [ Css.borderRight (Css.px 0) ]
 
-                _ ->
-                    Styled.ul
-                        [ css <|
-                            [ Css.listStyleType Css.none
-                            , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey300)
-                            , Css.overflowY Css.auto
-                            , Css.overflowX Css.hidden
-                            , Css.padding (Css.px 0)
-                            , Css.margin (Css.px 0)
-                            , Css.height (Css.px 300)
-                            , Css.minWidth (Css.px 250)
-                            , Css.property "scrollbar-width" "thin"
-                            , Css.property "scrollbar-color" "#e2e2e2ff transparent"
-                            ]
-                                ++ TextStyle.toCssStyle TextStyle.body
-                        ]
-                    <|
-                        List.map (viewTreeNode onSelect) children
+                    -- order is important since we want this to apply for the first child even when it is the last child
+                    , Css.firstChild [ Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey300) ]
+                    , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey300)
+                    , Css.overflowY Css.auto
+                    , Css.overflowX Css.hidden
+                    , Css.padding (Css.px 0)
+                    , Css.margin (Css.px 0)
+                    , Css.height (Css.px 300)
+                    , Css.minWidth (Css.px 250)
+                    , Css.maxWidth (Css.px 350)
+                    , scrollbarWidth Thin
+                    , scrollbarColor Ui.Palette.grey300 (Color.rgba 0 0 0 0)
+                    ]
+                        ++ TextStyle.toCssStyle TextStyle.body
+                ]
+            <|
+                List.map (viewTreeNode onSelect) children
 
         viewSearch onSelect s searchOn =
             viewList onSelect << searchTree (String.contains s << String.toLower << searchOn)
     in
     Styled.div
-        [ StyledAttributes.id "test0r"
+        [ StyledAttributes.id rootId
         , css
             [ Css.displayFlex
             , Css.flexDirection Css.row
+            , Css.borderRadius (Css.px 10)
             , Css.overflowX Css.scroll
-            , Css.property "scrollbar-width" "thin"
-            , Css.property "scrollbar-color" "#e2e2e2ff transparent"
+            , scrollbarWidth Thin
+            , scrollbarColor Ui.Palette.grey300 (Color.rgba 0 0 0 0)
             , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey300)
             ]
         ]
     <|
         case model.state of
             Focus ->
-                case Zipper.parent model.tree of
-                    Nothing ->
-                        [ viewList Select (Zipper.children model.tree) ]
+                List.reverse <|
+                    List.unfoldr
+                        (\ct ->
+                            Maybe.map (\p -> ( viewList Select (Zipper.children p), p ))
+                                (Zipper.parent ct)
+                        )
+                        model.tree
+                        ++ (case Zipper.children model.tree of
+                                [] ->
+                                    []
 
-                    Just p ->
-                        List.reverse
-                            (List.unfoldr
-                                (\ct ->
-                                    Maybe.map (\p_ -> ( viewList Select (Zipper.children p_), p_ ))
-                                        (Zipper.parent ct)
-                                )
-                                p
-                            )
-                            ++ [ viewList Select (Zipper.children p), viewList Select (Zipper.children model.tree) ]
+                                children ->
+                                    [ viewList Select children ]
+                           )
 
             Search s searchOn ->
                 [ viewSearch Select s searchOn (Zipper.toTree model.tree) ]
@@ -222,58 +228,25 @@ searchTree pred x =
         List.concatMap (searchTree pred) (Tree.children x)
 
 
-depth : Zipper a -> Int
-depth =
-    List.sum << List.unfoldr (\x -> Maybe.map (\p -> ( 1, p )) <| Zipper.parent x)
-
-
 update : Msg a -> Model a -> ( Model a, Cmd (Msg a) )
 update msg model =
     let
-        selectNode n =
-            if isFocused model.tree n then
-                Just model.tree
-
-            else
-                Zipper.findFromRoot ((==) n) model.tree
-
-        -- |> Maybe.andThen (ZipList.goToFirst ((==) n << Debug.log "GOT HERE 3" Tree.label))
+        focusOn x =
+            Zipper.findFromRoot ((==) x) model.tree |> Maybe.withDefault model.tree
     in
     case msg of
         Select t id ->
-            let
-                mNewNode =
-                    selectNode <| Tree.label t
-            in
             ( { model
-                | tree = mNewNode |> Maybe.withDefault model.tree
+                | tree = focusOn (Tree.label t)
                 , state = Focus
               }
-            , Task.attempt (\_ -> ScrollTo id) (Task.succeed True)
+            , Dom.getViewportOf rootId
+                |> Task.andThen (\vp -> Task.map (Tuple.pair vp) (Dom.getElement rootId))
+                |> Task.andThen (\vpInfo -> Task.map (Tuple.pair vpInfo) (Dom.getElement id))
+                |> Task.andThen (\( vpInfo, ele ) -> Dom.setViewportOf rootId ((ele.element.x - (Tuple.second vpInfo).element.x) + (Tuple.first vpInfo).viewport.x) 0)
+                |> Task.attempt ScrollTo
             )
 
-        Up mNode ->
-            ( { model
-                | tree =
-                    selectNode (Tree.label mNode)
-                        |> Maybe.withDefault model.tree
-              }
-            , Cmd.none
-            )
-
-        NoOp ->
+        ScrollTo _ ->
+            -- TODO: Handle error
             ( model, Cmd.none )
-
-        ScrollTo id ->
-            ( model
-            , Dom.getViewportOf "test0r"
-                |> Task.andThen (\vp -> Task.map (Tuple.pair vp) (Dom.getElement "test0r"))
-                |> Task.andThen (\vpInfo -> Task.map (Tuple.pair vpInfo) (Dom.getElement (Debug.log "id" id)))
-                |> Task.andThen (\( vpInfo, ele ) -> Dom.setViewportOf "test0r" (Debug.log "Delta" (Debug.log "Element" ele.element.x - Debug.log "Viewport" (Tuple.second vpInfo).element.x) + Debug.log "Viewport offset" (Tuple.first vpInfo).viewport.x) 0)
-                |> Task.attempt (\_ -> NoOp)
-            )
-
-
-selected : Model a -> a
-selected =
-    Zipper.label << .tree
