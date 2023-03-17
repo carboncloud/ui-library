@@ -5,12 +5,12 @@ import Css
 import Html.Styled.Attributes exposing (css, property)
 import Html.Styled.Events
 import Json.Encode as JE
+import Rpx exposing (rpx)
 import Ui.Button
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
 import Ui.Shadow
-import Rpx exposing (rpx)
 
 
 inputTextBaseStyle : Styled.Attribute msg
@@ -36,7 +36,7 @@ iconStyle =
 
 view : { searchLabel : String, value : String, onInput : String -> msg, onClear : msg } -> Styled.Html msg
 view { searchLabel, value, onInput, onClear } =
-    Styled.div [ inputTextBaseStyle ]
+    Styled.div [ inputTextBaseStyle ] <|
         [ Ui.Button.customView [ iconStyle ]
             { emphasis = Ui.Button.Low
             , onClick = Nothing
@@ -46,12 +46,18 @@ view { searchLabel, value, onInput, onClear } =
         , Styled.inputText value
             [ Html.Styled.Events.onInput onInput
             , property "autocomplete" (JE.string searchLabel)
-            , css [ Css.border (Css.px 0), Css.flexGrow (Css.num 1), Css.outline Css.none ]
+            , css [ Css.border (Css.px 0), Css.flexGrow (Css.num 1), Css.marginRight (Css.px 7), Css.outline Css.none ]
             ]
-        , Ui.Button.customView [ iconStyle ]
-            { emphasis = Ui.Button.Low
-            , onClick = Just onClear
-            , color = Ui.Button.Primary
-            }
-            (Ui.Button.Icon { icon = Icon.close, tooltip = "clear" })
         ]
+        ++ (if value == "" then
+                []
+
+            else
+                [ Ui.Button.customView [ iconStyle ]
+                    { emphasis = Ui.Button.Low
+                    , onClick = Just onClear
+                    , color = Ui.Button.Primary
+                    }
+                    (Ui.Button.Icon { icon = Icon.close, tooltip = "clear" })
+                ]
+           )

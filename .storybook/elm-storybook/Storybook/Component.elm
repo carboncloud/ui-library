@@ -1,7 +1,7 @@
 port module Storybook.Component exposing
     ( Component
     , stateless, sandbox
-    , logAction
+    , logAction, sandbox_
     )
 
 {-|
@@ -86,6 +86,40 @@ sandbox options =
         }
 
 
+sandbox_ :
+    { controls : Storybook.Controls.Decoder controls
+    , init : model
+    , update : msg -> model -> (model, Cmd msg)
+    , view : controls -> model -> Html msg
+    }
+    -> Component model msg
+sandbox_ options =
+    let
+        init : Json.Value -> ( ComponentModel model, Cmd msg )
+        init json =
+            ( { controls = json
+              , component = options.init
+              }
+            , Cmd.none
+            )
+
+        view : ComponentModel model -> Html msg
+        view model =
+            options.view
+                (Storybook.Controls.decode
+                    model.controls
+                    options.controls
+                )
+                model.component
+    in
+    Browser.element
+        { init = init
+        , update = update_ options.update
+        , view = view
+        , subscriptions = \_ -> Sub.none
+        }
+
+
 
 -- INTERNALS
 
@@ -115,6 +149,26 @@ update componentUpdateFn msg model =
     , logAction
         { payload = Json.Encode.string (Debug.toString msg)
         }
+    )
+
+
+update_ :
+    (msg -> model -> ( model, Cmd msg ))
+    -> msg
+    -> ComponentModel model
+    -> ( ComponentModel model, Cmd msg )
+update_ componentUpdateFn msg model =
+    let
+        ( componentModel, componentCmd ) =
+            componentUpdateFn msg model.component
+    in
+    ( { model | component = componentModel }
+    , Cmd.batch
+        [ logAction
+            { payload = Json.Encode.string (Debug.toString msg)
+            }
+        , componentCmd
+        ]
     )
 
 
