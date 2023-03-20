@@ -17,7 +17,7 @@ inputTextBaseStyle : Styled.Attribute msg
 inputTextBaseStyle =
     css
         [ Css.padding4 (Css.px 4) (Css.px 0) (Css.px 4) (Css.px 5)
-        , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey300)
+        , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
         , Css.borderRadius (rpx 20)
         , Css.displayFlex
         , Css.pseudoClass "focus-within" [ Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.primary500) ]

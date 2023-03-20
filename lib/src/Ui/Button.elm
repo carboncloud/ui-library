@@ -19,7 +19,7 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Color
+import Ui.Color
 import Css exposing (border, pct, pointer, solid)
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
@@ -119,6 +119,7 @@ customView attrs { emphasis, color, onClick } content =
                     [ Css.backgroundColor <| Color.toCssColor bgColor
                     , Css.border Css.zero
                     , Css.color <| Color.toCssColor Palette.white
+                    , Css.whiteSpace Css.noWrap
                     ]
 
                 enabledBaseStyle =
@@ -156,6 +157,7 @@ customView attrs { emphasis, color, onClick } content =
                     [ Css.padding2 (rpx 8) (rpx 14)
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
                     , Css.color <| Color.toCssColor baseColor
+                    , Css.whiteSpace Css.noWrap
                     ]
 
                 enabledBaseStyle =
@@ -196,7 +198,8 @@ customView attrs { emphasis, color, onClick } content =
 
                 baseStyle =
                     [ Css.color <| Color.toCssColor textColor
-                    , Css.fontWeight Css.bold
+                    , Css.fontWeight (Css.int 500)
+                    , Css.whiteSpace Css.noWrap
                     ]
 
                 enabledBaseStyle =

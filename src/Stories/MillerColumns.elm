@@ -1,4 +1,4 @@
-module Stories.Tree exposing (..)
+module Stories.MillerColumns exposing (..)
 
 import Css
 import Html exposing (Html)
@@ -8,10 +8,10 @@ import List.Extra as List
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import String
+import Ui.MillerColumns as MillerColumns 
 import Tree exposing (tree)
 import Tree.Zipper as Zipper
 import Ui.SearchInput as SearchInput
-import Ui.Tree as Tree
 
 
 main : Component Model Msg
@@ -26,16 +26,16 @@ main =
 
 
 type alias Model =
-    { searchValue : String, treeModel : Tree.Model Item }
+    { searchValue : String, millerColumnsModel : MillerColumns.Model Item }
 
 
 init : Model
 init =
-    { searchValue = "", treeModel = Tree.init t }
+    { searchValue = "", millerColumnsModel = MillerColumns.init t }
 
 
 type Msg
-    = GotTreeMsg (Tree.Msg Item)
+    = GotTreeMsg (MillerColumns.Msg Item)
     | Search String
 
 
@@ -45,25 +45,25 @@ update msg model =
         GotTreeMsg treeMsg ->
             let
                 ( treeModel, treeCmd ) =
-                    Tree.update treeMsg model.treeModel
+                    MillerColumns.update treeMsg model.millerColumnsModel
             in
-            ( { model | treeModel = treeModel, searchValue = "" }, Cmd.map GotTreeMsg treeCmd )
+            ( { model | millerColumnsModel = treeModel, searchValue = "" }, Cmd.map GotTreeMsg treeCmd )
 
         Search s ->
             if s /= "" then
-                ( { model | searchValue = s, treeModel = Tree.search s .label model.treeModel }, Cmd.none )
+                ( { model | searchValue = s, millerColumnsModel = MillerColumns.search s .label model.millerColumnsModel }, Cmd.none )
 
             else
-                ( { model | searchValue = s, treeModel = Tree.focus model.treeModel }, Cmd.none )
+                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setFocus model.millerColumnsModel }, Cmd.none )
 
 
 view : Model -> Html Msg
-view { treeModel, searchValue } =
+view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 500), Css.height (Css.px 500) ] ]
             [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
-            , Tree.view { liftMsg = GotTreeMsg }
-                treeModel
+            , MillerColumns.view { liftMsg = GotTreeMsg }
+                millerColumnsModel
                 viewItem
             ]
 
@@ -72,7 +72,7 @@ type alias Item =
     { label : String, emission : Maybe Float }
 
 
-viewItem : Tree.Content Item
+viewItem : MillerColumns.Content Item
 viewItem =
     { leftAlignedText = .label
     , mRightAlignedText = Nothing

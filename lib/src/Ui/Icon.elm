@@ -26,7 +26,7 @@ module Ui.Icon exposing
 
 # Icons
 
-@docs chevronLeft, chevronRight, edit, close
+@docs chevronLeft, chevronRight, edit, close, search
 
 -}
 

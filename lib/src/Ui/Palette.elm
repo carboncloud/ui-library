@@ -44,11 +44,11 @@ primary050 =
     Ui.Color.fromHex "#CAE8E9"
 
 
-{-| ![#287386](https://placehold.co/15x15/287386/287386.png) `#287386`
+{-| ![#28A0A6](https://placehold.co/15x15/287386/287386.png) `#28A0A6`
 -}
 primary500 : Color
 primary500 =
-    Ui.Color.fromHex "#287386"
+    Ui.Color.fromHex "#28A0A6"
 
 
 {-| ![#226174](https://placehold.co/15x15/226174/226174.png) `#226174`
@@ -97,7 +97,7 @@ grey100 =
 -}
 grey200 : Color
 grey200 =
-    Ui.Color.fromHex "#e8e8e8"
+    Ui.Color.fromHex "#CAE8E9"
 
 
 {-| ![#D0D5DD](https://placehold.co/15x15/D0D5DD/D0D5DD.png) `#D0D5DD`
