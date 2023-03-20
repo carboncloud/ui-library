@@ -51,7 +51,7 @@ update msg model =
 
         Search s ->
             if s /= "" then
-                ( { model | searchValue = s, millerColumnsModel = MillerColumns.search s .label model.millerColumnsModel }, Cmd.none )
+                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch s .label model.millerColumnsModel }, Cmd.none )
 
             else
                 ( { model | searchValue = s, millerColumnsModel = MillerColumns.setFocus model.millerColumnsModel }, Cmd.none )
