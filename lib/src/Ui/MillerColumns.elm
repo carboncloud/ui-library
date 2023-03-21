@@ -199,13 +199,12 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                 node =
                     Tree.label t
 
-                id =
-                    dasherize <| leftAlignedText <| Tuple.second node
+                ((ListItemId id) as listItemId) = Tuple.first node
             in
             Styled.li
                 [ StyledAttributes.id id
                 , labelStyle node
-                , StyledEvents.onClick <| liftMsg <| onSelect (Tuple.first node)
+                , StyledEvents.onClick <| liftMsg <| onSelect listItemId
                 ]
             <|
                 (viewNode <|
