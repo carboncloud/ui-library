@@ -44,11 +44,11 @@ primary050 =
     Ui.Color.fromHex "#CAE8E9"
 
 
-{-| ![#287386](https://placehold.co/15x15/287386/287386.png) `#287386`
+{-| ![#28A0A6](https://placehold.co/15x15/287386/287386.png) `#28A0A6`
 -}
 primary500 : Color
 primary500 =
-    Ui.Color.fromHex "#287386"
+    Ui.Color.fromHex "#28A0A6"
 
 
 {-| ![#226174](https://placehold.co/15x15/226174/226174.png) `#226174`
@@ -97,14 +97,14 @@ grey100 =
 -}
 grey200 : Color
 grey200 =
-    Ui.Color.fromHex "#e8e8e8"
+    Ui.Color.fromHex "#CAE8E9"
 
 
-{-| ![#E3E3E3](https://placehold.co/15x15/E3E3E3/E3E3E3.png) `#E3E3E3`
+{-| ![#D0D5DD](https://placehold.co/15x15/D0D5DD/D0D5DD.png) `#D0D5DD`
 -}
 grey300 : Color
 grey300 =
-    Ui.Color.fromHex "#E3E3E3"
+    Ui.Color.fromHex "#D0D5DD"
 
 
 {-| ![#858585](https://placehold.co/15x15/858585/858585.png) `#858585`
@@ -166,8 +166,7 @@ warn600 =
 {-| ![#4B5FD1](https://placehold.co/15x15/4B5FD1/4B5FD1.png) `#4B5FD1`
 -}
 focus : Color
-focus =
-    Ui.Color.fromHex "#4B5FD1"
+focus = primary500
 
 
 {-| ![#172D69](https://placehold.co/15x15/172D69/172D69.png) `#172D69`

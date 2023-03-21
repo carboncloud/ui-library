@@ -1,4 +1,10 @@
-module Ui.Icon exposing (Icon, setFill, view, chevronLeft, chevronRight, edit, close)
+module Ui.Icon exposing
+    ( Icon
+    , view
+    , setFill
+    , chevronLeft, chevronRight, edit, close
+    , search
+    )
 
 {-| Defines a Button component
 
@@ -12,15 +18,18 @@ module Ui.Icon exposing (Icon, setFill, view, chevronLeft, chevronRight, edit, c
 
 @docs view
 
+
 # Helpers
 
 @docs setFill
 
+
 # Icons
 
-@docs chevronLeft, chevronRight, edit, close
+@docs chevronLeft, chevronRight, edit, close, search
 
 -}
+
 import Accessibility.Styled.Role as Role
 import Color exposing (Color)
 import Css
@@ -40,11 +49,13 @@ type Icon
         , children : List (Svg Never)
         }
 
+
 {-| Set a fill color for the given icon
 -}
 setFill : Color -> Icon -> Icon
 setFill color (Icon ({ attributes } as icon)) =
     Icon { icon | attributes = attributes ++ [ SvgAttr.css [ Css.fill <| toCssColor color ] ] }
+
 
 {-| Creates a view for the given icon
 -}
@@ -60,6 +71,7 @@ view (Icon { label, attributes, children }) =
         )
         (Svg.title [] [ Svg.text label ] :: children)
         |> Html.map never
+
 
 {-| Chevron left icon
 -}
@@ -100,6 +112,7 @@ chevronRight =
             ]
         }
 
+
 {-| Edit icon
 -}
 edit : Icon
@@ -118,6 +131,7 @@ edit =
             ]
         }
 
+
 {-| Close icon
 -}
 close : Icon
@@ -131,6 +145,24 @@ close =
         , children =
             [ path
                 [ SvgAttr.d "M1490 1322q0 40-28 68l-136 136q-28 28-68 28t-68-28l-294-294-294 294q-28 28-68 28t-68-28l-136-136q-28-28-28-68t28-68l294-294-294-294q-28-28-28-68t28-68l136-136q28-28 68-28t68 28l294 294 294-294q28-28 68-28t68 28l136 136q28 28 28 68t-28 68l-294 294 294 294q28 28 28 68z"
+                ]
+                []
+            ]
+        }
+
+
+{-| Search icon
+-}
+search : Icon
+search =
+    Icon
+        { label = "close"
+        , attributes =
+            [ SvgAttr.viewBox "0 0 17 16"
+            ]
+        , children =
+            [ path
+                [ SvgAttr.d "M11.8473 9.4959C12.7232 8.28235 13.1101 6.79386 12.9334 5.31725C12.7567 3.84064 12.0289 2.48042 10.8902 1.49871C9.7516 0.517002 8.28273 -0.0167192 6.76666 0.000399385C5.2506 0.017518 3.79465 0.584264 2.67938 1.59142C1.5641 2.59858 0.868437 3.97488 0.726439 5.45508C0.584441 6.93529 1.00616 8.41466 1.91033 9.6081C2.8145 10.8015 4.13712 11.6246 5.62333 11.9187C7.10954 12.2127 8.65415 11.957 9.95951 11.2007L14.4874 15.6123C14.7225 15.8526 15.0452 15.9919 15.3847 15.9997C15.7243 16.0074 16.0532 15.883 16.2994 15.6536C16.5457 15.4243 16.6893 15.1086 16.6989 14.7757C16.7085 14.4428 16.5833 14.1196 16.3506 13.877C16.3353 13.8611 16.3201 13.8461 16.3013 13.8311L11.8473 9.4959ZM6.83317 9.907C5.78425 9.90662 4.77843 9.4977 4.03694 8.77019C3.29545 8.04268 2.879 7.05614 2.8792 6.02757C2.87939 4.999 3.29621 4.01262 4.03799 3.28538C4.77976 2.55814 5.78573 2.14959 6.83465 2.14959C7.88358 2.14959 8.88955 2.55814 9.63132 3.28538C10.3731 4.01262 10.7899 4.999 10.7901 6.02757C10.7903 7.05614 10.3739 8.04268 9.63237 8.77019C8.89087 9.4977 7.88505 9.90662 6.83613 9.907H6.83317Z"
                 ]
                 []
             ]

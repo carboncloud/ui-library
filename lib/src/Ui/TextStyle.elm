@@ -88,7 +88,7 @@ bodySmall =
 body : TextStyle
 body =
     TextStyle
-        { family = FontFamily.Body
+        { family = FontFamily.Primary
         , size = FontSize.Normal
         , weight = FontWeight.Regular
         , color = TextColor.Primary

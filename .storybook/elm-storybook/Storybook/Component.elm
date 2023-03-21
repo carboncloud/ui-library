@@ -1,6 +1,7 @@
 port module Storybook.Component exposing
     ( Component
-    , stateless, sandbox, logAction
+    , stateless, sandbox
+    , logAction, sandbox_
     )
 
 {-|
@@ -15,7 +16,6 @@ import Html exposing (Html)
 import Json.Decode as Json
 import Json.Encode
 import Storybook.Controls
-import Task
 
 
 type alias Component model msg =
@@ -86,6 +86,40 @@ sandbox options =
         }
 
 
+sandbox_ :
+    { controls : Storybook.Controls.Decoder controls
+    , init : model
+    , update : msg -> model -> (model, Cmd msg)
+    , view : controls -> model -> Html msg
+    }
+    -> Component model msg
+sandbox_ options =
+    let
+        init : Json.Value -> ( ComponentModel model, Cmd msg )
+        init json =
+            ( { controls = json
+              , component = options.init
+              }
+            , Cmd.none
+            )
+
+        view : ComponentModel model -> Html msg
+        view model =
+            options.view
+                (Storybook.Controls.decode
+                    model.controls
+                    options.controls
+                )
+                model.component
+    in
+    Browser.element
+        { init = init
+        , update = update_ options.update
+        , view = view
+        , subscriptions = \_ -> Sub.none
+        }
+
+
 
 -- INTERNALS
 
@@ -118,9 +152,31 @@ update componentUpdateFn msg model =
     )
 
 
+update_ :
+    (msg -> model -> ( model, Cmd msg ))
+    -> msg
+    -> ComponentModel model
+    -> ( ComponentModel model, Cmd msg )
+update_ componentUpdateFn msg model =
+    let
+        ( componentModel, componentCmd ) =
+            componentUpdateFn msg model.component
+    in
+    ( { model | component = componentModel }
+    , Cmd.batch
+        [ logAction
+            { payload = Json.Encode.string (Debug.toString msg)
+            }
+        , componentCmd
+        ]
+    )
+
+
 
 -- {-| This port allows us to send messages to JavaScript!
 -- In this case, it means we can tell Storybook about Elm messages so
 -- it can log them in the "Actions" tab
 -- -}
+
+
 port logAction : { payload : Json.Value } -> Cmd msg

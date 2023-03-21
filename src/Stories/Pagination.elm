@@ -31,6 +31,7 @@ type alias Model =
     { paginationModel : Result String Ui.Pagination.Model }
 
 
+init : Model
 init =
     { paginationModel = Ui.Pagination.init 10 1 }
 
