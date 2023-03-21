@@ -1,4 +1,4 @@
-module Ui.MillerColumns exposing (Model, Content, Msg, init, setFocus, view, update, setSearch)
+module Ui.MillerColumns exposing (Model, Content, Msg, init, setFocus, setSearch, view, update)
 
 {-| This module defines a component of a miller column layout
 
@@ -28,19 +28,24 @@ import Ui.TextStyle as TextStyle
 
 
 {-| Model of the component
+
+`treeZipper` the data displayed in the miller columns. The zipper has a single focus at any time.
+`state` internal state of the component. 
+    - If the state is in `Focus` it will show the zipper in miller columns
+    - If the state is in `Search` it will list all the values that contains the searched value
 -}
-type alias Model a =
-    { treeZipper : Zipper a
-    , state : State a
+type alias Model v =
+    { treeZipper : Zipper ( ListItemId, v )
+    , state : State v
     }
 
 
-{-| The content of each list item  
-
+{-| The content of each list item
 
 `leftAlignedText` Takes a value of a and gives back a String that is shown to the left of each list item
 
-`mRightAlignedText` Takes a value of a and gives back a String that is shown to the left of each list item
+`mRightAlignedText` Takes a value of a and gives back a String that is shown to the right of each list item
+
 -}
 type alias Content a =
     { leftAlignedText : a -> String
@@ -48,59 +53,70 @@ type alias Content a =
     }
 
 
-{-| Initializes a model given a Tree of a -}
-init : Tree a -> Model a
+{-| Initializes a model given a Tree of a
+-}
+init : Tree ( String, v ) -> Model v
 init tree =
-    { treeZipper = Zipper.fromTree tree, state = Focus }
+    { treeZipper = Zipper.fromTree <| Tree.map(\(k, v) -> (ListItemId k, v)) tree, state = Focus }
+
+
 
 -- Setters
 
+
 {-| Focus on the zipper tree
 -}
-setFocus : Model a -> Model a
+setFocus : Model v -> Model v
 setFocus m =
     { m | state = Focus }
 
 
 {-| Display the search results of the values in the zipper
+`searchValue` the value we are searching for in the tree structure
+`searchOn` given a value in the tree it returns the string we want to search on with the `searchValue`
 -}
-setSearch : String -> (a -> String) -> Model a -> Model a
-setSearch s searchOn m =
-    { m | state = Search s searchOn }
+setSearch : String -> (v -> String) -> Model v -> Model v
+setSearch searchValue searchOn m =
+    { m | state = Search searchValue searchOn }
 
 
 {-| Internal messages to update the state of the component
 -}
-type Msg a
-    = Select (Tree a) String
+type Msg
+    = Select ListItemId
     | ScrollTo (Result Dom.Error ())
 
 
 {-| Update the model of the Miller Columns
 -}
-update : Msg a -> Model a -> ( Model a, Cmd (Msg a) )
+update : Msg -> Model v -> ( Model v, Cmd Msg )
 update msg model =
     let
         focusOn x =
-            Zipper.findFromRoot ((==) x) model.treeZipper |> Maybe.withDefault model.treeZipper
+            Zipper.findFromRoot ((==) x << Tuple.first) model.treeZipper |> Maybe.withDefault model.treeZipper
     in
     case msg of
-        Select t id ->
+        Select id ->
             ( { model
-                | treeZipper = focusOn (Tree.label t)
+                | treeZipper = focusOn id
                 , state = Focus
               }
-            , Task.attempt ScrollTo <| scrollToElementInViewportOf id rootId
+            , Task.attempt ScrollTo <| horizontalScrollToElementInViewportOf id rootId
             )
 
         ScrollTo _ ->
             ( model, Cmd.none )
 
+{-|
+This task will scroll an element of a specific viewport into view.  
+We do this by taking the difference between the x-offset of the element we want to scroll to and the x-offset of the specific viewport element relative to the main scene,
+we then add to the current offset of the specific viewport.
 
-scrollToElementInViewportOf : String -> String -> Task Dom.Error ()
-scrollToElementInViewportOf elementId viewportId =
+-}
+horizontalScrollToElementInViewportOf : ListItemId -> String -> Task Dom.Error ()
+horizontalScrollToElementInViewportOf (ListItemId listItemId) viewportId =
     Task.map3 (\listElement viewportElement { viewport } -> (listElement.element.x - viewportElement.element.x) + viewport.x)
-        (Dom.getElement elementId)
+        (Dom.getElement listItemId)
         (Dom.getElement viewportId)
         (Dom.getViewportOf viewportId)
         |> Task.andThen (\x -> Dom.setViewportOf viewportId x 0)
@@ -114,10 +130,10 @@ rootId =
 {-| View the Miller Columns
 -}
 view :
-    { liftMsg : Msg a -> msg
+    { liftMsg : Msg -> msg
     }
-    -> Model a
-    -> Content a
+    -> Model v
+    -> Content v
     -> Styled.Html msg
 view { liftMsg } model { leftAlignedText, mRightAlignedText } =
     let
@@ -177,31 +193,33 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                         , Styled.text <| rightAlignedText n
                         ]
 
-        viewTreeNode : (Tree a -> String -> Msg a) -> Tree a -> Styled.Html msg
+        viewTreeNode : (ListItemId -> Msg) -> Tree ( ListItemId, v ) -> Styled.Html msg
         viewTreeNode onSelect t =
             let
                 node =
                     Tree.label t
 
                 id =
-                    dasherize <| leftAlignedText node
+                    dasherize <| leftAlignedText <| Tuple.second node
             in
             Styled.li
                 [ StyledAttributes.id id
                 , labelStyle node
-                , StyledEvents.onClick <| liftMsg <| onSelect t id
+                , StyledEvents.onClick <| liftMsg <| onSelect (Tuple.first node)
                 ]
             <|
-                if Tree.hasChildren t then
-                    [ viewNode node
-                    , Styled.span
-                        [ chevronStyle node
-                        ]
-                        [ Icon.view Icon.chevronRight ]
-                    ]
+                (viewNode <|
+                    Tuple.second node
+                )
+                    :: (if Tree.hasChildren t then
+                            [ Styled.span
+                                [ chevronStyle node ]
+                                [ Icon.view Icon.chevronRight ]
+                            ]
 
-                else
-                    [ viewNode node ]
+                        else
+                            []
+                       )
 
         viewList onSelect children =
             Styled.ul
@@ -235,6 +253,7 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
         , css
             [ Css.displayFlex
             , Css.flexDirection Css.row
+            , Css.width (Css.pct 100)
             , Css.borderRadius (Css.px 5)
             , Css.overflowX Css.scroll
             , Css.color (toCssColor Ui.Palette.black)
@@ -263,16 +282,22 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                        )
 
             Search s searchOn ->
-                [ viewSearch Select s searchOn (Zipper.toTree model.treeZipper) ]
+                [ viewSearch Select s (searchOn << Tuple.second) (Zipper.toTree model.treeZipper) ]
 
-{-| Opaque type of  the internal state of the component.
+
+{-| Opaque type of the internal state of the component.
 Use [setters](#setters) to set the state.
 -}
-type State a
+type State v
     = Focus
-    | Search String (a -> String)
+    | Search String (v -> String)
+
+
+type ListItemId = ListItemId String
 
 -- TODO: Fix search, we should prioritize "good matches"
+
+
 searchTree : (a -> Bool) -> Tree a -> List (Tree a)
 searchTree pred x =
     (if pred (Tree.label x) then

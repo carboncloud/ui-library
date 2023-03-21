@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider build-storybook -o dist",
+    "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook -o dist",
     "preview": "npx elm-doc-preview ./lib",
     "chromatic": "npx chromatic --project-token=fa40d669dd16"
   },
