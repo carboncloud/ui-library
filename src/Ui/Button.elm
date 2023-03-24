@@ -19,7 +19,6 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Ui.Color
 import Css exposing (border, pct, pointer, solid)
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
@@ -59,12 +58,12 @@ type ButtonEmphasis
     | Low
 
 
-{-| Defins the content of the button
+{-| Defines the content of the button
 -}
 type ButtonContent
     = Text String
-    | TextWithLeftIcon String String
-    | TextWithRightIcon String String
+    | TextWithLeftIcon String Icon
+    | TextWithRightIcon String Icon
     | Icon { icon : Icon, tooltip : String }
 
 
@@ -120,6 +119,7 @@ customView attrs { emphasis, color, onClick } content =
                     , Css.border Css.zero
                     , Css.color <| Color.toCssColor Palette.white
                     , Css.whiteSpace Css.noWrap
+                    , Css.fill <| Color.toCssColor Palette.white
                     ]
 
                 enabledBaseStyle =
@@ -158,6 +158,7 @@ customView attrs { emphasis, color, onClick } content =
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
                     , Css.color <| Color.toCssColor baseColor
                     , Css.whiteSpace Css.noWrap
+                    , Css.fill <| Color.toCssColor baseColor
                     ]
 
                 enabledBaseStyle =
@@ -200,6 +201,7 @@ customView attrs { emphasis, color, onClick } content =
                     [ Css.color <| Color.toCssColor textColor
                     , Css.fontWeight (Css.int 500)
                     , Css.whiteSpace Css.noWrap
+                    , Css.fill <| Color.toCssColor textColor
                     ]
 
                 enabledBaseStyle =
@@ -235,7 +237,8 @@ button : List Css.Style -> List (A11y.Attribute msg) -> Maybe msg -> ButtonConte
 button customStyle attrs mOnClick buttonContent =
     let
         baseStyle =
-            [ Css.border Css.zero
+            [ Css.displayFlex
+            , Css.border Css.zero
             , Css.backgroundColor Css.transparent
             , Css.padding2 (rpx 10) (rpx 16)
             , Css.borderRadius (rpx 24)
@@ -277,12 +280,30 @@ button customStyle attrs mOnClick buttonContent =
         TextWithLeftIcon s i ->
             A11y.button
                 textBaseAttrs
-                [ A11y.img "button-icon" [ Attributes.src i ], A11y.text s ]
+                [ A11y.span
+                    [ Attributes.css
+                        [ Css.height (Css.px 16)
+                        , Css.width (Css.px 16)
+                        , Css.margin4 Css.auto (Css.px 10) Css.auto Css.auto
+                        ]
+                    ]
+                    [ Icon.view i ]
+                , A11y.text s
+                ]
 
         TextWithRightIcon s i ->
             A11y.button
                 textBaseAttrs
-                [ A11y.text s, A11y.img "button-icon" [ Attributes.src i ] ]
+                [ A11y.text s
+                , A11y.span
+                    [ Attributes.css
+                        [ Css.height (Css.px 16)
+                        , Css.width (Css.px 16)
+                        , Css.margin4 Css.auto Css.auto Css.auto (Css.px 10)
+                        ]
+                    ]
+                    [ Icon.view i ]
+                ]
 
         Icon { icon, tooltip } ->
             A11y.button

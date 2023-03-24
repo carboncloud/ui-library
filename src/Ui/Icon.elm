@@ -1,9 +1,8 @@
 module Ui.Icon exposing
-    ( Icon
+    ( Icon(..)
     , view
     , setFill
-    , chevronLeft, chevronRight, edit, close
-    , search
+    , chevronLeft, chevronRight, edit, close, search
     )
 
 {-| Defines a Button component

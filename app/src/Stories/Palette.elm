@@ -10,7 +10,7 @@ import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
 import Ui.TextStyle
-import Ui.Typography
+import Ui.Text
 
 
 main : Component () msg
@@ -37,8 +37,8 @@ colorSwatch name color =
                 , Css.justifyContent Css.end
                 ]
             ]
-            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.heading5 <| toHexString color ]
-        , Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.TextStyle.heading5 name
+            [ Ui.Text.customView [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.heading5 <| toHexString color ]
+        , Ui.Text.customView [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.TextStyle.heading5 name
         ]
 
 
@@ -54,7 +54,7 @@ colorSwatchGroup =
 
 toneGroup : String -> List ( Css.Color, Int ) -> List (Styled.Html msg)
 toneGroup name tones =
-    [ Ui.Typography.styledText Ui.TextStyle.heading3 name
+    [ Ui.Text.view Ui.TextStyle.heading3 name
     , Styled.div
         [ Attributes.css
             [ Css.displayFlex

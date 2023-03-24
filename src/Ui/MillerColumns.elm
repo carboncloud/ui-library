@@ -7,7 +7,6 @@ module Ui.MillerColumns exposing (Model, Content, Msg, init, setFocus, setSearch
 -}
 
 import Browser.Dom as Dom
-import Color
 import Css
 import Extra.Tree as Tree
 import Extra.Tree.Zipper as Zipper

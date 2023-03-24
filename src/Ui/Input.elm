@@ -1,7 +1,9 @@
-module Ui.SearchInput exposing (..)
+module Ui.Input exposing (..)
 
 import Accessibility.Styled as Styled
 import Css
+import Extra.Styled as Styled
+import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes exposing (css, property)
 import Html.Styled.Events
 import Json.Encode as JE
@@ -10,20 +12,19 @@ import Ui.Button
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
-import Ui.Shadow
 
 
-inputTextBaseStyle : Styled.Attribute msg
+inputTextBaseStyle : Attribute msg
 inputTextBaseStyle =
     css
         [ Css.padding4 (Css.px 4) (Css.px 0) (Css.px 4) (Css.px 5)
         , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
-        , Css.borderRadius (rpx 20)
         , Css.displayFlex
-        , Css.pseudoClass "focus-within" [ Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.primary500) ]
+        , Css.pseudoClass "focus-within" [ Css.outline3 (Css.px 2) Css.solid (toCssColor Ui.Palette.primary500) ]
         ]
 
 
+iconStyle : Attribute msg
 iconStyle =
     css
         [ Css.height (Css.px 30)
@@ -34,10 +35,24 @@ iconStyle =
         ]
 
 
-view : { searchLabel : String, value : String, onInput : String -> msg, onClear : msg } -> Styled.Html msg
-view { searchLabel, value, onInput, onClear } =
-    Styled.div [ inputTextBaseStyle ] <|
-        [ Ui.Button.customView [ iconStyle ]
+type alias Model =
+    { suffix : Maybe String
+    , description : Maybe String
+    , label : Maybe String
+    , placeholder : Maybe String
+    }
+
+
+search :
+    { searchLabel : String
+    , value : String
+    , onInput : String -> msg
+    , onClear : msg
+    }
+    -> Styled.Html msg
+search { searchLabel, value, onInput, onClear } =
+    Styled.div [ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] <|
+        [ Ui.Button.customView [ iconStyle, css [ Css.cursor Css.default ] ]
             { emphasis = Ui.Button.Low
             , onClick = Nothing
             , color = Ui.Button.Primary
@@ -48,16 +63,11 @@ view { searchLabel, value, onInput, onClear } =
             , property "autocomplete" (JE.string searchLabel)
             , css [ Css.border (Css.px 0), Css.flexGrow (Css.num 1), Css.marginRight (Css.px 7), Css.outline Css.none ]
             ]
+        , Styled.when (value /= "") <|
+            Ui.Button.customView [ iconStyle ]
+                { emphasis = Ui.Button.Low
+                , onClick = Just onClear
+                , color = Ui.Button.Primary
+                }
+                (Ui.Button.Icon { icon = Icon.close, tooltip = "clear" })
         ]
-        ++ (if value == "" then
-                []
-
-            else
-                [ Ui.Button.customView [ iconStyle ]
-                    { emphasis = Ui.Button.Low
-                    , onClick = Just onClear
-                    , color = Ui.Button.Primary
-                    }
-                    (Ui.Button.Icon { icon = Icon.close, tooltip = "clear" })
-                ]
-           )

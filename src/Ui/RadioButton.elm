@@ -32,7 +32,7 @@ import Ui.Internal.FontWeight as FontWeight
 import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
-import Ui.Typography as Typography
+import Ui.Text as Text
 
 
 {-| Defines the Direction
@@ -142,7 +142,7 @@ customView attrs config =
                                             ]
                                        )
                            ]
-                , Typography.styledCustomText
+                , Text.customView
                     [ Attributes.css <|
                         Css.margin2 Css.auto (Css.px 10)
                             :: (if disabled then
@@ -171,5 +171,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Typography.styledText TextStyle.label config.label ]
+        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Text.view TextStyle.label config.label ]
             :: List.indexedMap itemView config.options

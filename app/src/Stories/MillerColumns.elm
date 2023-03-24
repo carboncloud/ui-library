@@ -11,7 +11,7 @@ import String
 import Ui.MillerColumns as MillerColumns 
 import Tree exposing (tree)
 import Tree.Zipper as Zipper
-import Ui.SearchInput as SearchInput
+import Ui.Input as Input
 import String.Extra exposing (dasherize)
 
 
@@ -62,7 +62,7 @@ view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 550), Css.height (Css.px 550) ] ]
-            [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
+            [ Input.search { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
             , MillerColumns.view { liftMsg = GotTreeMsg }
                 millerColumnsModel
                 viewItem
