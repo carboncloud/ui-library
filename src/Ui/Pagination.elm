@@ -37,13 +37,11 @@ import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import Ui.Color as Color
 import Ui.Icon as Icon exposing (Icon)
-import Ui.Internal.FontFamily as FontFamily
-import Ui.Internal.FontSize as FontSize
-import Ui.Internal.FontWeight as FontWeight
-import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import ZipList exposing (ZipList)
+import Ui.Css.TextStyle exposing (toCssStyle)
+import Ui.TextStyle exposing (FontWeight(..))
 
 
 {-| The Pagination model
@@ -185,12 +183,13 @@ customView attrs model config =
                             [ Events.onClick <| config.onNav newModel
                             , Attributes.css <|
                                 buttonStyle
-                                    ++ TextStyle.toCssStyle
+                                    ++ toCssStyle
                                         (TextStyle
-                                            { family = FontFamily.Primary
-                                            , size = FontSize.Normal
-                                            , weight = FontWeight.Regular
-                                            , color = TextColor.Primary
+                                            { family = TextStyle.sansSerifFamilies
+                                            , size = 16
+                                            , weight = Normal
+                                            , color = TextStyle.primaryColor
+                                            , lineHeight = 1.0
                                             }
                                         )
                                     ++ (if selected then

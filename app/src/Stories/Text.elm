@@ -43,7 +43,6 @@ view =
                 , Text.view TextStyle.heading2 "H2 Headline"
                 , Text.view TextStyle.heading3 "H3 Headline"
                 , Text.view TextStyle.heading4 "H4 Headline"
-                , Text.view TextStyle.bodyLarge "Body large"
                 , Text.view TextStyle.body "Body"
                 , Text.view TextStyle.bodySmall "Body small"
                 ]

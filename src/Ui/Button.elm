@@ -1,6 +1,7 @@
 module Ui.Button exposing
     ( ButtonColor(..), ButtonEmphasis(..), ButtonContent(..)
     , view, customView
+    , iconButton
     )
 
 {-| Defines a Button component
@@ -19,22 +20,18 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Css exposing (border, pct, pointer, solid)
+import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
-import String.Extra exposing (dasherize)
 import Ui.Color as Color
+import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
-import Ui.Internal.FontFamily as FontFamily
-import Ui.Internal.FontSize as FontSize
-import Ui.Internal.FontWeight as FontWeight
-import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
-import Ui.TextStyle exposing (TextStyle(..), toCssStyle)
+import Ui.TextStyle as TextStyle exposing (TextStyle(..))
+import Ui.TextStyle exposing (FontWeight(..))
 
 
 {-| Defines the available button colors
@@ -64,7 +61,6 @@ type ButtonContent
     = Text String
     | TextWithLeftIcon String Icon
     | TextWithRightIcon String Icon
-    | Icon { icon : Icon, tooltip : String }
 
 
 {-| Returns a view of a button
@@ -135,7 +131,12 @@ customView attrs { emphasis, color, onClick } content =
 
                 Nothing ->
                     button
-                        (baseStyle ++ [ Css.backgroundColor <| Color.toCssColor Palette.grey200, Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ])
+                        (baseStyle
+                            ++ [ Css.backgroundColor <| Color.toCssColor Palette.grey200
+                               , Css.color <| Color.toCssColor Palette.disabled
+                               , Css.cursor Css.notAllowed
+                               ]
+                        )
                         attrs
                         onClick
                         content
@@ -226,10 +227,11 @@ customView attrs { emphasis, color, onClick } content =
 buttonText : TextStyle
 buttonText =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Small
-        , weight = FontWeight.Regular
-        , color = TextColor.PrimaryWhite
+        { family = TextStyle.sansSerifFamilies
+        , size = 14
+        , weight = Normal
+        , color = TextStyle.primaryWhiteColor
+        , lineHeight = 1.0
         }
 
 
@@ -252,21 +254,8 @@ button customStyle attrs mOnClick buttonContent =
         textButtonStyle =
             baseStyle ++ toCssStyle buttonText ++ customStyle
 
-        iconButtonStyle =
-            baseStyle ++ customStyle ++ [ Css.displayFlex, Css.borderRadius (Css.pct 100), Css.padding Css.zero, Css.width (Css.px 36), Css.height (Css.px 36) ]
-
         baseAttrs =
-            case mOnClick of
-                Just onClick ->
-                    Events.onClick onClick
-                        :: Attributes.disabled False
-                        :: Role.button
-                        :: attrs
-
-                Nothing ->
-                    Attributes.disabled True
-                        :: Role.button
-                        :: attrs
+            Role.button :: onClickAttribute mOnClick ++ attrs
 
         textBaseAttrs =
             Attributes.css textButtonStyle :: baseAttrs
@@ -305,7 +294,42 @@ button customStyle attrs mOnClick buttonContent =
                     [ Icon.view i ]
                 ]
 
-        Icon { icon, tooltip } ->
-            A11y.button
-                (Attributes.css iconButtonStyle :: Attributes.title tooltip :: baseAttrs)
-                [ A11y.div [ Attributes.css [ Css.margin Css.auto, Css.padding (Css.px 2), Css.width (Css.pct 60), Css.height (Css.pct 60) ] ] [ Icon.view icon ] ]
+
+iconButton :
+    List (Styled.Attribute msg)
+    ->
+        { onClick : Maybe msg
+        , icon : Icon
+        , tooltip : String
+        }
+    -> A11y.Html msg
+iconButton attrs { onClick, icon, tooltip } =
+    A11y.button
+        (Attributes.title tooltip
+            :: Attributes.css
+                [ Css.padding (Css.px 7)
+                , Css.width (Css.px 32)
+                , Css.height (Css.px 32)
+                , Css.fill (Color.toCssColor Palette.grey800)
+                , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.grey300 ]
+                , Css.displayFlex
+                , Css.borderRadius (Css.pct 100)
+                , Css.backgroundColor Css.transparent
+                , Css.border Css.zero
+                , Css.cursor Css.pointer
+                ]
+            :: onClickAttribute onClick
+            ++ attrs
+        )
+        [ Icon.view icon
+        ]
+
+
+onClickAttribute : Maybe msg -> List (A11y.Attribute msg)
+onClickAttribute mOnClick =
+    case mOnClick of
+        Just onClick ->
+            [ Events.onClick onClick, Attributes.disabled False ]
+
+        Nothing ->
+            [ Attributes.disabled True ]

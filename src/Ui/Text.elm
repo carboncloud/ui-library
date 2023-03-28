@@ -7,6 +7,7 @@ import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Rpx exposing (rpx)
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
+import Ui.Css.TextStyle exposing (toCssStyle)
 
 
 
@@ -27,7 +28,6 @@ import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 
 -}
 
-
 {-| Returns a text view
 This is preferred over `customView` when no custom styling is needed
 -}
@@ -40,8 +40,11 @@ view font =
 -}
 customView : List (Styled.Attribute msg) -> TextStyle -> String -> Styled.Html msg
 customView attrs font s =
-    Styled.span (attrs ++ [ Attributes.css <| TextStyle.toCssStyle font ]) [ Styled.text s ]
+    Styled.span (attrs ++ [ Attributes.css <| toCssStyle font ]) [ Styled.text s ]
 
+
+paragraph : String -> Styled.Html msg
+paragraph =  styledCustomParagraph [] TextStyle.body
 
 styledParagraph : TextStyle -> String -> Styled.Html msg
 styledParagraph font =
@@ -54,7 +57,7 @@ styledCustomParagraph attrs font s =
         ((Attributes.css <|
             Css.lineHeight (Css.num 1.5)
                 :: Css.margin2 (rpx 15) Css.zero
-                :: TextStyle.toCssStyle font
+                :: toCssStyle font
          )
             :: attrs
         )

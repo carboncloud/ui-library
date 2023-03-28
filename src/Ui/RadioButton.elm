@@ -25,14 +25,10 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Color as Color
-import Ui.Internal.FontFamily as FontFamily
-import Ui.Internal.FontSize as FontSize
-import Ui.Internal.FontWeight as FontWeight
-import Ui.Internal.TextColor as TextColor
+import Ui.Color as Color 
 import Ui.Palette as Palette
-import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import Ui.Text as Text
+import Ui.TextStyle as TextStyle exposing (TextStyle(..), FontWeight(..))
 
 
 {-| Defines the Direction
@@ -152,7 +148,14 @@ customView attrs config =
                                     []
                                )
                     ]
-                    (TextStyle { family = FontFamily.Primary, weight = FontWeight.Regular, size = FontSize.Small, color = TextColor.Primary })
+                    (TextStyle
+                        { family = TextStyle.sansSerifFamilies
+                        , weight = Normal
+                        , size = 14
+                        , color = TextStyle.primaryColor
+                        , lineHeight = 1.0
+                        }
+                    )
                     optionLabel
                 ]
     in

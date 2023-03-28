@@ -23,7 +23,7 @@ import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette
 import Ui.Scrollbar exposing (ScrollbarWidth(..), scrollbarColor, scrollbarWidth)
-import Ui.TextStyle as TextStyle
+import Ui.Css.TextStyle as TextStyle
 
 
 {-| Model of the component
@@ -238,7 +238,7 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                     , scrollbarWidth Thin
                     , scrollbarColor Ui.Palette.grey300 Ui.Palette.grey100
                     ]
-                        ++ TextStyle.toCssStyle TextStyle.body
+                        ++ TextStyle.body
                 ]
             <|
                 List.map (viewTreeNode onSelect) children

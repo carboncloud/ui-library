@@ -1,36 +1,17 @@
 module Ui.TextStyle exposing
     ( TextStyle(..)
     , body
-    , bodyLarge
     , bodySmall
-    , fontColorToCssStyle
-    , fontColorToElementAttribute
-    , fontFamilyToCssStyle
-    , fontFamilyToElementAttribute
-    , fontSizeToCssStyle
-    , fontSizeToElementAttribute
-    , fontWeightToCssStyle
-    , fontWeightToElementAttribute
     , heading1
     , heading2
     , heading3
     , heading4
-    , heading5
-    , label
-    , toCssStyle
-    , toElementAttribute
+    , label, sansSerifFamilies, primaryColor, primaryWhiteColor, fontWeight, FontWeight(..)
     )
 
-import Css
-import Element
-import Element.Font as Font
-import Html.Attributes
-import Ui.Color
-import Ui.Internal.FontFamily as FontFamily exposing (FontFamily, fontFamily)
-import Ui.Internal.FontSize as FontSize exposing (FontSize, fontSize)
-import Ui.Internal.FontWeight as FontWeight exposing (FontWeight, fontWeight)
-import Ui.Internal.TextColor as TextColor exposing (TextColor, textColor)
-
+import Color exposing (Color)
+import Ui.Color as Color
+import Ui.Palette as Palette
 
 
 {-
@@ -68,158 +49,139 @@ import Ui.Internal.TextColor as TextColor exposing (TextColor, textColor)
 
 type TextStyle
     = TextStyle
-        { family : FontFamily
-        , size : FontSize
+        { family : List String
+        , size : Int
         , weight : FontWeight
-        , color : TextColor
+        , color : Color
+        , lineHeight : Float
         }
 
+primaryColor : Color
+primaryColor = Palette.grey900
+
+primaryWhiteColor : Color
+primaryWhiteColor = Color.fromHex "#FCFCFC"
+
+sansSerifFamilies : List String
+sansSerifFamilies = ["Poppins", "system-ui", "sans-serif"]
 
 bodySmall : TextStyle
 bodySmall =
     TextStyle
-        { family = FontFamily.Body
-        , size = FontSize.Small
-        , weight = FontWeight.Regular
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 14
+        , weight = Normal
+        , color = primaryColor
+        , lineHeight = 1.2
         }
 
 
 body : TextStyle
 body =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Normal
-        , weight = FontWeight.Regular
-        , color = TextColor.Primary
-        }
-
-
-bodyLarge : TextStyle
-bodyLarge =
-    TextStyle
-        { family = FontFamily.Body
-        , size = FontSize.Normal
-        , weight = FontWeight.Regular
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 16
+        , weight = Thin
+        , color = primaryColor
+        , lineHeight = 1.2
         }
 
 
 label : TextStyle
 label =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Normal
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 16
+        , weight = SemiBold
+        , lineHeight = 1.2
+        , color = primaryColor
         }
 
 
 heading1 : TextStyle
 heading1 =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.XXL
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 72
+        , weight = SemiBold
+        , color = primaryColor
+        , lineHeight = 1.2
         }
 
 
 heading2 : TextStyle
 heading2 =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.XL
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 48
+        , weight = SemiBold
+        , color = primaryColor
+        , lineHeight = 1.2
         }
 
 
 heading3 : TextStyle
 heading3 =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Large
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 32
+        , weight = SemiBold
+        , color = primaryColor
+        , lineHeight = 1.2
         }
 
 
 heading4 : TextStyle
 heading4 =
     TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Normal
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
+        { family = sansSerifFamilies
+        , size = 16
+        , weight = SemiBold
+        , color = primaryColor
+        , lineHeight = 2
         }
 
 
-heading5 : TextStyle
-heading5 =
-    TextStyle
-        { family = FontFamily.Primary
-        , size = FontSize.Small
-        , weight = FontWeight.SemiBold
-        , color = TextColor.Primary
-        }
-
-
-{-|
-
-    Interprets a font as a Css Style
-
+{-| Represents a font weight
 -}
-toCssStyle : TextStyle -> List Css.Style
-toCssStyle font =
-    List.map (\f -> f font) [ fontSizeToCssStyle, fontFamilyToCssStyle, fontWeightToCssStyle, fontColorToCssStyle ]
 
 
-fontFamilyToCssStyle : TextStyle -> Css.Style
-fontFamilyToCssStyle (TextStyle { family }) =
-    Css.fontFamilies <| List.singleton <| Css.qt <| fontFamily family
+type FontWeight
+    = Thin
+    | ExtraLight
+    | Light
+    | Normal
+    | Medium
+    | SemiBold
+    | Bold
+    | ExtraBold
 
 
-fontSizeToCssStyle : TextStyle -> Css.Style
-fontSizeToCssStyle (TextStyle { size }) =
-    Css.fontSize <| fontSize size
-
-
-fontWeightToCssStyle : TextStyle -> Css.Style
-fontWeightToCssStyle (TextStyle { weight }) =
-    Css.fontWeight <| Css.int <| fontWeight weight
-
-
-fontColorToCssStyle : TextStyle -> Css.Style
-fontColorToCssStyle (TextStyle { color }) =
-    Css.color << Ui.Color.toCssColor <| textColor color
-
-
-{-|
-
-    Interprets a `TextStyle` as an Element Attribute
-
+{-| Return the weight of a font
 -}
-toElementAttribute : TextStyle -> List (Element.Attribute msg)
-toElementAttribute typography =
-    List.map (\f -> f typography) [ fontFamilyToElementAttribute, fontSizeToElementAttribute, fontWeightToElementAttribute, fontColorToElementAttribute ]
+fontWeight : FontWeight -> Int
+fontWeight weight =
+    case weight of
+        Thin ->
+            100
 
+        ExtraLight ->
+            200
 
-fontFamilyToElementAttribute : TextStyle -> Element.Attribute msg
-fontFamilyToElementAttribute (TextStyle { family }) =
-    Font.family <| List.singleton <| Font.typeface <| fontFamily family
+        Light ->
+            300
 
+        Normal ->
+            400
 
-fontSizeToElementAttribute : TextStyle -> Element.Attribute msg
-fontSizeToElementAttribute (TextStyle { size }) =
-    Element.htmlAttribute <| (\x -> Html.Attributes.style "font-size" (String.fromFloat x.numericValue ++ "rem")) <| fontSize size
+        Medium ->
+            500
 
+        SemiBold ->
+            600
 
-fontWeightToElementAttribute : TextStyle -> Element.Attribute msg
-fontWeightToElementAttribute (TextStyle { weight }) =
-    Element.htmlAttribute <| Html.Attributes.style "font-weight" <| String.fromInt <| fontWeight weight
+        Bold ->
+            700
 
-
-fontColorToElementAttribute : TextStyle -> Element.Attribute msg
-fontColorToElementAttribute (TextStyle { color }) =
-    Font.color <| Ui.Color.toElementColor <| textColor color
+        ExtraBold ->
+            800

@@ -17,21 +17,10 @@ import Ui.Palette
 inputTextBaseStyle : Attribute msg
 inputTextBaseStyle =
     css
-        [ Css.padding4 (Css.px 4) (Css.px 0) (Css.px 4) (Css.px 5)
+        [ Css.padding4 (Css.px 4) (Css.px 5) (Css.px 4) (Css.px 5)
         , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
         , Css.displayFlex
         , Css.pseudoClass "focus-within" [ Css.outline3 (Css.px 2) Css.solid (toCssColor Ui.Palette.primary500) ]
-        ]
-
-
-iconStyle : Attribute msg
-iconStyle =
-    css
-        [ Css.height (Css.px 30)
-        , Css.width (Css.px 30)
-        , Css.display Css.inlineBlock
-        , Css.margin4 Css.auto (Css.px 10) Css.auto (Css.px 0)
-        , Css.fill (toCssColor Ui.Palette.grey800)
         ]
 
 
@@ -52,22 +41,20 @@ search :
     -> Styled.Html msg
 search { searchLabel, value, onInput, onClear } =
     Styled.div [ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] <|
-        [ Ui.Button.customView [ iconStyle, css [ Css.cursor Css.default ] ]
-            { emphasis = Ui.Button.Low
+        [ Ui.Button.iconButton [ css [ Css.cursor Css.default ] ]
+            { tooltip = "search"
             , onClick = Nothing
-            , color = Ui.Button.Primary
+            , icon = Icon.search
             }
-            (Ui.Button.Icon { icon = Icon.search, tooltip = "search" })
         , Styled.inputText value
             [ Html.Styled.Events.onInput onInput
             , property "autocomplete" (JE.string searchLabel)
             , css [ Css.border (Css.px 0), Css.flexGrow (Css.num 1), Css.marginRight (Css.px 7), Css.outline Css.none ]
             ]
         , Styled.when (value /= "") <|
-            Ui.Button.customView [ iconStyle ]
-                { emphasis = Ui.Button.Low
+            Ui.Button.iconButton [ ]
+                { tooltip = "clear"
                 , onClick = Just onClear
-                , color = Ui.Button.Primary
+                , icon = Icon.close
                 }
-                (Ui.Button.Icon { icon = Icon.close, tooltip = "clear" })
         ]
