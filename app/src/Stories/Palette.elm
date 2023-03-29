@@ -24,7 +24,8 @@ main =
 
 colorSwatch : String -> Css.Color -> Styled.Html msg
 colorSwatch name color =
-    Styled.div [ Attributes.css [ Css.width (Css.px 100), Css.displayFlex, Css.overflow Css.hidden, Css.flexDirection Css.column, Shadow.shadow Shadow.Small
+    Styled.div [ Attributes.css [ Css.width (Css.px 100), Css.displayFlex
+    , Css.overflow Css.hidden, Css.flexDirection Css.column, Shadow.shadow Shadow.Small
                 , Css.borderRadius (Css.px 10) ]]
         [ Styled.div
             [ Attributes.css

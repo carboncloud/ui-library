@@ -6,8 +6,7 @@ import Accessibility.Styled.Role as Role
 import Css
 import Html.Styled.Attributes as Attributes exposing (css)
 import Rpx exposing (rpx)
-import String.Extra exposing (dasherize)
-import Ui.Button as Button
+import Ui.Button as Button exposing (ButtonColor, ButtonEmphasis)
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
 import Ui.Palette as Palette
@@ -16,9 +15,28 @@ import Ui.Text as Text
 import Ui.TextStyle as TextStyle
 
 
-view : { title : String, content : Html msg, onClose : msg, actionButtons : List (Html msg) } -> Html msg
-view { title, content, onClose, actionButtons } =
-    widget (dasherize title)
+type Dialog msg
+    = Dialog
+        { title : String
+        , labelId : String
+        , content : Html msg
+        , onClose : msg
+        , actionButtons :
+            List
+                ( { onClick : Maybe msg
+                  , color : ButtonColor
+                  , emphasis : ButtonEmphasis
+                  }
+                , Button.ButtonContent
+                )
+        }
+
+
+view :
+    Dialog msg
+    -> Html msg
+view (Dialog { title, content, onClose, actionButtons, labelId }) =
+    widget (LabelledBy labelId)
         [ css
             [ Css.displayFlex
             , Css.flexDirection Css.column
@@ -29,35 +47,41 @@ view { title, content, onClose, actionButtons } =
             , Css.padding (rpx 25)
             ]
         ]
-        ([ Button.iconButton
-            [ css [ Css.alignSelf Css.end, Css.margin (Css.px -10)] ]
+        [ Button.iconButton
+            [ css [ Css.alignSelf Css.end, Css.margin (Css.px -10) ] ]
             { onClick = Just onClose
             , tooltip = "close"
             , icon = Icon.close
             }
-         , Html.div
+        , Html.div
             [ css
                 [ Css.displayFlex
                 , Css.flexDirection Css.column
-                , Css.margin4 Css.zero (Css.px 25) (Css.px 25) (Css.px 25) 
+                , Css.margin4 Css.zero (Css.px 25) (Css.px 25) (Css.px 25)
                 ]
             ]
-            [ Text.customView [ css [ Css.margin Css.auto, Css.textAlign Css.center] ] TextStyle.heading4 title
-            , content ]
-        , Html.div [ css [ Css.alignSelf Css.end, Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "10px"] ] <| actionButtons
-         ]
-        )
+            [ Text.customView [ Attributes.id labelId, css [ Css.margin Css.auto, Css.textAlign Css.center ] ] TextStyle.heading4 title
+            , content
+            ]
+        , Html.div [ css [ Css.alignSelf Css.end, Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "10px" ] ] <| List.map (\( x, y ) -> Button.view x y) actionButtons
+        ]
 
+type Label = LabelledBy String | Label String
 
-widget : String -> List (Html.Attribute Never) -> List (Html msg) -> Html msg
-widget labelledBy attrs content =
+widget :  Label -> List (Html.Attribute Never) -> List (Html msg) -> Html msg
+widget label attrs content =
     Html.div
         (attrs
             ++ [ Role.dialog
-               , Aria.labelledBy labelledBy
+               , case label of
+                    LabelledBy s ->
+                        Aria.labelledBy s
+                    Label s ->
+                        Aria.label s
                , Attributes.css <|
                     [ Css.position Css.fixed
                     , Css.borderRadius (Css.px 10)
+                    , Css.backgroundColor <| toCssColor Palette.white
                     , shadow Shadow.Large
                     ]
                ]

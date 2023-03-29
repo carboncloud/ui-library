@@ -63,9 +63,8 @@ view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.width (Css.px 550), Css.height (Css.px 550) ] ]
             [ Input.search { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
-            , MillerColumns.view { liftMsg = GotTreeMsg }
+            , MillerColumns.view { liftMsg = GotTreeMsg, content = viewItem }
                 millerColumnsModel
-                viewItem
             ]
 
 

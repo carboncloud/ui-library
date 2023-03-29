@@ -1,4 +1,7 @@
-module Ui.MillerColumns exposing (Model, Content, Msg, init, setFocus, setSearch, view, update)
+module Ui.MillerColumns exposing
+    ( Model, Content, Msg, init, setFocus, setSearch, view, update
+    , Config
+    )
 
 {-| This module defines a component of a miller column layout
 
@@ -20,23 +23,28 @@ import Task exposing (Task)
 import Tree as Tree exposing (Tree(..))
 import Tree.Zipper as Zipper exposing (Zipper)
 import Ui.Color exposing (toCssColor)
+import Ui.Css.TextStyle as TextStyle
 import Ui.Icon as Icon
 import Ui.Palette
 import Ui.Scrollbar exposing (ScrollbarWidth(..), scrollbarColor, scrollbarWidth)
-import Ui.Css.TextStyle as TextStyle
 
 
 {-| Model of the component
 
 `treeZipper` the data displayed in the miller columns. The zipper has a single focus at any time.
-`state` internal state of the component. 
-    - If the state is in `Focus` it will show the zipper in miller columns
-    - If the state is in `Search` it will list all the values that contains the searched value
+`state` internal state of the component.
+- If the state is in `Focus` it will show the zipper in miller columns
+- If the state is in `Search` it will list all the values that contains the searched value
+
 -}
 type alias Model v =
     { treeZipper : Zipper ( ListItemId, v )
     , state : State v
     }
+
+
+type alias Config msg a =
+    { liftMsg : Msg -> msg, content : Content a }
 
 
 {-| The content of each list item
@@ -56,7 +64,7 @@ type alias Content a =
 -}
 init : Tree ( String, v ) -> Model v
 init tree =
-    { treeZipper = Zipper.fromTree <| Tree.map(\(k, v) -> (ListItemId k, v)) tree, state = Focus }
+    { treeZipper = Zipper.fromTree <| Tree.map (\( k, v ) -> ( ListItemId k, v )) tree, state = Focus }
 
 
 
@@ -106,11 +114,10 @@ update msg model =
         ScrollTo _ ->
             ( model, Cmd.none )
 
-{-|
-This task will scroll an element of a specific viewport into view.  
+
+{-| This task will scroll an element of a specific viewport into view.
 We do this by taking the difference between the x-offset of the element we want to scroll to and the x-offset of the specific viewport element relative to the main scene,
 we then add to the current offset of the specific viewport.
-
 -}
 horizontalScrollToElementInViewportOf : ListItemId -> String -> Task Dom.Error ()
 horizontalScrollToElementInViewportOf (ListItemId listItemId) viewportId =
@@ -127,14 +134,14 @@ rootId =
 
 
 {-| View the Miller Columns
+`liftMsg` lifts the MillerColumns message to another `msg` type
+`Model v` the model of the MillerColumns component
 -}
 view :
-    { liftMsg : Msg -> msg
-    }
+    Config msg v
     -> Model v
-    -> Content v
     -> Styled.Html msg
-view { liftMsg } model { leftAlignedText, mRightAlignedText } =
+view { liftMsg, content } model =
     let
         labelStyle n =
             css <|
@@ -183,12 +190,12 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                     ]
                 ]
             <|
-                case mRightAlignedText of
+                case content.mRightAlignedText of
                     Nothing ->
-                        [ Styled.text <| leftAlignedText n ]
+                        [ Styled.text <| content.leftAlignedText n ]
 
                     Just rightAlignedText ->
-                        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text <| leftAlignedText n ]
+                        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text <| content.leftAlignedText n ]
                         , Styled.text <| rightAlignedText n
                         ]
 
@@ -198,7 +205,8 @@ view { liftMsg } model { leftAlignedText, mRightAlignedText } =
                 node =
                     Tree.label t
 
-                ((ListItemId id) as listItemId) = Tuple.first node
+                ((ListItemId id) as listItemId) =
+                    Tuple.first node
             in
             Styled.li
                 [ StyledAttributes.id id
@@ -291,7 +299,10 @@ type State v
     | Search String (v -> String)
 
 
-type ListItemId = ListItemId String
+type ListItemId
+    = ListItemId String
+
+
 
 -- TODO: Fix search, we should prioritize "good matches"
 
