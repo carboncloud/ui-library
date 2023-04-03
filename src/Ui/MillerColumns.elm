@@ -1,6 +1,6 @@
 module Ui.MillerColumns exposing
     ( Model, Content, Msg, init, setFocus, setSearch, view, update
-    , Config
+    , Config, unwrapListItemId, ListItemId, focus, root
     )
 
 {-| This module defines a component of a miller column layout
@@ -18,7 +18,6 @@ import Html.Styled.Attributes as StyledAttributes exposing (css)
 import Html.Styled.Events as StyledEvents
 import List.Extra as List
 import Maybe
-import String.Extra exposing (dasherize)
 import Task exposing (Task)
 import Tree as Tree exposing (Tree(..))
 import Tree.Zipper as Zipper exposing (Zipper)
@@ -33,8 +32,9 @@ import Ui.Scrollbar exposing (ScrollbarWidth(..), scrollbarColor, scrollbarWidth
 
 `treeZipper` the data displayed in the miller columns. The zipper has a single focus at any time.
 `state` internal state of the component.
-- If the state is in `Focus` it will show the zipper in miller columns
-- If the state is in `Search` it will list all the values that contains the searched value
+
+  - If the state is in `Focus` it will show the zipper in miller columns
+  - If the state is in `Search` it will list all the values that contains the searched value
 
 -}
 type alias Model v =
@@ -82,9 +82,19 @@ setFocus m =
 `searchValue` the value we are searching for in the tree structure
 `searchOn` given a value in the tree it returns the string we want to search on with the `searchValue`
 -}
-setSearch : String -> (v -> String) -> Model v -> Model v
-setSearch searchValue searchOn m =
-    { m | state = Search searchValue searchOn }
+setSearch : List (Tree (ListItemId, v)) -> Model v -> Model v
+setSearch searchResults m =
+    { m | state = Search searchResults }
+
+{-| Get the value of the current focus
+-}
+focus : Model v -> (ListItemId, v)
+focus = Zipper.label << .treeZipper
+
+{-| Get the value of the root
+-}
+root : Model v -> (ListItemId, v)
+root = Zipper.label << Zipper.root << .treeZipper
 
 
 {-| Internal messages to update the state of the component
@@ -179,14 +189,14 @@ view { liftMsg, content } model =
                 ]
 
         viewNode n =
-            Styled.span
+            Styled.div
                 [ css
-                    [ Css.width (Css.px 200)
-                    , Css.textOverflow Css.ellipsis
+                    [ Css.textOverflow Css.ellipsis
                     , Css.overflow Css.hidden
                     , Css.whiteSpace Css.normal
-                    , Css.flex (Css.num 1)
                     , Css.lineHeight (Css.num 1.3)
+                    , Css.flex (Css.num 1)
+                    , Css.width (Css.px 200)
                     ]
                 ]
             <|
@@ -199,8 +209,8 @@ view { liftMsg, content } model =
                         , Styled.text <| rightAlignedText n
                         ]
 
-        viewTreeNode : (ListItemId -> Msg) -> Tree ( ListItemId, v ) -> Styled.Html msg
-        viewTreeNode onSelect t =
+        viewTreeNode : Tree ( ListItemId, v ) -> Styled.Html msg
+        viewTreeNode t =
             let
                 node =
                     Tree.label t
@@ -211,7 +221,7 @@ view { liftMsg, content } model =
             Styled.li
                 [ StyledAttributes.id id
                 , labelStyle node
-                , StyledEvents.onClick <| liftMsg <| onSelect listItemId
+                , StyledEvents.onClick <| liftMsg <| Select listItemId
                 ]
             <|
                 (viewNode <|
@@ -227,7 +237,7 @@ view { liftMsg, content } model =
                             []
                        )
 
-        viewList onSelect children =
+        viewList children =
             Styled.ul
                 [ css <|
                     [ Css.listStyleType Css.none
@@ -236,30 +246,25 @@ view { liftMsg, content } model =
                     -- order is important since we want this to apply for the first child even when it is the last child
                     , Css.firstChild [ Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200) ]
                     , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
-                    , Css.overflowY Css.auto
-                    , Css.overflowX Css.hidden
                     , Css.padding (Css.px 0)
                     , Css.margin (Css.px 0)
-                    , Css.height (Css.px 300)
-                    , Css.minWidth (Css.px 250)
-                    , Css.maxWidth (Css.px 350)
+                    , Css.height (Css.px 350)
+                    , Css.width (Css.px 300)
                     , scrollbarWidth Thin
                     , scrollbarColor Ui.Palette.grey300 Ui.Palette.grey100
                     ]
                         ++ TextStyle.body
                 ]
             <|
-                List.map (viewTreeNode onSelect) children
+                List.map viewTreeNode children
 
-        viewSearch onSelect s searchOn =
-            viewList onSelect << searchTree (String.contains s << String.toLower << searchOn)
     in
     Styled.div
         [ StyledAttributes.id rootId
         , css
             [ Css.displayFlex
             , Css.flexDirection Css.row
-            , Css.width (Css.pct 100)
+            , Css.maxWidth (Css.px 800)
             , Css.borderRadius (Css.px 5)
             , Css.overflowX Css.scroll
             , Css.color (toCssColor Ui.Palette.black)
@@ -274,7 +279,7 @@ view { liftMsg, content } model =
                 List.reverse
                     (List.unfoldr
                         (\ct ->
-                            Maybe.map (\p -> ( viewList Select (Zipper.children p), p ))
+                            Maybe.map (\p -> ( viewList (Zipper.children p), p ))
                                 (Zipper.parent ct)
                         )
                         model.treeZipper
@@ -284,36 +289,23 @@ view { liftMsg, content } model =
                                 []
 
                             children ->
-                                [ viewList Select children ]
+                                [ viewList children ]
                        )
 
-            Search s searchOn ->
-                [ viewSearch Select s (searchOn << Tuple.second) (Zipper.toTree model.treeZipper) ]
+            Search searchResults ->
+                [ viewList searchResults ]
 
 
 {-| Opaque type of the internal state of the component.
 Use [setters](#setters) to set the state.
 -}
-type State v
+type State a
     = Focus
-    | Search String (v -> String)
+    | Search (List (Tree (ListItemId, a)))
 
 
 type ListItemId
     = ListItemId String
 
-
-
--- TODO: Fix search, we should prioritize "good matches"
-
-
-searchTree : (a -> Bool) -> Tree a -> List (Tree a)
-searchTree pred x =
-    (if pred (Tree.label x) then
-        (::) x
-
-     else
-        identity
-    )
-    <|
-        List.concatMap (searchTree pred) (Tree.children x)
+unwrapListItemId : ListItemId -> String
+unwrapListItemId (ListItemId s) = s

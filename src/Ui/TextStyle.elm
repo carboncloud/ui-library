@@ -81,7 +81,7 @@ body =
     TextStyle
         { family = sansSerifFamilies
         , size = 16
-        , weight = Thin
+        , weight = Normal
         , color = primaryColor
         , lineHeight = 1.2
         }

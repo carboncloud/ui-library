@@ -1,4 +1,4 @@
-module Ui.Color exposing (toCssColor, toElementColor, fromHex)
+module Ui.Color exposing (toCssColor, fromHex)
 
 {-| Color helper functions
 
@@ -8,8 +8,6 @@ module Ui.Color exposing (toCssColor, toElementColor, fromHex)
 
 import Color exposing (Color, fromRgba, toRgba)
 import Css
-import Element
-
 
 {-| Interprets a color as a CSS color
 -}
@@ -20,20 +18,6 @@ toCssColor =
             (round <| red * 255)
             (round <| green * 255)
             (round <| blue * 255)
-            alpha
-    )
-        << toRgba
-
-
-{-| Interprets a color as an Element Color
--}
-toElementColor : Color -> Element.Color
-toElementColor =
-    (\{ red, green, blue, alpha } ->
-        Element.rgba255
-            (round red)
-            (round green)
-            (round blue)
             alpha
     )
         << toRgba

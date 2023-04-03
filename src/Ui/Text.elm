@@ -1,8 +1,6 @@
 module Ui.Text exposing (..)
 
 import Css
-import Element exposing (Element)
-import Html.Attributes
 import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Rpx exposing (rpx)

@@ -15,36 +15,28 @@ import Ui.Text as Text
 import Ui.TextStyle as TextStyle
 
 
-type Dialog msg
-    = Dialog
-        { title : String
-        , labelId : String
-        , content : Html msg
-        , onClose : msg
-        , actionButtons :
-            List
+
+view :
+    { title : String, labelId : String, content : Html msg, onClose : msg, actionButtons :  List
                 ( { onClick : Maybe msg
                   , color : ButtonColor
                   , emphasis : ButtonEmphasis
                   }
                 , Button.ButtonContent
-                )
-        }
-
-
-view :
-    Dialog msg
+                )}
     -> Html msg
-view (Dialog { title, content, onClose, actionButtons, labelId }) =
+view { title, content, onClose, actionButtons, labelId } =
     widget (LabelledBy labelId)
         [ css
             [ Css.displayFlex
             , Css.flexDirection Css.column
             , Css.transform (Css.translate2 (Css.pct -50) (Css.pct -50))
             , Css.minWidth (Css.px 300)
-            , Css.maxWidth (Css.px 900)
+            , Css.maxWidth (Css.px 1500)
             , Css.left (Css.pct 50)
+            , Css.top (Css.pct 50)
             , Css.padding (rpx 25)
+            , Css.zIndex (Css.int 1000)
             ]
         ]
         [ Button.iconButton
@@ -60,7 +52,7 @@ view (Dialog { title, content, onClose, actionButtons, labelId }) =
                 , Css.margin4 Css.zero (Css.px 25) (Css.px 25) (Css.px 25)
                 ]
             ]
-            [ Text.customView [ Attributes.id labelId, css [ Css.margin Css.auto, Css.textAlign Css.center ] ] TextStyle.heading4 title
+            [ Text.customView [ Attributes.id labelId, css [ Css.margin4 Css.auto Css.auto (Css.px 25) Css.auto, Css.textAlign Css.center ] ] TextStyle.heading4 title
             , content
             ]
         , Html.div [ css [ Css.alignSelf Css.end, Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "10px" ] ] <| List.map (\( x, y ) -> Button.view x y) actionButtons
@@ -79,7 +71,7 @@ widget label attrs content =
                     Label s ->
                         Aria.label s
                , Attributes.css <|
-                    [ Css.position Css.fixed
+                    [ Css.position Css.absolute
                     , Css.borderRadius (Css.px 10)
                     , Css.backgroundColor <| toCssColor Palette.white
                     , shadow Shadow.Large

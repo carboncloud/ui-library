@@ -13,7 +13,7 @@ import Tree exposing (tree)
 import Tree.Zipper as Zipper
 import Ui.Input as Input
 import String.Extra exposing (dasherize)
-
+import Tree exposing (Tree)
 
 main : Component Model Msg
 main =
@@ -32,8 +32,11 @@ type alias Model =
 
 init : Model
 init =
-    { searchValue = "", millerColumnsModel = MillerColumns.init <| Tree.map (\x -> (dasherize x.label, x)) t }
-
+    let
+        newTree = MillerColumns.init <| Tree.map (\x -> (dasherize x.label, x)) t
+    in
+    { searchValue = ""
+        , millerColumnsModel = newTree}
 
 type Msg
     = GotTreeMsg MillerColumns.Msg
@@ -52,16 +55,24 @@ update msg model =
 
         Search s ->
             if s /= "" then
-                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch s .label model.millerColumnsModel }, Cmd.none )
+                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch (searchTree (String.contains s << .label << Tuple.second) (Zipper.toTree model.millerColumnsModel.treeZipper)) model.millerColumnsModel }, Cmd.none )
+      
+                
 
             else
                 ( { model | searchValue = s, millerColumnsModel = MillerColumns.setFocus model.millerColumnsModel }, Cmd.none )
 
-
+searchTree :  (a -> Bool) -> Tree a -> List (Tree a)
+searchTree pred x =
+    (if pred (Tree.label x) then
+        (::) x
+    else
+        identity ) <| List.concatMap (searchTree pred) (Tree.children x)
+        
 view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
-        Styled.div [ css [ Css.width (Css.px 550), Css.height (Css.px 550) ] ]
+        Styled.div [ css [ Css.height (Css.px 550) ] ]
             [ Input.search { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
             , MillerColumns.view { liftMsg = GotTreeMsg, content = viewItem }
                 millerColumnsModel
