@@ -25,14 +25,16 @@ inputTextBaseStyle =
 
 
 search :
-    { searchLabel : String
-    , value : String
-    , onInput : String -> msg
-    , onClear : msg
-    }
+    List (Styled.Attribute Never)
+    ->
+        { searchLabel : String
+        , value : String
+        , onInput : String -> msg
+        , onClear : msg
+        }
     -> Styled.Html msg
-search { searchLabel, value, onInput, onClear } =
-    Styled.div [ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] <|
+search attrs { searchLabel, value, onInput, onClear } =
+    Styled.div ([ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] ++ attrs) <|
         [ Ui.Button.iconButton [ css [ Css.cursor Css.default ] ]
             { tooltip = "search"
             , onClick = Nothing

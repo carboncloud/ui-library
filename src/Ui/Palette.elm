@@ -94,7 +94,7 @@ grey100 =
 -}
 grey200 : Color
 grey200 =
-    Ui.Color.fromHex "#CAE8E9"
+    Ui.Color.fromHex "#e8e8e8"
 
 
 {-| ![#D0D5DD](https://placehold.co/15x15/D0D5DD/D0D5DD.png) `#D0D5DD`

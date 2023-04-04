@@ -56,10 +56,10 @@ view =
                 ]
                 [ Text.view TextStyle.heading1 "Headline 1"
                 , Text.view TextStyle.heading2 "Headline 2"
-                , Text.styledParagraph TextStyle.body """
+                , Text.customParagraph TextStyle.body """
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non magna lorem. Integer ultrices, odio sit amet tincidunt semper, augue odio elementum tellus, sollicitudin varius nisi magna vitae nunc. Nulla ornare tincidunt ultrices. Nulla pulvinar ligula volutpat tellus commodo, ut lobortis nisl aliquet. Suspendisse scelerisque pharetra risus, ac ultricies ligula sodales ac. Pellentesque tempor, ligula sit amet lacinia egestas, velit nunc bibendum erat, vel ornare mi sem non lacus. Pellentesque congue sagittis sem laoreet vulputate. Aliquam erat volutpat. 
                     """
-                , Text.styledParagraph TextStyle.body """
+                , Text.customParagraph TextStyle.body """
                     In sed risus enim. Sed lobortis rutrum ante ac posuere. Vestibulum nec sem eget justo blandit porttitor ac ac ipsum. Integer et justo ac orci tristique accumsan. Nullam dictum, nulla at malesuada sodales, sapien lorem venenatis justo, id luctus nisi mauris eu ex. Etiam in maximus felis. Nullam sed ipsum vulputate, venenatis massa ac, volutpat lectus. Morbi pretium hendrerit orci vitae mollis. 
                     """
                 ]

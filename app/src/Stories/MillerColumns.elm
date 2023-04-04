@@ -79,9 +79,9 @@ searchTree pred x =
 view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
-        Styled.div [ css [ Css.height (Css.px 550) ] ]
-            [ Input.search { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
-            , MillerColumns.view { liftMsg = GotTreeMsg, content = viewItem }
+        Styled.div [ css [ Css.height (Css.px 550), Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px" ] ]
+            [ Input.search [ css [ Css.maxWidth (Css.px 350) ] ] { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
+            , MillerColumns.view { liftMsg = GotTreeMsg, nodeContent = viewNode }
                 millerColumnsModel
             ]
 
@@ -90,9 +90,9 @@ type alias Item =
     { label : String, emission : Maybe Float }
 
 
-viewItem : MillerColumns.Content Item
-viewItem =
-    { leftAlignedText = .label
+viewNode : Item -> MillerColumns.Content
+viewNode item =
+    { leftAlignedText = item.label
     , mRightAlignedText = Nothing
     }
 
