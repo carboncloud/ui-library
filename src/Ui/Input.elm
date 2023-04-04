@@ -1,4 +1,4 @@
-module Ui.Input exposing (..)
+module Ui.Input exposing (search)
 
 import Accessibility.Styled as Styled
 import Css
@@ -22,14 +22,6 @@ inputTextBaseStyle =
         , Css.displayFlex
         , Css.pseudoClass "focus-within" [ Css.outline3 (Css.px 2) Css.solid (toCssColor Ui.Palette.primary500) ]
         ]
-
-
-type alias Model =
-    { suffix : Maybe String
-    , description : Maybe String
-    , label : Maybe String
-    , placeholder : Maybe String
-    }
 
 
 search :

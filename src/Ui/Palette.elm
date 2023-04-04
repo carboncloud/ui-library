@@ -34,10 +34,6 @@ import Color exposing (Color)
 import Ui.Color
 
 
-
--- TODO: confirm colors
-
-
 {-| ![#CAE8E9](https://placehold.co/15x15/cae8e9/cae8e9.png) `#CAE8E9`
 -}
 primary050 : Color

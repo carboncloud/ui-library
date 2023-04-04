@@ -44,7 +44,9 @@ type alias Model v =
 
 
 type alias Config msg a =
-    { liftMsg : Msg -> msg, content : Content a }
+    { liftMsg : Msg -> msg
+    , content : Content a
+    }
 
 
 {-| The content of each list item

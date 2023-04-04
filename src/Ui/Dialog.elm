@@ -1,4 +1,4 @@
-module Ui.Dialog exposing (..)
+module Ui.Dialog exposing (Label(..), view)
 
 import Accessibility.Styled as Html exposing (Html)
 import Accessibility.Styled.Aria as Aria

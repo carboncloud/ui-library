@@ -18,7 +18,7 @@ module Ui.RadioButton exposing
 -}
 
 import Accessibility.Styled as A11y exposing (Html)
-import Css exposing (disabled)
+import Css
 import Css.Transitions as Transitions
 import Html exposing (Attribute)
 import Html.Styled.Attributes as Attributes

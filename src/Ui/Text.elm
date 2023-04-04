@@ -1,4 +1,4 @@
-module Ui.Text exposing (..)
+module Ui.Text exposing (customParagraph, customView, paragraph, view)
 
 import Css
 import Html.Styled as Styled
@@ -47,8 +47,8 @@ paragraph =
     styledCustomParagraph [] TextStyle.body
 
 
-styledParagraph : TextStyle -> String -> Styled.Html msg
-styledParagraph font =
+customParagraph : TextStyle -> String -> Styled.Html msg
+customParagraph font =
     styledCustomParagraph [] font
 
 

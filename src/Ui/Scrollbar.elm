@@ -1,8 +1,11 @@
-module Ui.Scrollbar exposing (..)
+module Ui.Scrollbar exposing
+    ( ScrollbarWidth(..)
+    , scrollbarColor
+    , scrollbarWidth
+    )
 
 import Color exposing (Color)
 import Css
-import Ui.Color exposing (toCssColor)
 
 
 type ScrollbarWidth

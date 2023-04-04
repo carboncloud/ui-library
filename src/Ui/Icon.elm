@@ -32,7 +32,6 @@ module Ui.Icon exposing
 import Accessibility.Styled.Role as Role
 import Color exposing (Color)
 import Css
-import Css.Global exposing (children)
 import Html.Styled as Html exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, path, svg, text)
 import Svg.Styled.Attributes as SvgAttr
