@@ -1,7 +1,6 @@
 module Ui.Button exposing
     ( ButtonColor(..), ButtonEmphasis(..), ButtonContent(..)
-    , view, customView
-    , iconButton
+    , view, customView, iconButton
     )
 
 {-| Defines a Button component
@@ -14,7 +13,7 @@ module Ui.Button exposing
 
 # Views
 
-@docs view, customView
+@docs view, customView, iconButton
 
 -}
 
@@ -83,7 +82,6 @@ view { onClick, color, emphasis } =
 
 
 {-| Returns a custom view of a button.
-Only use this when `view` is not enough.
 -}
 customView :
     List (Styled.Attribute msg)
@@ -294,6 +292,8 @@ button customStyle attrs mOnClick buttonContent =
                 ]
 
 
+{-| A view of an icon button which can be useful when we have little space
+-}
 iconButton :
     List (Styled.Attribute msg)
     ->

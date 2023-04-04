@@ -9,8 +9,8 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
-import Ui.TextStyle as TextStyle
 import Ui.Text as Text
+import Ui.TextStyle as TextStyle
 
 
 main : Component () msg

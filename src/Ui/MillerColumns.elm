@@ -1,11 +1,8 @@
-module Ui.MillerColumns exposing
-    ( Model, Content, Msg, init, setFocus, setSearch, view, update
-    , Config, ListItemId, focus, root, unwrapListItemId
-    )
+module Ui.MillerColumns exposing (Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus)
 
 {-| This module defines a component of a miller column layout
 
-@docs Model, Content, Msg, init, setFocus, setSearch, view, update
+@docs Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus
 
 -}
 
@@ -38,14 +35,17 @@ import Ui.Scrollbar exposing (ScrollbarWidth(..), scrollbarColor, scrollbarWidth
 
 -}
 type alias Model v =
-    { treeZipper : Zipper ( ListItemId, v )
+    { treeZipper : Zipper ( NodeId, v )
     , state : State v
     }
 
 
+{-| `liftMsg` "lifts" the internal messages of the component to the parent
+`nodeContent` returns some Content base on a
+-}
 type alias Config msg a =
     { liftMsg : Msg -> msg
-    , content : Content a
+    , nodeContent : a -> Content
     }
 
 
@@ -56,9 +56,9 @@ type alias Config msg a =
 `mRightAlignedText` Takes a value of a and gives back a String that is shown to the right of each list item
 
 -}
-type alias Content a =
-    { leftAlignedText : a -> String
-    , mRightAlignedText : Maybe (a -> String)
+type alias Content =
+    { leftAlignedText : String
+    , mRightAlignedText : Maybe String
     }
 
 
@@ -66,7 +66,7 @@ type alias Content a =
 -}
 init : Tree ( String, v ) -> Model v
 init tree =
-    { treeZipper = Zipper.fromTree <| Tree.map (\( k, v ) -> ( ListItemId k, v )) tree, state = Focus }
+    { treeZipper = Zipper.fromTree <| Tree.map (\( k, v ) -> ( NodeId k, v )) tree, state = Focus }
 
 
 
@@ -84,21 +84,21 @@ setFocus m =
 `searchValue` the value we are searching for in the tree structure
 `searchOn` given a value in the tree it returns the string we want to search on with the `searchValue`
 -}
-setSearch : List (Tree ( ListItemId, v )) -> Model v -> Model v
+setSearch : List (Tree ( NodeId, v )) -> Model v -> Model v
 setSearch searchResults m =
     { m | state = Search searchResults }
 
 
 {-| Get the value of the current focus
 -}
-focus : Model v -> ( ListItemId, v )
+focus : Model v -> ( NodeId, v )
 focus =
     Zipper.label << .treeZipper
 
 
 {-| Get the value of the root
 -}
-root : Model v -> ( ListItemId, v )
+root : Model v -> ( NodeId, v )
 root =
     Zipper.label << Zipper.root << .treeZipper
 
@@ -106,7 +106,7 @@ root =
 {-| Internal messages to update the state of the component
 -}
 type Msg
-    = Select ListItemId
+    = Select NodeId
     | ScrollTo (Result Dom.Error ())
 
 
@@ -135,18 +135,13 @@ update msg model =
 We do this by taking the difference between the x-offset of the element we want to scroll to and the x-offset of the specific viewport element relative to the main scene,
 we then add to the current offset of the specific viewport.
 -}
-horizontalScrollToElementInViewportOf : ListItemId -> String -> Task Dom.Error ()
-horizontalScrollToElementInViewportOf (ListItemId listItemId) viewportId =
+horizontalScrollToElementInViewportOf : NodeId -> String -> Task Dom.Error ()
+horizontalScrollToElementInViewportOf (NodeId listItemId) viewportId =
     Task.map3 (\listElement viewportElement { viewport } -> (listElement.element.x - viewportElement.element.x) + viewport.x)
         (Dom.getElement listItemId)
         (Dom.getElement viewportId)
         (Dom.getViewportOf viewportId)
         |> Task.andThen (\x -> Dom.setViewportOf viewportId x 0)
-
-
-rootId : String
-rootId =
-    "ui-tree-component"
 
 
 {-| View the Miller Columns
@@ -157,7 +152,7 @@ view :
     Config msg v
     -> Model v
     -> Styled.Html msg
-view { liftMsg, content } model =
+view { liftMsg, nodeContent } model =
     let
         labelStyle n =
             css <|
@@ -195,6 +190,10 @@ view { liftMsg, content } model =
                 ]
 
         viewNode n =
+            let
+                content =
+                    nodeContent n
+            in
             Styled.div
                 [ css
                     [ Css.textOverflow Css.ellipsis
@@ -208,20 +207,20 @@ view { liftMsg, content } model =
             <|
                 case content.mRightAlignedText of
                     Nothing ->
-                        [ Styled.text <| content.leftAlignedText n ]
+                        [ Styled.text <| content.leftAlignedText ]
 
                     Just rightAlignedText ->
-                        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text <| content.leftAlignedText n ]
-                        , Styled.text <| rightAlignedText n
+                        [ Styled.span [ css [ Css.flexGrow (Css.num 1) ] ] [ Styled.text <| content.leftAlignedText ]
+                        , Styled.text <| rightAlignedText
                         ]
 
-        viewTreeNode : Tree ( ListItemId, v ) -> Styled.Html msg
+        viewTreeNode : Tree ( NodeId, v ) -> Styled.Html msg
         viewTreeNode t =
             let
                 node =
                     Tree.label t
 
-                ((ListItemId id) as listItemId) =
+                ((NodeId id) as listItemId) =
                     Tuple.first node
             in
             Styled.li
@@ -306,13 +305,26 @@ Use [setters](#setters) to set the state.
 -}
 type State a
     = Focus
-    | Search (List (Tree ( ListItemId, a )))
+    | Search (List (Tree ( NodeId, a )))
 
 
-type ListItemId
-    = ListItemId String
+{-| The id of a node in the tree
+-}
+type NodeId
+    = NodeId String
 
 
-unwrapListItemId : ListItemId -> String
-unwrapListItemId (ListItemId s) =
+{-| Get the value of a NodeId
+-}
+unwrapNodeId : NodeId -> String
+unwrapNodeId (NodeId s) =
     s
+
+
+
+-- Internals
+
+
+rootId : String
+rootId =
+    "ui-tree-component"

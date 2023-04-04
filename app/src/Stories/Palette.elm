@@ -9,9 +9,9 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
-import Ui.TextStyle
-import Ui.Text
 import Ui.Shadow as Shadow
+import Ui.Text
+import Ui.TextStyle
 
 
 main : Component () msg
@@ -24,9 +24,16 @@ main =
 
 colorSwatch : String -> Css.Color -> Styled.Html msg
 colorSwatch name color =
-    Styled.div [ Attributes.css [ Css.width (Css.px 100), Css.displayFlex
-    , Css.overflow Css.hidden, Css.flexDirection Css.column, Shadow.shadow Shadow.Small
-                , Css.borderRadius (Css.px 10) ]]
+    Styled.div
+        [ Attributes.css
+            [ Css.width (Css.px 100)
+            , Css.displayFlex
+            , Css.overflow Css.hidden
+            , Css.flexDirection Css.column
+            , Shadow.shadow Shadow.Small
+            , Css.borderRadius (Css.px 10)
+            ]
+        ]
         [ Styled.div
             [ Attributes.css
                 [ Css.backgroundColor color
@@ -39,10 +46,11 @@ colorSwatch name color =
                 , Css.justifyContent Css.end
                 ]
             ]
-            [  ]
-        , Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.margin (Css.px 10) ]] [ 
-            Ui.Text.customView [] Ui.TextStyle.body name
-            , Ui.Text.customView [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.body <| toHexString color ]
+            []
+        , Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.margin (Css.px 10) ] ]
+            [ Ui.Text.customView [] Ui.TextStyle.body name
+            , Ui.Text.customView [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.body <| toHexString color
+            ]
         ]
 
 
@@ -75,8 +83,14 @@ toneGroup name tones =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column
-        , Css.property "gap" "25px", Css.backgroundColor <| Color.toCssColor Palette.white ] ]
+        Styled.div
+            [ Attributes.css
+                [ Css.displayFlex
+                , Css.flexDirection Css.column
+                , Css.property "gap" "25px"
+                , Css.backgroundColor <| Color.toCssColor Palette.white
+                ]
+            ]
             [ colorSwatchGroup <|
                 toneGroup "Primary"
                     [ ( Color.toCssColor Palette.primary050, 50 )

@@ -10,6 +10,7 @@ import Svg.Styled.Attributes exposing (css)
 import Ui.Button exposing (ButtonEmphasis(..))
 import Ui.Icon as Icon
 
+
 main : Component () Msg
 main =
     Storybook.Component.stateless
@@ -78,13 +79,13 @@ view controls =
                 , onClick = Nothing
                 }
                 (Ui.Button.Text controls.label)
-            ,Ui.Button.view
+            , Ui.Button.view
                 { emphasis = controls.emphasis
                 , color = Ui.Button.Primary
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.TextWithLeftIcon controls.label Icon.edit)
-                        ,Ui.Button.view
+            , Ui.Button.view
                 { emphasis = controls.emphasis
                 , color = Ui.Button.Primary
                 , onClick = Just UserClickedButton

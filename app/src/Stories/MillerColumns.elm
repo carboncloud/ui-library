@@ -8,12 +8,12 @@ import List.Extra as List
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import String
-import Ui.MillerColumns as MillerColumns 
-import Tree exposing (tree)
+import String.Extra exposing (dasherize)
+import Tree exposing (Tree, tree)
 import Tree.Zipper as Zipper
 import Ui.Input as Input
-import String.Extra exposing (dasherize)
-import Tree exposing (Tree)
+import Ui.MillerColumns as MillerColumns
+
 
 main : Component Model Msg
 main =
@@ -33,10 +33,13 @@ type alias Model =
 init : Model
 init =
     let
-        newTree = MillerColumns.init <| Tree.map (\x -> (dasherize x.label, x)) t
+        newTree =
+            MillerColumns.init <| Tree.map (\x -> ( dasherize x.label, x )) t
     in
     { searchValue = ""
-        , millerColumnsModel = newTree}
+    , millerColumnsModel = newTree
+    }
+
 
 type Msg
     = GotTreeMsg MillerColumns.Msg
@@ -56,19 +59,23 @@ update msg model =
         Search s ->
             if s /= "" then
                 ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch (searchTree (String.contains s << .label << Tuple.second) (Zipper.toTree model.millerColumnsModel.treeZipper)) model.millerColumnsModel }, Cmd.none )
-      
-                
 
             else
                 ( { model | searchValue = s, millerColumnsModel = MillerColumns.setFocus model.millerColumnsModel }, Cmd.none )
 
-searchTree :  (a -> Bool) -> Tree a -> List (Tree a)
+
+searchTree : (a -> Bool) -> Tree a -> List (Tree a)
 searchTree pred x =
     (if pred (Tree.label x) then
         (::) x
-    else
-        identity ) <| List.concatMap (searchTree pred) (Tree.children x)
-        
+
+     else
+        identity
+    )
+    <|
+        List.concatMap (searchTree pred) (Tree.children x)
+
+
 view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
