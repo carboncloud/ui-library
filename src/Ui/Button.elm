@@ -30,8 +30,7 @@ import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
 import Ui.Palette as Palette
 import Ui.Shadow exposing (shadow)
-import Ui.TextStyle as TextStyle exposing (TextStyle(..))
-import Ui.TextStyle exposing (FontWeight(..))
+import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
 
 
 {-| Defines the available button colors

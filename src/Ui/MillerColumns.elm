@@ -1,6 +1,6 @@
 module Ui.MillerColumns exposing
     ( Model, Content, Msg, init, setFocus, setSearch, view, update
-    , Config, unwrapListItemId, ListItemId, focus, root
+    , Config, ListItemId, focus, root, unwrapListItemId
     )
 
 {-| This module defines a component of a miller column layout
@@ -82,19 +82,23 @@ setFocus m =
 `searchValue` the value we are searching for in the tree structure
 `searchOn` given a value in the tree it returns the string we want to search on with the `searchValue`
 -}
-setSearch : List (Tree (ListItemId, v)) -> Model v -> Model v
+setSearch : List (Tree ( ListItemId, v )) -> Model v -> Model v
 setSearch searchResults m =
     { m | state = Search searchResults }
 
+
 {-| Get the value of the current focus
 -}
-focus : Model v -> (ListItemId, v)
-focus = Zipper.label << .treeZipper
+focus : Model v -> ( ListItemId, v )
+focus =
+    Zipper.label << .treeZipper
+
 
 {-| Get the value of the root
 -}
-root : Model v -> (ListItemId, v)
-root = Zipper.label << Zipper.root << .treeZipper
+root : Model v -> ( ListItemId, v )
+root =
+    Zipper.label << Zipper.root << .treeZipper
 
 
 {-| Internal messages to update the state of the component
@@ -257,7 +261,6 @@ view { liftMsg, content } model =
                 ]
             <|
                 List.map viewTreeNode children
-
     in
     Styled.div
         [ StyledAttributes.id rootId
@@ -301,11 +304,13 @@ Use [setters](#setters) to set the state.
 -}
 type State a
     = Focus
-    | Search (List (Tree (ListItemId, a)))
+    | Search (List (Tree ( ListItemId, a )))
 
 
 type ListItemId
     = ListItemId String
 
+
 unwrapListItemId : ListItemId -> String
-unwrapListItemId (ListItemId s) = s
+unwrapListItemId (ListItemId s) =
+    s

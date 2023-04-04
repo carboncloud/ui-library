@@ -1,17 +1,23 @@
 module Ui.TextStyle exposing
-    ( TextStyle(..)
+    ( FontWeight(..)
+    , TextStyle(..)
     , body
     , bodySmall
+    , fontWeight
     , heading1
     , heading2
     , heading3
     , heading4
-    , label, sansSerifFamilies, primaryColor, primaryWhiteColor, fontWeight, FontWeight(..)
+    , label
+    , primaryColor
+    , primaryWhiteColor
+    , sansSerifFamilies
     )
 
 import Color exposing (Color)
 import Ui.Color as Color
 import Ui.Palette as Palette
+
 
 
 {-
@@ -56,14 +62,21 @@ type TextStyle
         , lineHeight : Float
         }
 
+
 primaryColor : Color
-primaryColor = Palette.grey900
+primaryColor =
+    Palette.grey900
+
 
 primaryWhiteColor : Color
-primaryWhiteColor = Color.fromHex "#FCFCFC"
+primaryWhiteColor =
+    Color.fromHex "#FCFCFC"
+
 
 sansSerifFamilies : List String
-sansSerifFamilies = ["Poppins", "system-ui", "sans-serif"]
+sansSerifFamilies =
+    [ "Poppins", "system-ui", "sans-serif" ]
+
 
 bodySmall : TextStyle
 bodySmall =
@@ -144,8 +157,6 @@ heading4 =
 
 {-| Represents a font weight
 -}
-
-
 type FontWeight
     = Thin
     | ExtraLight

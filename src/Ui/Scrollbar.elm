@@ -1,7 +1,7 @@
 module Ui.Scrollbar exposing (..)
 
-import Css
 import Color exposing (Color)
+import Css
 import Ui.Color exposing (toCssColor)
 
 
@@ -24,5 +24,7 @@ scrollbarWidth sw =
             None ->
                 "none"
 
+
 scrollbarColor : Color -> Color -> Css.Style
-scrollbarColor scrollColor backgroudColor = Css.property "scrollbar-color" <| (Color.toCssString scrollColor) ++ " " ++ (Color.toCssString backgroudColor) 
+scrollbarColor scrollColor backgroudColor =
+    Css.property "scrollbar-color" <| Color.toCssString scrollColor ++ " " ++ Color.toCssString backgroudColor

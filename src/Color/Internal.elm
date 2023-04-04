@@ -1,4 +1,4 @@
-module Color.Internal exposing (..)
+module Color.Internal exposing (toHexString)
 
 import Css exposing (Color)
 import Hex

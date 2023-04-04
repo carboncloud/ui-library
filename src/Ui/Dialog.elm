@@ -15,15 +15,20 @@ import Ui.Text as Text
 import Ui.TextStyle as TextStyle
 
 
-
 view :
-    { title : String, labelId : String, content : Html msg, onClose : msg, actionButtons :  List
-                ( { onClick : Maybe msg
-                  , color : ButtonColor
-                  , emphasis : ButtonEmphasis
-                  }
-                , Button.ButtonContent
-                )}
+    { title : String
+    , labelId : String
+    , content : Html msg
+    , onClose : msg
+    , actionButtons :
+        List
+            ( { onClick : Maybe msg
+              , color : ButtonColor
+              , emphasis : ButtonEmphasis
+              }
+            , Button.ButtonContent
+            )
+    }
     -> Html msg
 view { title, content, onClose, actionButtons, labelId } =
     widget (LabelledBy labelId)
@@ -58,9 +63,13 @@ view { title, content, onClose, actionButtons, labelId } =
         , Html.div [ css [ Css.alignSelf Css.end, Css.displayFlex, Css.flexDirection Css.row, Css.property "gap" "10px" ] ] <| List.map (\( x, y ) -> Button.view x y) actionButtons
         ]
 
-type Label = LabelledBy String | Label String
 
-widget :  Label -> List (Html.Attribute Never) -> List (Html msg) -> Html msg
+type Label
+    = LabelledBy String
+    | Label String
+
+
+widget : Label -> List (Html.Attribute Never) -> List (Html msg) -> Html msg
 widget label attrs content =
     Html.div
         (attrs
@@ -68,6 +77,7 @@ widget label attrs content =
                , case label of
                     LabelledBy s ->
                         Aria.labelledBy s
+
                     Label s ->
                         Aria.label s
                , Attributes.css <|

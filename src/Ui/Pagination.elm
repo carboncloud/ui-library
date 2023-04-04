@@ -36,12 +36,11 @@ import List.Extra as List
 import Maybe.Extra as Maybe
 import Rpx exposing (rpx)
 import Ui.Color as Color
+import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
 import Ui.Palette as Palette
-import Ui.TextStyle as TextStyle exposing (TextStyle(..))
+import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
 import ZipList exposing (ZipList)
-import Ui.Css.TextStyle exposing (toCssStyle)
-import Ui.TextStyle exposing (FontWeight(..))
 
 
 {-| The Pagination model

@@ -4,8 +4,8 @@ import Css
 import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
 import Rpx exposing (rpx)
-import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 import Ui.Css.TextStyle exposing (toCssStyle)
+import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 
 
 
@@ -26,6 +26,7 @@ import Ui.Css.TextStyle exposing (toCssStyle)
 
 -}
 
+
 {-| Returns a text view
 This is preferred over `customView` when no custom styling is needed
 -}
@@ -42,7 +43,9 @@ customView attrs font s =
 
 
 paragraph : String -> Styled.Html msg
-paragraph =  styledCustomParagraph [] TextStyle.body
+paragraph =
+    styledCustomParagraph [] TextStyle.body
+
 
 styledParagraph : TextStyle -> String -> Styled.Html msg
 styledParagraph font =

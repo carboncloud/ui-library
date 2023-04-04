@@ -111,8 +111,6 @@ chevronRight =
             ]
         }
 
-        
-
 
 {-| Edit icon
 -}

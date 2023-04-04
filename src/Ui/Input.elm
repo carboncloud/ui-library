@@ -52,7 +52,7 @@ search { searchLabel, value, onInput, onClear } =
             , css [ Css.border (Css.px 0), Css.flexGrow (Css.num 1), Css.marginRight (Css.px 7), Css.outline Css.none ]
             ]
         , Styled.when (value /= "") <|
-            Ui.Button.iconButton [ ]
+            Ui.Button.iconButton []
                 { tooltip = "clear"
                 , onClick = Just onClear
                 , icon = Icon.close

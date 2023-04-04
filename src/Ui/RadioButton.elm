@@ -25,10 +25,10 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
-import Ui.Color as Color 
+import Ui.Color as Color
 import Ui.Palette as Palette
 import Ui.Text as Text
-import Ui.TextStyle as TextStyle exposing (TextStyle(..), FontWeight(..))
+import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
 
 
 {-| Defines the Direction

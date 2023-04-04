@@ -1,15 +1,11 @@
 module Extra.Tree.Zipper exposing (hasChildren, isFocused, isParent)
 
-
 import Tree.Zipper as Zipper exposing (Zipper)
-
-
 
 
 isFocused : Zipper a -> a -> Bool
 isFocused =
     (==) << Zipper.label
-
 
 
 isParent : Zipper a -> a -> Bool
