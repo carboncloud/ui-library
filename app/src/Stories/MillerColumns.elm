@@ -80,7 +80,7 @@ view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
         Styled.div [ css [ Css.height (Css.px 550), Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px" ] ]
-            [ Input.search [ css [ Css.maxWidth (Css.px 350) ] ] { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
+            [ Input.search [ css [ Css.maxWidth (Css.px 350) ] ] { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "", onSearch = Nothing }
             , MillerColumns.view { liftMsg = GotTreeMsg, nodeContent = viewNode }
                 millerColumnsModel
             ]

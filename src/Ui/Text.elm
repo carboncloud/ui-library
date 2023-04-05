@@ -56,8 +56,7 @@ styledCustomParagraph : List (Styled.Attribute msg) -> TextStyle -> String -> St
 styledCustomParagraph attrs font s =
     Styled.p
         ((Attributes.css <|
-            Css.lineHeight (Css.num 1.5)
-                :: Css.margin2 (rpx 15) Css.zero
+            Css.margin2 (rpx 15) Css.zero
                 :: toCssStyle font
          )
             :: attrs

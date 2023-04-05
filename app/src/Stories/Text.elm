@@ -1,6 +1,5 @@
 module Stories.Text exposing (..)
 
-import Color.Internal exposing (toHexString)
 import Css
 import Html exposing (Html)
 import Html.Styled as Styled
@@ -56,10 +55,10 @@ view =
                 ]
                 [ Text.view TextStyle.heading1 "Headline 1"
                 , Text.view TextStyle.heading2 "Headline 2"
-                , Text.customParagraph TextStyle.body """
+                , Text.paragraph """
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non magna lorem. Integer ultrices, odio sit amet tincidunt semper, augue odio elementum tellus, sollicitudin varius nisi magna vitae nunc. Nulla ornare tincidunt ultrices. Nulla pulvinar ligula volutpat tellus commodo, ut lobortis nisl aliquet. Suspendisse scelerisque pharetra risus, ac ultricies ligula sodales ac. Pellentesque tempor, ligula sit amet lacinia egestas, velit nunc bibendum erat, vel ornare mi sem non lacus. Pellentesque congue sagittis sem laoreet vulputate. Aliquam erat volutpat. 
                     """
-                , Text.customParagraph TextStyle.body """
+                , Text.customParagraph TextStyle.heading4 """
                     In sed risus enim. Sed lobortis rutrum ante ac posuere. Vestibulum nec sem eget justo blandit porttitor ac ac ipsum. Integer et justo ac orci tristique accumsan. Nullam dictum, nulla at malesuada sodales, sapien lorem venenatis justo, id luctus nisi mauris eu ex. Etiam in maximus felis. Nullam sed ipsum vulputate, venenatis massa ac, volutpat lectus. Morbi pretium hendrerit orci vitae mollis. 
                     """
                 ]

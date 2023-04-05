@@ -17,7 +17,7 @@ import Ui.Palette
 inputTextBaseStyle : Attribute msg
 inputTextBaseStyle =
     css
-        [ Css.padding4 (Css.px 4) (Css.px 5) (Css.px 4) (Css.px 5)
+        [ Css.padding2 (Css.px 4) (Css.px 5)
         , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
         , Css.displayFlex
         , Css.pseudoClass "focus-within" [ Css.outline3 (Css.px 2) Css.solid (toCssColor Ui.Palette.primary500) ]
@@ -31,13 +31,14 @@ search :
         , value : String
         , onInput : String -> msg
         , onClear : msg
+        , onSearch : Maybe msg
         }
     -> Styled.Html msg
-search attrs { searchLabel, value, onInput, onClear } =
+search attrs { searchLabel, value, onInput, onClear, onSearch } =
     Styled.div ([ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] ++ attrs) <|
         [ Ui.Button.iconButton [ css [ Css.cursor Css.default ] ]
             { tooltip = "search"
-            , onClick = Nothing
+            , onClick = onSearch
             , icon = Icon.search
             }
         , Styled.inputText value
