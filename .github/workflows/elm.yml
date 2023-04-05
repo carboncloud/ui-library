@@ -9,17 +9,26 @@ on:
       - main
 
 jobs:
-  # define other jobs here, like test, etc.
+
+  validate-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn
+      - name: elm-format
+        run: npx elm-format --no-install --validate .
+      - name: elm-review
+        run: npx --no-install elm-review
 
 
   publish-elm-package:
-    needs: [test, lint, validate-package] # make sure all your other jobs succeed before trying to publish
+    needs: [validate-package] # make sure all your other jobs succeed before trying to publish
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
-        # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
         run: yarn
       - run: yarn build
       - uses: dillonkearns/elm-publish-action@v1
