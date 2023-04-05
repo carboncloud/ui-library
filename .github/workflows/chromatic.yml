@@ -38,4 +38,8 @@ jobs:
         with:
           message-id: storybook-summary
           message: |
-            | Results |  |\n| --- | --- |\n| Build Results | ${{steps.chromatic.outputs.buildUrl}} |\n| Storybook Preview | ${{steps.chromatic.outputs.storybookUrl}} |\n| Component Count | ${{steps.chromatic.outputs.componentCount}} |
+            | Results |  |
+            | --- | --- |
+            | Build Results | ${{steps.chromatic.outputs.buildUrl}} |
+            | Storybook Preview | ${{steps.chromatic.outputs.storybookUrl}} |
+            | Component Count | ${{steps.chromatic.outputs.componentCount}} |
