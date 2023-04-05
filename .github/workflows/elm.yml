@@ -21,7 +21,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
       - name: elm-format
-        run: nix-shell --command elm-format --validate .
+        run: nix-shell --command "elm-format --validate ."
       - name: elm-review
         run: nix-shell --command elm-review
 
