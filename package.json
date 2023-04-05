@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npx --no-install elm make --output /dev/null"
   },
   "author": "",
   "license": "BSD-3-Clause",

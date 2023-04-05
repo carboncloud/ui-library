@@ -1,0 +1,28 @@
+name: Elm Actions
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # define other jobs here, like test, etc.
+
+
+  publish-elm-package:
+    needs: [test, lint, validate-package] # make sure all your other jobs succeed before trying to publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
+        run: yarn
+      - run: yarn build
+      - uses: dillonkearns/elm-publish-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-elm: ./node_modules/.bin/elm

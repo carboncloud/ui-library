@@ -237,6 +237,7 @@ button customStyle attrs mOnClick buttonContent =
     let
         baseStyle =
             [ Css.displayFlex
+            , Css.alignItems Css.center
             , Css.border Css.zero
             , Css.backgroundColor Css.transparent
             , Css.padding2 (rpx 10) (rpx 16)
