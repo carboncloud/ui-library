@@ -9,7 +9,6 @@ on: push
 # List of jobs
 jobs:
   chromatic-deployment:
-    needs: validate-package
     # Operating System
     runs-on: ubuntu-latest
     defaults:
