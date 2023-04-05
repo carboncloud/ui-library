@@ -14,12 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install dependencies
-        run: yarn
+      - name: Install Nix
+        uses: cachix/install-nix-action@v17
+          with:
+            # Mostly to avoid GitHub rate limiting
+            extra_nix_config: |
+              access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
       - name: elm-format
-        run: npx elm-format --validate .
+        run: nix-shell --command elm-format --validate .
       - name: elm-review
-        run: npx elm-review
+        run: nix-shell --command elm-review
 
 
   publish-elm-package:
