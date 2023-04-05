@@ -16,10 +16,10 @@ jobs:
       - uses: actions/checkout@v1
       - name: Install Nix
         uses: cachix/install-nix-action@v17
-          with:
-            # Mostly to avoid GitHub rate limiting
-            extra_nix_config: |
-              access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Mostly to avoid GitHub rate limiting
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
       - name: elm-format
         run: nix-shell --command elm-format --validate .
       - name: elm-review
