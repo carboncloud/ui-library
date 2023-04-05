@@ -17,9 +17,9 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: elm-format
-        run: npx elm-format --no-install --validate .
+        run: npx elm-format --validate .
       - name: elm-review
-        run: npx --no-install elm-review
+        run: npx elm-review
 
 
   publish-elm-package:
