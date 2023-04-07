@@ -3,13 +3,14 @@
     "name": "carboncloud/ui-library",
     "summary": "UI library we use at CarbonCloud.",
     "license": "BSD-3-Clause",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "exposed-modules": [
         "Ui.Button",
         "Ui.RadioButton",
         "Ui.Pagination",
         "Ui.Icon",
-        "Ui.MillerColumns"
+        "Ui.MillerColumns",
+        "Ui.Dialog"
     ],
     "elm-version": "0.19.1 <= v < 20.0.0",
     "dependencies": {
