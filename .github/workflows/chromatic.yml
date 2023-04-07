@@ -19,6 +19,8 @@ jobs:
     # Job steps
     steps:
       - uses: actions/checkout@v1
+      - name: Cleanup
+        runs: rm -rf ./elm-stuff
       - name: Install dependencies
         # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
         run: yarn
