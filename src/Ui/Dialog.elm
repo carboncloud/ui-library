@@ -2,7 +2,7 @@ module Ui.Dialog exposing (view, Label(..))
 
 {-| Component of a Dialog
 
-@docs view, widget, Label
+@docs view, Label
 
 -}
 
