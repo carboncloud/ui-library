@@ -1,4 +1,10 @@
-module Ui.Dialog exposing (Label(..), view)
+module Ui.Dialog exposing (view, Label(..))
+
+{-| Component of a Dialog
+
+@docs view, widget, Label
+
+-}
 
 import Accessibility.Styled as Html exposing (Html)
 import Accessibility.Styled.Aria as Aria
@@ -15,6 +21,17 @@ import Ui.Text as Text
 import Ui.TextStyle as TextStyle
 
 
+{-|
+
+    View of a dialog
+
+    title           - text to be displayed at the top of the dialog
+    labelId         - identifier of the dialog, we need this for a11y
+    content         - content displayed just below the title
+    onClose         - action when the dialog should be closed
+    actionButtons   - list of buttons and actions that should be displayed at the bottom right corner of the dialog
+
+-}
 view :
     { title : String
     , labelId : String
@@ -64,6 +81,11 @@ view { title, content, onClose, actionButtons, labelId } =
         ]
 
 
+{-|
+
+    A widget can either by labeled by itself of labelled by another element
+
+-}
 type Label
     = LabelledBy String
     | Label String

@@ -9,7 +9,8 @@
         "Ui.RadioButton",
         "Ui.Pagination",
         "Ui.Icon",
-        "Ui.MillerColumns"
+        "Ui.MillerColumns",
+        "Ui.Dialog"
     ],
     "elm-version": "0.19.1 <= v < 20.0.0",
     "dependencies": {
