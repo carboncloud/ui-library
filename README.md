@@ -1,3 +1,5 @@
+[![Elm package](https://github.com/carboncloud/ui-library/actions/workflows/elm.yml/badge.svg)](https://github.com/carboncloud/ui-library/actions/workflows/elm.yml)
+
 # CarbonCloud UI Library
 
 This UI library is used internally at CarbonCloud to create a uniform user experience across multiple Elm applications.
