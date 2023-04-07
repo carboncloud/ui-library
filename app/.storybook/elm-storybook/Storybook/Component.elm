@@ -89,7 +89,7 @@ sandbox options =
 sandbox_ :
     { controls : Storybook.Controls.Decoder controls
     , init : model
-    , update : msg -> model -> (model, Cmd msg)
+    , update : msg -> model -> ( model, Cmd msg )
     , view : controls -> model -> Html msg
     }
     -> Component model msg

@@ -1,9 +1,8 @@
 module Ui.Icon exposing
-    ( Icon
+    ( Icon(..)
     , view
     , setFill
-    , chevronLeft, chevronRight, edit, close
-    , search
+    , chevronLeft, chevronRight, edit, close, search
     )
 
 {-| Defines a Button component
@@ -33,7 +32,6 @@ module Ui.Icon exposing
 import Accessibility.Styled.Role as Role
 import Color exposing (Color)
 import Css
-import Css.Global exposing (children)
 import Html.Styled as Html exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, path, svg, text)
 import Svg.Styled.Attributes as SvgAttr
@@ -102,11 +100,11 @@ chevronRight =
         , attributes =
             [ SvgAttr.x "0px"
             , SvgAttr.y "0px"
-            , SvgAttr.viewBox "0 0 7.8 13"
+            , SvgAttr.viewBox "0 0 15 26"
             ]
         , children =
             [ path
-                [ SvgAttr.d "M0.4,0.4c-0.5,0.5-0.5,1.4,0,1.9l4.2,4.2l-4.2,4.2c-0.5,0.5-0.5,1.4,0,1.9s1.4,0.5,1.9,0l5.1-5.1l0,0\n\tC8,6.9,8,6.1,7.5,5.5l0,0l0,0l0,0L2.4,0.4C1.8-0.1,0.9-0.1,0.4,0.4z"
+                [ SvgAttr.d "M1.15076 22.6979L10.9885 12.8602L1.15076 3.022C0.543998 2.4079 0.54986 1.41812 1.16395 0.811357C1.77267 0.209966 2.75219 0.209966 3.3614 0.811357L14.3047 11.7546C14.9153 12.3653 14.9153 13.3551 14.3047 13.9653L3.3614 24.9085C2.74731 25.5153 1.75753 25.5094 1.15076 24.8949C0.549372 24.2861 0.549372 23.3066 1.15076 22.6974V22.6979Z"
                 ]
                 []
             ]

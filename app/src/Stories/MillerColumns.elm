@@ -8,11 +8,11 @@ import List.Extra as List
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import String
-import Ui.MillerColumns as MillerColumns 
-import Tree exposing (tree)
-import Tree.Zipper as Zipper
-import Ui.SearchInput as SearchInput
 import String.Extra exposing (dasherize)
+import Tree exposing (Tree, tree)
+import Tree.Zipper as Zipper
+import Ui.Input as Input
+import Ui.MillerColumns as MillerColumns
 
 
 main : Component Model Msg
@@ -32,7 +32,13 @@ type alias Model =
 
 init : Model
 init =
-    { searchValue = "", millerColumnsModel = MillerColumns.init <| Tree.map (\x -> (dasherize x.label, x)) t }
+    let
+        newTree =
+            MillerColumns.init <| Tree.map (\x -> ( dasherize x.label, x )) t
+    in
+    { searchValue = ""
+    , millerColumnsModel = newTree
+    }
 
 
 type Msg
@@ -52,20 +58,31 @@ update msg model =
 
         Search s ->
             if s /= "" then
-                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch s .label model.millerColumnsModel }, Cmd.none )
+                ( { model | searchValue = s, millerColumnsModel = MillerColumns.setSearch (searchTree (String.contains s << .label << Tuple.second) (Zipper.toTree model.millerColumnsModel.treeZipper)) model.millerColumnsModel }, Cmd.none )
 
             else
                 ( { model | searchValue = s, millerColumnsModel = MillerColumns.setFocus model.millerColumnsModel }, Cmd.none )
 
 
+searchTree : (a -> Bool) -> Tree a -> List (Tree a)
+searchTree pred x =
+    (if pred (Tree.label x) then
+        (::) x
+
+     else
+        identity
+    )
+    <|
+        List.concatMap (searchTree pred) (Tree.children x)
+
+
 view : Model -> Html Msg
 view { millerColumnsModel, searchValue } =
     Styled.toUnstyled <|
-        Styled.div [ css [ Css.width (Css.px 550), Css.height (Css.px 550) ] ]
-            [ SearchInput.view { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "" }
-            , MillerColumns.view { liftMsg = GotTreeMsg }
+        Styled.div [ css [ Css.height (Css.px 550), Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px" ] ]
+            [ Input.search [ css [ Css.maxWidth (Css.px 350) ] ] { onInput = Search, searchLabel = "food-category", value = searchValue, onClear = Search "", onSearch = Nothing }
+            , MillerColumns.view { liftMsg = GotTreeMsg, nodeContent = viewNode }
                 millerColumnsModel
-                viewItem
             ]
 
 
@@ -73,9 +90,9 @@ type alias Item =
     { label : String, emission : Maybe Float }
 
 
-viewItem : MillerColumns.Content Item
-viewItem =
-    { leftAlignedText = .label
+viewNode : Item -> MillerColumns.Content
+viewNode item =
+    { leftAlignedText = item.label
     , mRightAlignedText = Nothing
     }
 

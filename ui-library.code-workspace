@@ -1,0 +1,21 @@
+{
+    "folders": [
+      {
+        "path": ".",
+        "ignore": "app",
+        "name": "Ui-library"
+      },
+      {
+        "path": "./app",
+        "name": "Ui-library Storybook"
+      }
+    ],
+    "settings": {
+      "files.exclude": {
+        "app": true,
+      },
+      "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
+      "nix.enableLanguageServer": true
+    }
+  }
+  

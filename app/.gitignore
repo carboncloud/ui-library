@@ -1,0 +1,20 @@
+elm-stuff
+# elm-repl generated files
+repl-temp-*
+
+# node
+node_modules
+
+public/explorer.js
+build-storybook.log
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+dist
+yarn-error.log*

@@ -18,7 +18,7 @@ module Ui.RadioButton exposing
 -}
 
 import Accessibility.Styled as A11y exposing (Html)
-import Css exposing (disabled)
+import Css
 import Css.Transitions as Transitions
 import Html exposing (Attribute)
 import Html.Styled.Attributes as Attributes
@@ -26,13 +26,9 @@ import Html.Styled.Events as Events
 import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
 import Ui.Color as Color
-import Ui.Internal.FontFamily as FontFamily
-import Ui.Internal.FontSize as FontSize
-import Ui.Internal.FontWeight as FontWeight
-import Ui.Internal.TextColor as TextColor
 import Ui.Palette as Palette
-import Ui.TextStyle as TextStyle exposing (TextStyle(..))
-import Ui.Typography as Typography
+import Ui.Text as Text
+import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
 
 
 {-| Defines the Direction
@@ -142,7 +138,7 @@ customView attrs config =
                                             ]
                                        )
                            ]
-                , Typography.styledCustomText
+                , Text.customView
                     [ Attributes.css <|
                         Css.margin2 Css.auto (Css.px 10)
                             :: (if disabled then
@@ -152,7 +148,14 @@ customView attrs config =
                                     []
                                )
                     ]
-                    (TextStyle { family = FontFamily.Primary, weight = FontWeight.Regular, size = FontSize.Small, color = TextColor.Primary })
+                    (TextStyle
+                        { family = TextStyle.sansSerifFamilies
+                        , weight = Normal
+                        , size = 14
+                        , color = TextStyle.primaryColor
+                        , lineHeight = 1.0
+                        }
+                    )
                     optionLabel
                 ]
     in
@@ -171,5 +174,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Typography.styledText TextStyle.label config.label ]
+        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Text.view TextStyle.label config.label ]
             :: List.indexedMap itemView config.options

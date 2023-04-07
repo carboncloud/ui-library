@@ -81,20 +81,8 @@ shadow size =
                       , color = Css.rgba 0 0 0 0.11
                       }
                     , { offsetX = Px 0
-                      , offsetY = Px 4
-                      , blurRadius = Px 4
-                      , spreadRadius = Px 0
-                      , color = Css.rgba 0 0 0 0.11
-                      }
-                    , { offsetX = Px 0
                       , offsetY = Px 6
                       , blurRadius = Px 8
-                      , spreadRadius = Px 0
-                      , color = Css.rgba 0 0 0 0.11
-                      }
-                    , { offsetX = Px 0
-                      , offsetY = Px 8
-                      , blurRadius = Px 16
                       , spreadRadius = Px 0
                       , color = Css.rgba 0 0 0 0.11
                       }

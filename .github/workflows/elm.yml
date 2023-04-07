@@ -1,0 +1,41 @@
+name: Elm Actions
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  validate-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Nix
+        uses: cachix/install-nix-action@v19
+        with:
+          # Mostly to avoid GitHub rate limiting
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: elm-format
+        run: nix-shell --command "elm-format --validate ."
+      - name: elm-review
+        run: nix-shell --command elm-review
+
+
+  publish-elm-package:
+    needs: [validate-package] # make sure all your other jobs succeed before trying to publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: yarn
+      - run: yarn build
+      - uses: dillonkearns/elm-publish-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-elm: ./node_modules/.bin/elm

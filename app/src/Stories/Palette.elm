@@ -9,8 +9,9 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Color as Color
 import Ui.Palette as Palette
+import Ui.Shadow as Shadow
+import Ui.Text
 import Ui.TextStyle
-import Ui.Typography
 
 
 main : Component () msg
@@ -23,22 +24,33 @@ main =
 
 colorSwatch : String -> Css.Color -> Styled.Html msg
 colorSwatch name color =
-    Styled.div []
+    Styled.div
+        [ Attributes.css
+            [ Css.width (Css.px 100)
+            , Css.displayFlex
+            , Css.overflow Css.hidden
+            , Css.flexDirection Css.column
+            , Shadow.shadow Shadow.Small
+            , Css.borderRadius (Css.px 10)
+            ]
+        ]
         [ Styled.div
             [ Attributes.css
                 [ Css.backgroundColor color
-                , Css.height (Css.px 50)
-                , Css.width (Css.px 50)
-                , Css.margin2 (Css.px 10) Css.zero
-                , Css.padding (Css.px 10)
+                , Css.height (Css.px 80)
+                , Css.width Css.auto
+                , Css.padding Css.zero
                 , Css.fontWeight Css.bold
                 , Css.displayFlex
                 , Css.flexDirection Css.column
                 , Css.justifyContent Css.end
                 ]
             ]
-            [ Ui.Typography.styledCustomText [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.heading5 <| toHexString color ]
-        , Ui.Typography.styledCustomText [ Attributes.css [ Css.margin2 (Css.px 5) (Css.px 10) ] ] Ui.TextStyle.heading5 name
+            []
+        , Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.margin (Css.px 10) ] ]
+            [ Ui.Text.customView [] Ui.TextStyle.body name
+            , Ui.Text.customView [ Attributes.css [ Css.fontSize (Css.px 10) ] ] Ui.TextStyle.body <| toHexString color
+            ]
         ]
 
 
@@ -48,17 +60,19 @@ colorSwatchGroup =
         [ Attributes.css
             [ Css.displayFlex
             , Css.flexDirection Css.column
+            , Css.property "gap" "15px"
             ]
         ]
 
 
 toneGroup : String -> List ( Css.Color, Int ) -> List (Styled.Html msg)
 toneGroup name tones =
-    [ Ui.Typography.styledText Ui.TextStyle.heading3 name
+    [ Ui.Text.view Ui.TextStyle.heading4 name
     , Styled.div
         [ Attributes.css
             [ Css.displayFlex
             , Css.flexDirection Css.row
+            , Css.property "gap" "25px"
             ]
         ]
       <|
@@ -69,7 +83,14 @@ toneGroup name tones =
 view : Html msg
 view =
     Styled.toUnstyled <|
-        Styled.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px", Css.backgroundColor <| Color.toCssColor Palette.white ] ]
+        Styled.div
+            [ Attributes.css
+                [ Css.displayFlex
+                , Css.flexDirection Css.column
+                , Css.property "gap" "25px"
+                , Css.backgroundColor <| Color.toCssColor Palette.white
+                ]
+            ]
             [ colorSwatchGroup <|
                 toneGroup "Primary"
                     [ ( Color.toCssColor Palette.primary050, 50 )
@@ -91,6 +112,7 @@ view =
                         , ( Color.toCssColor Palette.grey300, 300 )
                         , ( Color.toCssColor Palette.grey500, 500 )
                         , ( Color.toCssColor Palette.grey800, 800 )
+                        , ( Color.toCssColor Palette.grey900, 900 )
                         ]
             , colorSwatchGroup
                 (toneGroup "Status"

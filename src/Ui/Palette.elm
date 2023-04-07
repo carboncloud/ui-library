@@ -3,6 +3,7 @@ module Ui.Palette exposing
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, grey050, grey100, grey200, grey300, grey500, grey800
+    , grey900
     )
 
 {-| This module defines a palette of available colors
@@ -31,10 +32,6 @@ module Ui.Palette exposing
 
 import Color exposing (Color)
 import Ui.Color
-
-
-
--- TODO: confirm colors
 
 
 {-| ![#CAE8E9](https://placehold.co/15x15/cae8e9/cae8e9.png) `#CAE8E9`
@@ -97,7 +94,7 @@ grey100 =
 -}
 grey200 : Color
 grey200 =
-    Ui.Color.fromHex "#CAE8E9"
+    Ui.Color.fromHex "#e8e8e8"
 
 
 {-| ![#D0D5DD](https://placehold.co/15x15/D0D5DD/D0D5DD.png) `#D0D5DD`
@@ -119,6 +116,13 @@ grey500 =
 grey800 : Color
 grey800 =
     Ui.Color.fromHex "#444444"
+
+
+{-| ![#102B2B](https://placehold.co/15x15/102B2B/102B2B.png) `#102B2B`
+-}
+grey900 : Color
+grey900 =
+    Ui.Color.fromHex "#102B2B"
 
 
 {-| ![#ffffff](https://placehold.co/15x15/2F3974/2F3974.png) `#ffffff`
@@ -166,7 +170,8 @@ warn600 =
 {-| ![#4B5FD1](https://placehold.co/15x15/4B5FD1/4B5FD1.png) `#4B5FD1`
 -}
 focus : Color
-focus = primary500
+focus =
+    primary500
 
 
 {-| ![#172D69](https://placehold.co/15x15/172D69/172D69.png) `#172D69`
