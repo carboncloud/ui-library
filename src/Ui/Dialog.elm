@@ -50,7 +50,8 @@ view :
 view { title, content, onClose, actionButtons, labelId } =
     widget (LabelledBy labelId)
         [ css
-            [ Css.displayFlex
+            [ Css.position Css.fixed
+            , Css.displayFlex
             , Css.flexDirection Css.column
             , Css.transform (Css.translate2 (Css.pct -50) (Css.pct -50))
             , Css.minWidth (Css.px 300)
@@ -94,20 +95,20 @@ type Label
 widget : Label -> List (Html.Attribute Never) -> List (Html msg) -> Html msg
 widget label attrs content =
     Html.div
-        (attrs
-            ++ [ Role.dialog
-               , case label of
-                    LabelledBy s ->
-                        Aria.labelledBy s
+        ([ Role.dialog
+         , case label of
+            LabelledBy s ->
+                Aria.labelledBy s
 
-                    Label s ->
-                        Aria.label s
-               , Attributes.css <|
-                    [ Css.position Css.absolute
-                    , Css.borderRadius (Css.px 10)
-                    , Css.backgroundColor <| toCssColor Palette.white
-                    , shadow Shadow.Large
-                    ]
-               ]
+            Label s ->
+                Aria.label s
+         , Attributes.css <|
+            [ Css.position Css.absolute
+            , Css.borderRadius (Css.px 10)
+            , Css.backgroundColor <| toCssColor Palette.white
+            , shadow Shadow.Large
+            ]
+         ]
+            ++ attrs
         )
         content
