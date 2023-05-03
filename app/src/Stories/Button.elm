@@ -91,4 +91,9 @@ view controls =
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.TextWithRightIcon controls.label Icon.edit)
+            , Ui.Button.iconButton []
+                { icon = Icon.newWindow
+                , tooltip = "Open in new window"
+                , onClick = Just UserClickedButton
+                }
             ]
