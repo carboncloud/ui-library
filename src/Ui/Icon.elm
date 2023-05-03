@@ -2,8 +2,7 @@ module Ui.Icon exposing
     ( Icon(..)
     , view
     , setFill
-    , chevronLeft, chevronRight, edit, close, search
-    , newWindow
+    , chevronLeft, chevronRight, edit, close, search, newWindow
     )
 
 {-| Defines a Button component
@@ -26,7 +25,7 @@ module Ui.Icon exposing
 
 # Icons
 
-@docs chevronLeft, chevronRight, edit, close, search
+@docs chevronLeft, chevronRight, edit, close, search, newWindow
 
 -}
 
@@ -168,6 +167,8 @@ search =
         }
 
 
+{-| Open in new window icon
+-}
 newWindow : Icon
 newWindow =
     Icon
