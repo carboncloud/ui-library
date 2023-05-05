@@ -129,7 +129,7 @@ customView attrs { emphasis, color, onClick } content =
                 Nothing ->
                     button
                         (baseStyle
-                            ++ [ Css.backgroundColor <| Color.toCssColor Palette.grey200
+                            ++ [ Css.backgroundColor <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
                                ]
@@ -173,7 +173,7 @@ customView attrs { emphasis, color, onClick } content =
                 Nothing ->
                     button
                         (baseStyle
-                            ++ [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.grey200
+                            ++ [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
                                ]
@@ -310,8 +310,8 @@ iconButton attrs { onClick, icon, tooltip } =
                 [ Css.padding (Css.px 7)
                 , Css.width (Css.px 32)
                 , Css.height (Css.px 32)
-                , Css.fill (Color.toCssColor Palette.grey800)
-                , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.grey300 ]
+                , Css.fill (Color.toCssColor Palette.gray800)
+                , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.gray300 ]
                 , Css.displayFlex
                 , Css.borderRadius (Css.pct 100)
                 , Css.backgroundColor Css.transparent

@@ -2,8 +2,7 @@ module Ui.Palette exposing
     ( primary050, primary500, primary600
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
-    , black, white, grey050, grey100, grey200, grey300, grey500, grey800
-    , grey900
+    , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
     )
 
 {-| This module defines a palette of available colors
@@ -24,9 +23,9 @@ module Ui.Palette exposing
 @docs success, success050, warn050, warn500, warn600, focus, disabled
 
 
-# Grey colors
+# Gray colors
 
-@docs black, white, grey050, grey100, grey200, grey300, grey500, grey800
+@docs black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
 
 -}
 
@@ -78,50 +77,50 @@ secondary600 =
 
 {-| ![#FCFCFC](https://placehold.co/15x15/FCFCFC/FCFCFC.png) `#FCFCFC`
 -}
-grey050 : Color
-grey050 =
+gray050 : Color
+gray050 =
     Ui.Color.fromHex "#FCFCFC"
 
 
 {-| ![#f8f8f8](https://placehold.co/15x15/f8f8f8/f8f8f8.png) `#f8f8f8`
 -}
-grey100 : Color
-grey100 =
+gray100 : Color
+gray100 =
     Ui.Color.fromHex "#f8f8f8"
 
 
 {-| ![#e8e8e8](https://placehold.co/15x15/e8e8e8/e8e8e8.png) `#e8e8e8`
 -}
-grey200 : Color
-grey200 =
+gray200 : Color
+gray200 =
     Ui.Color.fromHex "#e8e8e8"
 
 
 {-| ![#D0D5DD](https://placehold.co/15x15/D0D5DD/D0D5DD.png) `#D0D5DD`
 -}
-grey300 : Color
-grey300 =
+gray300 : Color
+gray300 =
     Ui.Color.fromHex "#D0D5DD"
 
 
 {-| ![#858585](https://placehold.co/15x15/858585/858585.png) `#858585`
 -}
-grey500 : Color
-grey500 =
+gray500 : Color
+gray500 =
     Ui.Color.fromHex "#858585"
 
 
 {-| ![#444444](https://placehold.co/15x15/444444/444444.png) `#444444`
 -}
-grey800 : Color
-grey800 =
+gray800 : Color
+gray800 =
     Ui.Color.fromHex "#444444"
 
 
 {-| ![#102B2B](https://placehold.co/15x15/102B2B/102B2B.png) `#102B2B`
 -}
-grey900 : Color
-grey900 =
+gray900 : Color
+gray900 =
     Ui.Color.fromHex "#102B2B"
 
 
@@ -181,8 +180,8 @@ success050 =
     Ui.Color.fromHex "#172D69"
 
 
-{-| An alias for `grey500`
+{-| Color of disabled objects
 -}
 disabled : Color
 disabled =
-    grey500
+    gray500
