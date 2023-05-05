@@ -54,7 +54,7 @@ view =
                     ]
                 ]
                 [ Text.view TextStyle.heading1 "Headline 1"
-                , Text.view TextStyle.heading2 "Headline 2"
+                , Text.view (TextStyle.heading2 |> TextStyle.withColor Palette.primary500) "Headline 2"
                 , Text.paragraph """
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non magna lorem. Integer ultrices, odio sit amet tincidunt semper, augue odio elementum tellus, sollicitudin varius nisi magna vitae nunc. Nulla ornare tincidunt ultrices. Nulla pulvinar ligula volutpat tellus commodo, ut lobortis nisl aliquet. Suspendisse scelerisque pharetra risus, ac ultricies ligula sodales ac. Pellentesque tempor, ligula sit amet lacinia egestas, velit nunc bibendum erat, vel ornare mi sem non lacus. Pellentesque congue sagittis sem laoreet vulputate. Aliquam erat volutpat. 
                     """

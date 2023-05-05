@@ -7,32 +7,50 @@ module Ui.Css.TextStyle exposing
     , toCssStyle
     )
 
+{-|
+
+    ## Interprets TextStyle as a Styled element
+
+
+    ### Interpreters
+    @docs heading1, heading2, heading3, heading4, body
+
+    ### Converters
+    @docs toCssStyle
+
+-}
+
 import Css
 import Rpx exposing (rpx)
 import Ui.Color
 import Ui.TextStyle as TextStyle exposing (TextStyle(..), fontWeight)
 
 
+{-| -}
 heading1 : List Css.Style
 heading1 =
     toCssStyle TextStyle.heading1
 
 
+{-| -}
 heading2 : List Css.Style
 heading2 =
     toCssStyle TextStyle.heading2
 
 
+{-| -}
 heading3 : List Css.Style
 heading3 =
     toCssStyle TextStyle.heading3
 
 
+{-| -}
 heading4 : List Css.Style
 heading4 =
     toCssStyle TextStyle.heading4
 
 
+{-| -}
 body : List Css.Style
 body =
     toCssStyle TextStyle.body

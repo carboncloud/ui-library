@@ -164,13 +164,13 @@ view { liftMsg, nodeContent } model =
                         []
 
                     else
-                        [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+                        [ Css.backgroundColor <| toCssColor Ui.Palette.gray200 ]
                 ]
                     ++ (if Zipper.isFocused model.treeZipper n then
                             [ Css.backgroundColor <| toCssColor Ui.Palette.primary600, Css.color <| toCssColor Ui.Palette.white ]
 
                         else if Zipper.isParent model.treeZipper n then
-                            [ Css.backgroundColor <| toCssColor Ui.Palette.grey200 ]
+                            [ Css.backgroundColor <| toCssColor Ui.Palette.gray200 ]
 
                         else
                             []
@@ -186,7 +186,7 @@ view { liftMsg, nodeContent } model =
                         toCssColor Ui.Palette.white
 
                     else
-                        toCssColor Ui.Palette.grey800
+                        toCssColor Ui.Palette.gray800
                 ]
 
         viewNode n =
@@ -249,14 +249,14 @@ view { liftMsg, nodeContent } model =
                     , Css.lastChild [ Css.borderRight (Css.px 0) ]
 
                     -- order is important since we want this to apply for the first child even when it is the last child
-                    , Css.firstChild [ Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200) ]
-                    , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
+                    , Css.firstChild [ Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200) ]
+                    , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200)
                     , Css.padding (Css.px 0)
                     , Css.margin (Css.px 0)
                     , Css.height (Css.px 350)
                     , Css.width (Css.px 300)
                     , scrollbarWidth Thin
-                    , scrollbarColor Ui.Palette.grey300 Ui.Palette.grey100
+                    , scrollbarColor Ui.Palette.gray300 Ui.Palette.gray100
                     ]
                         ++ TextStyle.body
                 ]
@@ -273,8 +273,8 @@ view { liftMsg, nodeContent } model =
             , Css.overflowX Css.scroll
             , Css.color (toCssColor Ui.Palette.black)
             , scrollbarWidth Thin
-            , scrollbarColor Ui.Palette.grey300 Ui.Palette.grey100
-            , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.grey200)
+            , scrollbarColor Ui.Palette.gray300 Ui.Palette.gray100
+            , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200)
             ]
         ]
     <|

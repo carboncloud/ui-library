@@ -131,10 +131,10 @@ customView attrs config =
                                             , Css.focus
                                                 [ Css.outline3 (Css.px 2) Css.solid <| Color.toCssColor Palette.focus
                                                 ]
-                                            , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.grey800
+                                            , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.gray800
                                             , Css.cursor Css.pointer
                                             , Css.before
-                                                [ Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Color.toCssColor Palette.grey800 ]
+                                                [ Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Color.toCssColor Palette.gray800 ]
                                             ]
                                        )
                            ]

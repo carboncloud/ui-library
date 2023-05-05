@@ -2,7 +2,7 @@ module Ui.Color exposing (toCssColor, fromHex)
 
 {-| Color helper functions
 
-@docs toCssColor, toElementColor, fromHex
+@docs toCssColor, fromHex
 
 -}
 

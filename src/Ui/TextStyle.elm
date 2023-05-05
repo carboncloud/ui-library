@@ -12,47 +12,55 @@ module Ui.TextStyle exposing
     , primaryColor
     , primaryWhiteColor
     , sansSerifFamilies
+    , withColor
     )
+
+{-|
+
+
+# TextStyle
+
+This module defines a `TextStyle`
+and the available font properties.
+x
+
+
+## Types
+
+    @docs TextStyle
+
+    ## Body
+
+    @docs bodySmall, body
+
+    ## Heading
+
+    @docs heading1, heading2, heading3, heading4
+
+    ## Others
+    @docs label
+
+    ## Font families
+    @docs sansSerifFamilies
+
+    ## Font colors
+    @docs primaryWhiteColor, primaryColor
+
+    ## Font weights
+    @docs FontWeight, fontWeight
+
+    ## Modifiers
+
+    @docs withColor
+
+-}
 
 import Color exposing (Color)
 import Ui.Color as Color
 import Ui.Palette as Palette
 
 
-
-{-
-   # TextStyle
-
-   This module defines a `TextStyle`
-   and the available font properties.
-
-   Type constructors for the font properties are kept
-   opque intentionally to prevent the typography to
-   become inconsistent.
-
-
-   ## Types
-
-    @docs TextStyle
-
-    ## Body
-
-    @docs bodySmall, body, bodyLarge
-
-    ## Heading
-
-    @docs heading1, heading2, heading3, heading4
-
-    ## Converters
-
-    ### Css
-    @docs toCssStyle, fontFamilyToCssStyle, fontSizeToCssStyle, fontWeightToCssStyle, fontColorToCssStyle
-
-    ### Element
-    @docs toElementAttribute, fontFamilyToElementAttribute, fontSizeToElementAttribute, fontWeightToElementAttribute, fontColorToElementAttribute
--}
-
-
+{-| -}
 type TextStyle
     = TextStyle
         { family : List String
@@ -63,21 +71,25 @@ type TextStyle
         }
 
 
+{-| -}
 primaryColor : Color
 primaryColor =
-    Palette.grey900
+    Palette.gray900
 
 
+{-| -}
 primaryWhiteColor : Color
 primaryWhiteColor =
     Color.fromHex "#FCFCFC"
 
 
+{-| -}
 sansSerifFamilies : List String
 sansSerifFamilies =
     [ "Poppins", "system-ui", "sans-serif" ]
 
 
+{-| -}
 bodySmall : TextStyle
 bodySmall =
     TextStyle
@@ -89,6 +101,7 @@ bodySmall =
         }
 
 
+{-| -}
 body : TextStyle
 body =
     TextStyle
@@ -96,10 +109,11 @@ body =
         , size = 16
         , weight = Normal
         , color = primaryColor
-        , lineHeight = 1.2
+        , lineHeight = 1.5
         }
 
 
+{-| -}
 label : TextStyle
 label =
     TextStyle
@@ -111,6 +125,7 @@ label =
         }
 
 
+{-| -}
 heading1 : TextStyle
 heading1 =
     TextStyle
@@ -122,6 +137,7 @@ heading1 =
         }
 
 
+{-| -}
 heading2 : TextStyle
 heading2 =
     TextStyle
@@ -133,6 +149,7 @@ heading2 =
         }
 
 
+{-| -}
 heading3 : TextStyle
 heading3 =
     TextStyle
@@ -144,6 +161,7 @@ heading3 =
         }
 
 
+{-| -}
 heading4 : TextStyle
 heading4 =
     TextStyle
@@ -153,6 +171,12 @@ heading4 =
         , color = primaryColor
         , lineHeight = 2
         }
+
+
+{-| -}
+withColor : Color -> TextStyle -> TextStyle
+withColor c (TextStyle s) =
+    TextStyle { s | color = c }
 
 
 {-| Represents a font weight

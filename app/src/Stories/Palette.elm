@@ -105,14 +105,14 @@ view =
                     ]
             , colorSwatchGroup <|
                 [ colorSwatch "black" <| Color.toCssColor Palette.black, colorSwatch "white" <| Color.toCssColor Palette.white ]
-                    ++ toneGroup "Grey"
-                        [ ( Color.toCssColor Palette.grey050, 50 )
-                        , ( Color.toCssColor Palette.grey100, 100 )
-                        , ( Color.toCssColor Palette.grey200, 200 )
-                        , ( Color.toCssColor Palette.grey300, 300 )
-                        , ( Color.toCssColor Palette.grey500, 500 )
-                        , ( Color.toCssColor Palette.grey800, 800 )
-                        , ( Color.toCssColor Palette.grey900, 900 )
+                    ++ toneGroup "Gray"
+                        [ ( Color.toCssColor Palette.gray050, 50 )
+                        , ( Color.toCssColor Palette.gray100, 100 )
+                        , ( Color.toCssColor Palette.gray200, 200 )
+                        , ( Color.toCssColor Palette.gray300, 300 )
+                        , ( Color.toCssColor Palette.gray500, 500 )
+                        , ( Color.toCssColor Palette.gray800, 800 )
+                        , ( Color.toCssColor Palette.gray900, 900 )
                         ]
             , colorSwatchGroup
                 (toneGroup "Status"
