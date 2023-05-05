@@ -91,6 +91,7 @@ chevronLeft =
         }
 
 
+{-| -}
 chevronUp : Icon
 chevronUp =
     Icon
@@ -129,6 +130,7 @@ chevronRight =
         }
 
 
+{-| -}
 chevronDown : Icon
 chevronDown =
     Icon
