@@ -43,6 +43,7 @@ type ButtonColor
     = Primary
     | Secondary
     | Warn
+    | Neutral
 
 
 {-| Defines the emphasis of the button
@@ -107,6 +108,9 @@ customView attrs { emphasis, color, onClick } content =
                         Warn ->
                             ( Palette.warn500, Palette.warn600 )
 
+                        Neutral ->
+                            ( Palette.black, Palette.gray800 )
+
                 baseStyle =
                     [ Css.backgroundColor <| Color.toCssColor bgColor
                     , Css.border Css.zero
@@ -151,6 +155,9 @@ customView attrs { emphasis, color, onClick } content =
                         Warn ->
                             ( Palette.warn500, Palette.warn050 )
 
+                        Neutral ->
+                            ( Palette.black, Palette.gray300 )
+
                 baseStyle =
                     [ Css.padding2 (rpx 8) (rpx 14)
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
@@ -194,6 +201,9 @@ customView attrs { emphasis, color, onClick } content =
 
                         Warn ->
                             ( Palette.warn500, Palette.warn050 )
+
+                        Neutral ->
+                            ( Palette.black, Palette.gray300 )
 
                 baseStyle =
                     [ Css.color <| Color.toCssColor textColor

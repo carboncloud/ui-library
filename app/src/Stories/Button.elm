@@ -7,7 +7,7 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Svg.Styled exposing (toUnstyled)
 import Svg.Styled.Attributes exposing (css)
-import Ui.Button exposing (ButtonEmphasis(..))
+import Ui.Button exposing (ButtonColor(..), ButtonEmphasis(..))
 import Ui.Icon as Icon
 
 
@@ -25,6 +25,11 @@ main =
                     , options = [ ( "Raised", High ), ( "Ghost", Mid ), ( "Flat", Low ) ]
                     , fallback = High
                     }
+                |> Storybook.Controls.withEnum
+                    { name = "color"
+                    , options = [ ( "Primary", Primary ), ( "Secondary", Secondary ), ( "Warn", Warn ), ( "Neutral", Neutral ) ]
+                    , fallback = Primary
+                    }
         , view = view
         }
 
@@ -32,6 +37,7 @@ main =
 type alias Controls =
     { label : String
     , emphasis : ButtonEmphasis
+    , color : ButtonColor
     }
 
 
@@ -45,7 +51,7 @@ view controls =
         Styled.div [ css [ displayFlex, Css.property "gap" "20px" ] ]
             [ Ui.Button.view
                 { emphasis = controls.emphasis
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.Text controls.label)
