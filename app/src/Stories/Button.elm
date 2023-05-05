@@ -62,30 +62,6 @@ view controls =
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
-                { emphasis = Mid
-                , color = controls.color
-                , onClick = Just UserClickedButton
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
-                { emphasis = Mid
-                , color = controls.color
-                , onClick = Nothing
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
-                { emphasis = Low
-                , color = controls.color
-                , onClick = Just UserClickedButton
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
-                { emphasis = Low
-                , color = controls.color
-                , onClick = Nothing
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
                 { emphasis = controls.emphasis
                 , color = controls.color
                 , onClick = Just UserClickedButton
