@@ -8,6 +8,7 @@ export default {
   argTypes: {
     label: { control: { type: "text" } },
     type: { control: { type: "radio" }, options: ["Raised", "Ghost", "Flat"] },
+    color: { control: { type: "radio" }, options: ["Primary", "Secondary", "Warn", "Neutral"] },
     onAction: { action: "Elm" },
   },
 };
