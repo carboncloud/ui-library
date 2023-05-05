@@ -22,7 +22,6 @@ module Ui.TextStyle exposing
 
 This module defines a `TextStyle`
 and the available font properties.
-x
 
 
 ## Types
