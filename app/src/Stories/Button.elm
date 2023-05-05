@@ -57,43 +57,43 @@ view controls =
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = controls.emphasis
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Nothing
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = Mid
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = Mid
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Nothing
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = Low
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = Low
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Nothing
                 }
                 (Ui.Button.Text controls.label)
             , Ui.Button.view
                 { emphasis = controls.emphasis
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.TextWithLeftIcon controls.label Icon.edit)
             , Ui.Button.view
                 { emphasis = controls.emphasis
-                , color = Ui.Button.Primary
+                , color = controls.color
                 , onClick = Just UserClickedButton
                 }
                 (Ui.Button.TextWithRightIcon controls.label Icon.edit)
