@@ -1,13 +1,13 @@
-const Elm = require('vite-plugin-elm');
-const path = require('path');
-const folder = path.resolve(__dirname, './elm-storybook');
+const Elm = require("vite-plugin-elm");
+const path = require("path");
+const folder = path.resolve(__dirname, "./elm-storybook");
 module.exports = {
-  "stories": ["../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  "addons": ["@storybook/addon-a11y", "@storybook/addon-actions", "@storybook/addon-controls", "./elm-storybook/addon/register"],
-  staticDirs: ['../public'],
-  "framework": "@storybook/html",
-  "core": {
-    "builder": "@storybook/builder-vite",
+  stories: ["../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  addons: ["@storybook/addon-a11y", "@storybook/addon-actions", "@storybook/addon-controls", "@storybook/addon-outline", "./elm-storybook/addon/register"],
+  staticDirs: ["../public"],
+  framework: {
+    name: "@storybook/html-vite",
+    options: {}
   },
   async viteFinal(config) {
     // Allow .elm files to be imported
@@ -19,7 +19,7 @@ module.exports = {
     // Allow `elm-storybook` to be imported in *.stories.js
     config.resolve = config.resolve || {};
     config.resolve.alias = config.resolve.alias || {};
-    config.resolve.alias['elm-storybook'] = folder;
+    config.resolve.alias["elm-storybook"] = folder;
     return config;
   }
 };
