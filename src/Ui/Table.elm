@@ -2,6 +2,7 @@ module Ui.Table exposing
     ( ColumnAlignment(..)
     , ColumnConfig
     , Model
+    , Msg
     , SortDirection(..)
     , TableConfig
     , addColumn
@@ -9,6 +10,7 @@ module Ui.Table exposing
     , addContentRow
     , addExtendableView
     , column
+    , columnCustom
     , columnFloat
     , columnInt
     , columnText
@@ -17,18 +19,22 @@ module Ui.Table exposing
     , setColumnAlignment
     , setColumnWidth
     , showColumn
+    , update
     , view
     )
 
 import Css exposing (AlignItems)
+import Css.Transitions exposing (transition)
 import Dict exposing (Dict)
 import Html.Styled exposing (Attribute, Html, div, span)
 import Html.Styled.Attributes exposing (align, css)
+import Html.Styled.Events exposing (onClick)
 import List
 import List.Nonempty as Nonempty exposing (Nonempty)
+import Maybe.Extra exposing (isJust)
 import Ui.Css.Palette as Palette
 import Ui.Css.TextStyle exposing (toCssStyle)
-import Ui.Icon
+import Ui.Icon exposing (Icon)
 import Ui.Palette
 import Ui.Text as Text
 import Ui.TextStyle as TextStyle
@@ -49,51 +55,6 @@ type ColumnContent msg
     = ColumnContent (Nonempty (Html msg))
 
 
-columnText : String -> ColumnContent msg
-columnText =
-    ColumnContent << Nonempty.singleton << Text.customView [ css [ Css.flex (Css.num 1) ] ] TextStyle.body
-
-
-columnInt : Int -> ColumnContent msg
-columnInt =
-    ColumnContent << Nonempty.singleton << Text.view TextStyle.monospace << String.fromInt
-
-
-columnFloat : Float -> ColumnContent msg
-columnFloat =
-    ColumnContent << Nonempty.singleton << Text.view TextStyle.monospace << String.fromFloat
-
-
-addContentRow : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
-addContentRow (ColumnContent c1) (ColumnContent c2) =
-    ColumnContent <|
-        Nonempty.singleton <|
-            div
-                [ css
-                    [ Css.displayFlex
-                    , Css.flexDirection Css.column
-                    ]
-                ]
-            <|
-                Nonempty.toList c2
-                    ++ Nonempty.toList c1
-
-
-addContentColumn : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
-addContentColumn (ColumnContent c1) (ColumnContent c2) =
-    ColumnContent <|
-        Nonempty.singleton <|
-            div
-                [ css
-                    [ Css.displayFlex
-                    , Css.flexDirection Css.row
-                    ]
-                ]
-            <|
-                Nonempty.toList c2
-                    ++ Nonempty.toList c1
-
-
 type alias ColumnConfig record msg =
     { name : String
     , width : Css.LengthOrAuto Css.Px
@@ -105,26 +66,57 @@ type alias ColumnConfig record msg =
 
 
 type alias TableConfig record msg =
-    { mRowOnClick : Maybe (record -> msg)
-    , columns : Dict String (ColumnConfig record msg)
-    , onHeaderClick : Maybe (String -> msg)
+    { columns : Dict ColumnId (ColumnConfig record msg)
+    , onHeaderClick : Maybe (ColumnId -> msg)
     , extendableView : Maybe (record -> Html msg)
+    , liftMsg : Msg -> msg
     }
 
 
 type alias Model record =
     { sortDirection : SortDirection
     , sortIndex : String
-    , data : List ( record, Bool )
+    , data : Dict DataEntryId ( record, Bool )
     }
 
 
-defaultConfig : TableConfig record msg
-defaultConfig =
-    { mRowOnClick = Nothing
-    , onHeaderClick = Nothing
+type alias ColumnId =
+    String
+
+
+type alias DataEntryId =
+    String
+
+
+type Msg
+    = ToggleAccordionView DataEntryId
+
+
+update : Msg -> Model v -> ( Model v, Cmd Msg )
+update msg model =
+    case msg of
+        ToggleAccordionView dId ->
+            ( { model
+                | data =
+                    Dict.update dId
+                        (Maybe.map <|
+                            \entry ->
+                                ( Tuple.first entry
+                                , not <| Tuple.second entry
+                                )
+                        )
+                        model.data
+              }
+            , Cmd.none
+            )
+
+
+defaultConfig : (Msg -> msg) -> TableConfig record msg
+defaultConfig liftMsg =
+    { onHeaderClick = Nothing
     , columns = Dict.empty
     , extendableView = Nothing
+    , liftMsg = liftMsg
     }
 
 
@@ -204,24 +196,79 @@ updateColumn k f config =
     { config | columns = Dict.update k (Maybe.map f) config.columns }
 
 
+columnText : String -> ColumnContent msg
+columnText =
+    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.body
+
+
+cellContentStyle =
+    css [ Css.flex (Css.num 1) ]
+
+
+columnInt : Int -> ColumnContent msg
+columnInt =
+    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromInt
+
+
+columnFloat : Float -> ColumnContent msg
+columnFloat =
+    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromFloat
+
+
+columnCustom : Html msg -> ColumnContent msg
+columnCustom =
+    ColumnContent << Nonempty.singleton
+
+
+addContentRow : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
+addContentRow (ColumnContent c1) (ColumnContent c2) =
+    ColumnContent <|
+        Nonempty.singleton <|
+            div
+                [ css
+                    [ Css.displayFlex
+                    , Css.flexDirection Css.column
+                    ]
+                ]
+            <|
+                Nonempty.toList c2
+                    ++ Nonempty.toList c1
+
+
+addContentColumn : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
+addContentColumn (ColumnContent c1) (ColumnContent c2) =
+    ColumnContent <|
+        Nonempty.singleton <|
+            div
+                [ css
+                    [ Css.displayFlex
+                    , Css.flexDirection Css.row
+                    , Css.width (Css.pct 100)
+                    ]
+                ]
+            <|
+                Nonempty.toList c2
+                    ++ Nonempty.toList c1
+
+
 headerStyle =
     toCssStyle (TextStyle.bodySmall |> TextStyle.withColor Ui.Palette.gray300)
 
 
 cellPadding =
-    css [ Css.padding2 (Css.px 10) (Css.px 8), Css.margin2 Css.auto Css.zero ]
+    css [ Css.padding2 (Css.px 10) (Css.px 8) ]
 
 
 alignment col =
     case col.alignment of
         Left ->
-            css [ Css.textAlign Css.left ]
+            css [ Css.justifyContent Css.left, Css.textAlign Css.left ]
 
         Center ->
-            css [ Css.textAlign Css.center ]
+            css [ Css.justifyContent Css.center, Css.textAlign Css.center ]
 
         Right ->
-            css [ Css.textAlign Css.right ]
+            css [ Css.justifyContent Css.right, Css.textAlign Css.right ]
 
 
 view :
@@ -229,7 +276,7 @@ view :
     -> TableConfig record msg
     -> Model record
     -> Html msg
-view attributes { mRowOnClick, columns, extendableView } { sortIndex, sortDirection, data } =
+view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection, data } =
     let
         colList =
             List.sortBy (.weight << Tuple.second) <|
@@ -242,7 +289,7 @@ view attributes { mRowOnClick, columns, extendableView } { sortIndex, sortDirect
                 [ css <|
                     [ Css.displayFlex
                     , Css.flexDirection Css.row
-                    , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray100
+                    , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray200
                     ]
                         ++ headerStyle
                 ]
@@ -274,16 +321,24 @@ view attributes { mRowOnClick, columns, extendableView } { sortIndex, sortDirect
                     )
                     colList
 
-        row : ( record, Bool ) -> Html msg
-        row ( r, expanded ) =
-            div []
+        row : ( String, ( record, Bool ) ) -> Html msg
+        row ( dId, ( r, expanded ) ) =
+            div [ css [ Css.displayFlex, Css.flexDirection Css.column ] ]
                 [ div
-                    [ css
+                    (css
                         [ Css.displayFlex
                         , Css.flexDirection Css.row
-                        , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray100
+                        , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray200
+                        , Css.cursor Css.pointer
+                        , Css.hover [ Css.backgroundColor Palette.gray100 ]
                         ]
-                    ]
+                        :: (if isJust extendableView then
+                                [ onClick <| liftMsg <| ToggleAccordionView dId ]
+
+                            else
+                                []
+                           )
+                    )
                   <|
                     List.map
                         (\( _, colConfig ) ->
@@ -294,7 +349,9 @@ view attributes { mRowOnClick, columns, extendableView } { sortIndex, sortDirect
                             div
                                 [ css
                                     [ Css.width colConfig.width
-                                    , Css.borderRight3 (Css.px 1) Css.solid Palette.gray100
+                                    , Css.displayFlex
+                                    , Css.borderRight3 (Css.px 1) Css.solid Palette.gray200
+                                    , Css.alignItems Css.center
                                     ]
                                 , alignment colConfig
                                 , cellPadding
@@ -304,19 +361,35 @@ view attributes { mRowOnClick, columns, extendableView } { sortIndex, sortDirect
                                 Nonempty.toList content
                         )
                         colList
-                , if expanded then
-                    div
-                        [ css
-                            [ Css.width (Css.pct 100)
-                            , Css.backgroundColor Palette.primary050
-                            , Css.padding2 (Css.px 20) (Css.px 15)
-                            ]
-                        , css [ Css.boxSizing Css.borderBox ]
-                        ]
-                        [ Maybe.map (\v -> v r) extendableView |> Maybe.withDefault (span [] []) ]
+                , case extendableView of
+                    Just accordionView ->
+                        div
+                            [ css
+                                [ Css.width (Css.pct 100)
+                                , Css.backgroundColor Palette.primary050
+                                , Css.overflow Css.hidden
+                                , Css.height Css.auto
+                                , Css.displayFlex
+                                , transition [ Css.Transitions.maxHeight3 300 0 <| Css.Transitions.cubicBezier 0.87 0 0.13 1 ]
+                                , if expanded then
+                                    Css.maxHeight (Css.px 400)
 
-                  else
-                    span [] []
+                                  else
+                                    Css.maxHeight (Css.px 0)
+                                ]
+                            , css [ Css.boxSizing Css.borderBox ]
+                            ]
+                            [ div
+                                [ css
+                                    [ Css.padding2 (Css.px 15) (Css.px 15)
+                                    , Css.flex (Css.num 1)
+                                    ]
+                                ]
+                                [ accordionView r ]
+                            ]
+
+                    _ ->
+                        span [] []
                 ]
     in
-    div [] (header :: List.map row data)
+    div [] (header :: (List.map row <| Dict.toList data))
