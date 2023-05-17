@@ -9,6 +9,8 @@ module Ui.TextStyle exposing
     , heading3
     , heading4
     , label
+    , monospace
+    , monospaceFamilies
     , primaryColor
     , primaryWhiteColor
     , sansSerifFamilies
@@ -88,6 +90,11 @@ sansSerifFamilies =
     [ "Poppins", "system-ui", "sans-serif" ]
 
 
+monospaceFamilies : List String
+monospaceFamilies =
+    [ "Courier Prime" ]
+
+
 {-| -}
 bodySmall : TextStyle
 bodySmall =
@@ -120,6 +127,17 @@ label =
         , size = 16
         , weight = SemiBold
         , lineHeight = 1.2
+        , color = primaryColor
+        }
+
+
+monospace : TextStyle
+monospace =
+    TextStyle
+        { family = monospaceFamilies
+        , size = 16
+        , weight = Normal
+        , lineHeight = 1
         , color = primaryColor
         }
 
