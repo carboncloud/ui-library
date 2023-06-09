@@ -14,7 +14,7 @@ module Ui.TextStyle exposing
     , primaryColor
     , primaryWhiteColor
     , sansSerifFamilies
-    , withColor
+    , withColor, linkColor
     )
 
 {-|
@@ -83,6 +83,9 @@ primaryWhiteColor : Color
 primaryWhiteColor =
     Color.fromHex "#FCFCFC"
 
+
+linkColor : Color
+linkColor = Color.fromHex "#6A95FA"
 
 {-| -}
 sansSerifFamilies : List String

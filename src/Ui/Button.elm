@@ -22,8 +22,8 @@ import Accessibility.Styled.Role as Role
 import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
-import Html.Styled.Events as Events
-import Rpx exposing (rpx)
+import Html.Styled.Events as Events exposing (preventDefaultOn)
+import Json.Decode as JD
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
@@ -159,7 +159,7 @@ customView attrs { emphasis, color, onClick } content =
                             ( Palette.black, Palette.gray300 )
 
                 baseStyle =
-                    [ Css.padding2 (rpx 8) (rpx 14)
+                    [ Css.padding2 (Css.px 8) (Css.px 14)
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
                     , Css.color <| Color.toCssColor baseColor
                     , Css.whiteSpace Css.noWrap
@@ -250,8 +250,8 @@ button customStyle attrs mOnClick buttonContent =
             , Css.alignItems Css.center
             , Css.border Css.zero
             , Css.backgroundColor Css.transparent
-            , Css.padding2 (rpx 10) (rpx 16)
-            , Css.borderRadius (rpx 24)
+            , Css.padding2 (Css.px 10) (Css.px 16)
+            , Css.borderRadius (Css.px 24)
             , Css.fontWeight Css.bold
             , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer
@@ -279,12 +279,10 @@ button customStyle attrs mOnClick buttonContent =
                 textBaseAttrs
                 [ A11y.span
                     [ Attributes.css
-                        [ Css.height (Css.px 16)
-                        , Css.width (Css.px 16)
-                        , Css.margin4 Css.auto (Css.px 10) Css.auto Css.auto
+                        [ Css.margin4 Css.auto (Css.px 10) Css.auto Css.auto
                         ]
                     ]
-                    [ Icon.view i ]
+                    [ Icon.view24x24 i ]
                 , A11y.text s
                 ]
 
@@ -294,12 +292,10 @@ button customStyle attrs mOnClick buttonContent =
                 [ A11y.text s
                 , A11y.span
                     [ Attributes.css
-                        [ Css.height (Css.px 16)
-                        , Css.width (Css.px 16)
-                        , Css.margin4 Css.auto Css.auto Css.auto (Css.px 10)
+                        [ Css.margin4 Css.auto Css.auto Css.auto (Css.px 10)
                         ]
                     ]
-                    [ Icon.view i ]
+                    [ Icon.view24x24 i ]
                 ]
 
 
@@ -324,9 +320,9 @@ iconButton attrs { onClick, icon, tooltip } =
                 , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.gray300 ]
                 , Css.displayFlex
                 , Css.borderRadius (Css.pct 100)
-                , Css.backgroundColor Css.transparent
                 , Css.border Css.zero
                 , Css.cursor Css.pointer
+                , Css.backgroundColor Css.transparent
                 ]
             :: onClickAttribute onClick
             ++ attrs
@@ -335,11 +331,16 @@ iconButton attrs { onClick, icon, tooltip } =
         ]
 
 
+onClickNoPropagation : msg -> A11y.Attribute msg
+onClickNoPropagation onClick =
+    Events.custom "click" (JD.succeed { message = onClick, stopPropagation = True, preventDefault = True })
+
+
 onClickAttribute : Maybe msg -> List (A11y.Attribute msg)
 onClickAttribute mOnClick =
     case mOnClick of
         Just onClick ->
-            [ Events.onClick onClick, Attributes.disabled False ]
+            [ onClickNoPropagation onClick, Attributes.disabled False ]
 
         Nothing ->
             [ Attributes.disabled True ]

@@ -178,9 +178,10 @@ view { liftMsg, nodeContent } model =
 
         chevronStyle n =
             css
-                [ Css.width (Css.px 10)
-                , Css.display Css.inlineBlock
-                , Css.marginRight (Css.px 10)
+                [ Css.marginRight (Css.px 10)
+                , Css.displayFlex
+                , Css.justifyContent Css.center
+                , Css.flexDirection Css.column
                 , Css.fill <|
                     if Zipper.isFocused model.treeZipper n then
                         toCssColor Ui.Palette.white
@@ -235,7 +236,7 @@ view { liftMsg, nodeContent } model =
                     :: (if Tree.hasChildren t then
                             [ Styled.span
                                 [ chevronStyle node ]
-                                [ Icon.view Icon.chevronRight ]
+                                [ Icon.view24x24 Icon.chevronRight ]
                             ]
 
                         else

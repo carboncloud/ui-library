@@ -23,7 +23,6 @@ import Css.Transitions as Transitions
 import Html exposing (Attribute)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import Rpx exposing (rpx)
 import String.Extra exposing (dasherize)
 import Ui.Color as Color
 import Ui.Palette as Palette
@@ -84,15 +83,15 @@ customView attrs config =
                     , Css.property "place-items" "center"
                     , Css.property "appearance" "none"
                     , Css.property "-webkit-appearance" "none"
-                    , Css.width (rpx 20)
-                    , Css.height (rpx 20)
-                    , Css.borderRadius (rpx 10)
+                    , Css.width (Css.px 20)
+                    , Css.height (Css.px 20)
+                    , Css.borderRadius (Css.px 10)
                     , Css.margin Css.zero
                     , Css.before
                         [ Css.property "content" "\"\""
-                        , Css.height (rpx 12)
-                        , Css.width (rpx 12)
-                        , Css.borderRadius (rpx 6)
+                        , Css.height (Css.px 12)
+                        , Css.width (Css.px 12)
+                        , Css.borderRadius (Css.px 6)
                         , if isSelected then
                             Css.transform (Css.scale 1)
 
@@ -123,7 +122,7 @@ customView attrs config =
                                             [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.disabled
                                             , Css.cursor Css.notAllowed
                                             , Css.before
-                                                [ Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Color.toCssColor Palette.disabled ]
+                                                [ Css.boxShadow4 Css.inset (Css.px 10) (Css.px 10) <| Color.toCssColor Palette.disabled ]
                                             ]
 
                                         else
@@ -134,7 +133,7 @@ customView attrs config =
                                             , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.gray800
                                             , Css.cursor Css.pointer
                                             , Css.before
-                                                [ Css.boxShadow4 Css.inset (rpx 10) (rpx 10) <| Color.toCssColor Palette.gray800 ]
+                                                [ Css.boxShadow4 Css.inset (Css.px 10) (Css.px 10) <| Color.toCssColor Palette.gray800 ]
                                             ]
                                        )
                            ]
@@ -174,5 +173,5 @@ customView attrs config =
             :: List.map Attributes.fromUnstyled attrs
         )
     <|
-        A11y.legend [ Attributes.css [ Css.marginBottom (rpx 20) ] ] [ Text.view TextStyle.label config.label ]
+        A11y.legend [ Attributes.css [ Css.marginBottom (Css.px 20) ] ] [ Text.view TextStyle.label config.label ]
             :: List.indexedMap itemView config.options

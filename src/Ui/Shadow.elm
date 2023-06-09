@@ -69,21 +69,21 @@ shadow size =
             Small ->
                 Nonempty
                     { offsetX = Px 0
-                    , offsetY = Px 1
+                    , offsetY = Px 0
                     , blurRadius = Px 1
                     , spreadRadius = Px 0
                     , color = Css.rgba 0 0 0 0.11
                     }
-                    [ { offsetX = Px 0
+                    [ { offsetX = Px 1
                       , offsetY = Px 2
                       , blurRadius = Px 2
-                      , spreadRadius = Px 0
+                      , spreadRadius = Px 1
                       , color = Css.rgba 0 0 0 0.11
                       }
-                    , { offsetX = Px 0
+                    , { offsetX = Px 2
                       , offsetY = Px 6
                       , blurRadius = Px 8
-                      , spreadRadius = Px 0
+                      , spreadRadius = Px 2
                       , color = Css.rgba 0 0 0 0.11
                       }
                     ]

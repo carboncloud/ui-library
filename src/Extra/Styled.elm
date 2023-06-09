@@ -12,9 +12,9 @@ when pred content =
         none
 
 
-whenJust : (a -> Html msg) -> Maybe a -> Html msg
-whenJust f =
-    Maybe.map f >> Maybe.withDefault none
+whenJust :  Maybe a -> (a -> Html msg) -> Html msg
+whenJust x f =
+    Maybe.map f x |> Maybe.withDefault none
 
 
 none : Html msg

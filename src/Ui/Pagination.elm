@@ -34,7 +34,6 @@ import Html.Styled.Events as Events
 import List
 import List.Extra as List
 import Maybe.Extra as Maybe
-import Rpx exposing (rpx)
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
@@ -45,39 +44,27 @@ import ZipList exposing (ZipList)
 
 {-| The Pagination model
 -}
-type Model
-    = Model (ZipList Int)
+type Model a
+    = Model (ZipList (Int, a))
 
 
 {-| Creates a model for the component
 -}
-init : Int -> Int -> Result String Model
-init numberOfPages currentPage_ =
-    if numberOfPages < 1 then
-        Err "Provide a value greater than zero for the number of pages."
-
-    else
-        List.range 1 numberOfPages
-            |> ZipList.fromList
-            |> Maybe.andThen (ZipList.goToIndex (currentPage_ - 1))
-            |> Maybe.map Model
-            |> Result.fromMaybe "Current page number should be in the range [1,number of pages]"
+init : ZipList a -> Model a
+init = Model << ZipList.indexedMap (\i x -> Tuple.pair (i + 1) x)
 
 
 {-| Returns a view of a pagination component.
-This should be used whenever possible.
-You can use `customView` if you need to
-customize the button.
 -}
 view :
-    Model
+    Model a
     ->
         { -- the amount of numbers shown adjacent to the selected page
           siblingCount : Int
 
         -- the amount of numbers shown at the far end of the range
         , boundaryCount : Int
-        , onNav : Model -> msg
+        , onNav : Model a -> msg
         }
     -> Html msg
 view =
@@ -86,44 +73,44 @@ view =
 
 {-| Returns the current page number
 -}
-currentPage : Model -> Int
-currentPage (Model (ZipList.Zipper _ current _)) =
-    current
+currentPage : Model a -> (Int, a)
+currentPage (Model z) =
+    ZipList.current z
 
 
 {-| Go to the previous page
 -}
-previousPage : Model -> Maybe Model
+previousPage : Model a -> Maybe (Model a)
 previousPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpBackward 1 model
 
 
 {-| Go to the next page
 -}
-nextPage : Model -> Maybe Model
+nextPage : Model a -> Maybe (Model a)
 nextPage (Model model) =
     Maybe.map Model <| ZipList.maybeJumpForward 1 model
 
 
 {-| Set the current page
 -}
-setPage : Model -> Int -> Maybe Model
+setPage : Model a -> Int -> Maybe (Model a)
 setPage (Model m) p =
     Maybe.map Model <| ZipList.goToIndex (p - 1) m
 
 
 {-| Return the left range [1,current page - 1] of the current page
 -}
-getInitial : Model -> List Int
+getInitial : Model a -> List Int
 getInitial (Model (ZipList.Zipper initial _ _)) =
-    List.reverse initial
+    List.map Tuple.first <| List.reverse initial
 
 
 {-| Return the right range [current page + 1, number of pages] of the current page
 -}
-getTail : Model -> List Int
+getTail : Model a -> List Int
 getTail (Model (ZipList.Zipper _ _ tail)) =
-    tail
+    List.map Tuple.first <| tail
 
 
 {-| Returns a custom view of a pagination component.
@@ -131,14 +118,14 @@ Only use this when `view` is not enough.
 -}
 customView :
     List (Attribute Never)
-    -> Model
+    -> Model a
     ->
         { -- the amount of numbers shown adjacent to the selected page
           siblingCount : Int
 
         -- the amount of numbers shown at the far end of the range
         , boundaryCount : Int
-        , onNav : Model -> msg
+        , onNav : Model a -> msg
         }
     -> Html msg
 customView attrs model config =
@@ -147,14 +134,14 @@ customView attrs model config =
             36
 
         buttonStyle =
-            [ Css.height (rpx buttonSize)
-            , Css.width (rpx buttonSize)
+            [ Css.height (Css.px buttonSize)
+            , Css.width (Css.px buttonSize)
             , Css.cursor Css.pointer
             , Css.border Css.zero
             , Css.backgroundColor Css.transparent
             , Css.property "display" "grid"
             , Css.property "place-items" "center"
-            , Css.borderRadius (rpx <| buttonSize / 2)
+            , Css.borderRadius (Css.px <| buttonSize / 2)
             ]
 
         hoverStyle =
@@ -162,7 +149,7 @@ customView attrs model config =
 
         iconButtonStyle =
             buttonStyle
-                ++ [ Css.padding (rpx 10) ]
+                ++ [ Css.padding (Css.px 10) ]
 
         ellipsis : Html msg
         ellipsis =
@@ -223,7 +210,7 @@ customView attrs model config =
                     ++ ellipsis
                     :: (List.map (pageButton False) <| CCList.takeLast config.boundaryCount range)
 
-        navButton : Icon -> Maybe Model -> Html msg
+        navButton : Icon -> Maybe (Model a) -> Html msg
         navButton icon nextModel =
             case nextModel of
                 Just x ->
@@ -259,7 +246,7 @@ customView attrs model config =
                         , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getTail model)
                         }
                     )
-                ++ pageButton True (currentPage model)
+                ++ pageButton True (Tuple.first <| currentPage model)
                 :: leftToRightRange
                     { range = getTail model
                     , extraNumberOfItems = max 0 <| baseRangeLength - (List.length <| getInitial model)

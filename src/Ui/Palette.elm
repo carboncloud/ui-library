@@ -3,6 +3,7 @@ module Ui.Palette exposing
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
+    , approved500, attention500
     )
 
 {-| This module defines a palette of available colors
@@ -185,3 +186,13 @@ success050 =
 disabled : Color
 disabled =
     gray500
+
+
+attention500 : Color
+attention500 =
+    Ui.Color.fromHex "#EADC60"
+
+
+approved500 : Color
+approved500 =
+    Ui.Color.fromHex "#7DCC70"

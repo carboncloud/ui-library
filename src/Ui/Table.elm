@@ -1,32 +1,34 @@
 module Ui.Table exposing
     ( ColumnAlignment(..)
     , ColumnConfig
+    , Flex(..)
     , Model
     , Msg
     , SortDirection(..)
     , TableConfig
     , addColumn
-    , addContentColumn
-    , addContentRow
     , addExtendableView
+    , cellColumns
+    , cellCustom
+    , cellFloat
+    , cellInt
+    , cellRows
+    , cellText
     , column
-    , columnCustom
-    , columnFloat
-    , columnInt
-    , columnText
+    , columnWithDataEntryId
     , defaultConfig
     , hideColumn
     , setColumnAlignment
     , setColumnWidth
     , showColumn
     , update
-    , view
+    , view, cellLink
     )
 
 import Css exposing (AlignItems)
 import Css.Transitions exposing (transition)
 import Dict exposing (Dict)
-import Html.Styled exposing (Attribute, Html, div, span)
+import Html.Styled exposing (Attribute, Html, a, div, span)
 import Html.Styled.Attributes exposing (align, css)
 import Html.Styled.Events exposing (onClick)
 import List
@@ -38,7 +40,10 @@ import Ui.Icon exposing (Icon)
 import Ui.Palette
 import Ui.Text as Text
 import Ui.TextStyle as TextStyle
-
+import Html.Styled.Attributes exposing (href)
+import Ui.TextStyle exposing (TextStyle)
+import Html.Styled.Lazy exposing (lazy3)
+import Html.Styled.Keyed exposing (lazyNode3)
 
 type SortDirection
     = Ascending
@@ -52,13 +57,13 @@ type ColumnAlignment
 
 
 type ColumnContent msg
-    = ColumnContent (Nonempty (Html msg))
+    = ColumnContent (Html msg)
 
 
 type alias ColumnConfig record msg =
     { name : String
     , width : Css.LengthOrAuto Css.Px
-    , content : record -> ColumnContent msg
+    , content : DataEntryId -> record -> ColumnContent msg
     , visible : Bool
     , alignment : ColumnAlignment
     , weight : Int
@@ -141,6 +146,17 @@ column :
     -> Int
     -> ColumnConfig record msg
 column name length content a =
+    ColumnConfig name length (always content) True a
+
+
+columnWithDataEntryId :
+    String
+    -> Css.LengthOrAuto Css.Px
+    -> (DataEntryId -> record -> ColumnContent msg)
+    -> ColumnAlignment
+    -> Int
+    -> ColumnConfig record msg
+columnWithDataEntryId name length content a =
     ColumnConfig name length content True a
 
 
@@ -196,59 +212,91 @@ updateColumn k f config =
     { config | columns = Dict.update k (Maybe.map f) config.columns }
 
 
-columnText : String -> ColumnContent msg
-columnText =
-    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.body
-
-
 cellContentStyle =
-    css [ Css.flex (Css.num 1) ]
+    css [ Css.flexGrow (Css.num 1) ]
 
 
-columnInt : Int -> ColumnContent msg
-columnInt =
-    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromInt
+unwrapColumnContent (ColumnContent x) =
+    x
 
 
-columnFloat : Float -> ColumnContent msg
-columnFloat =
-    ColumnContent << Nonempty.singleton << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromFloat
+cellColumns : Flex -> List (ColumnContent msg) -> ColumnContent msg
+cellColumns w =
+    ColumnContent
+        << div
+            [ css
+                ([ Css.displayFlex
+                 , Css.flexDirection Css.row
+                 , Css.height (Css.pct 100)
+                 , Css.whiteSpace Css.normal
+                 ]
+                    ++ flexToStyle w
+                )
+            ]
+        << List.map unwrapColumnContent
 
 
-columnCustom : Html msg -> ColumnContent msg
-columnCustom =
-    ColumnContent << Nonempty.singleton
+
+-- Table.cellColumn Table.Grow [ row Table.Grow [ text ..., int... ], icon ..., ]
 
 
-addContentRow : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
-addContentRow (ColumnContent c1) (ColumnContent c2) =
-    ColumnContent <|
-        Nonempty.singleton <|
-            div
-                [ css
-                    [ Css.displayFlex
-                    , Css.flexDirection Css.column
-                    ]
-                ]
-            <|
-                Nonempty.toList c2
-                    ++ Nonempty.toList c1
+cellText : TextStyle -> String -> ColumnContent msg
+cellText textStyle =
+    ColumnContent << Text.customView [ cellContentStyle ] textStyle
 
 
-addContentColumn : ColumnContent msg -> ColumnContent msg -> ColumnContent msg
-addContentColumn (ColumnContent c1) (ColumnContent c2) =
-    ColumnContent <|
-        Nonempty.singleton <|
-            div
-                [ css
-                    [ Css.displayFlex
-                    , Css.flexDirection Css.row
-                    , Css.width (Css.pct 100)
-                    ]
-                ]
-            <|
-                Nonempty.toList c2
-                    ++ Nonempty.toList c1
+cellInt : Int -> ColumnContent msg
+cellInt =
+    ColumnContent << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromInt
+
+
+cellFloat : Float -> ColumnContent msg
+cellFloat =
+    ColumnContent << Text.customView [ cellContentStyle ] TextStyle.monospace << String.fromFloat
+
+
+cellLink : TextStyle -> { url : String, text : String } -> ColumnContent msg
+cellLink textStyle { url, text} =
+    ColumnContent <| a [ href url ] [ Text.view (textStyle |> TextStyle.withColor TextStyle.linkColor) text]
+
+
+cellCustom : Html msg -> ColumnContent msg
+cellCustom =
+    ColumnContent
+
+
+type Flex
+    = Auto
+    | Shrink
+    | Grow
+
+
+flexToStyle : Flex -> List Css.Style
+flexToStyle x =
+    case x of
+        Auto ->
+            [ Css.flex <| Css.num 1 ]
+
+        Shrink ->
+            [ Css.flexShrink (Css.num 0), Css.flexBasis Css.auto ]
+
+        Grow ->
+            [ Css.flexGrow (Css.num 1) ]
+
+
+cellRows : Flex -> List (ColumnContent msg) -> ColumnContent msg
+cellRows w =
+    ColumnContent
+        << div
+            [ css
+                ([ Css.displayFlex
+                 , Css.flexDirection Css.column
+                 , Css.whiteSpace Css.normal
+                 ]
+                    ++ flexToStyle w
+                )
+            ]
+        << List.map unwrapColumnContent
 
 
 headerStyle =
@@ -321,9 +369,12 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
                     )
                     colList
 
-        row : ( String, ( record, Bool ) ) -> Html msg
-        row ( dId, ( r, expanded ) ) =
-            div [ css [ Css.displayFlex, Css.flexDirection Css.column ] ]
+        row : String -> record -> Bool -> Html msg
+        row dId r expanded =
+            let
+                _ = Debug.log ("Creating row: " ++ dId) identity
+            in
+             div [ css [ Css.displayFlex, Css.flexDirection Css.column, Css.lastChild [Css.borderBottom Css.zero] ] ]
                 [ div
                     (css
                         [ Css.displayFlex
@@ -344,13 +395,12 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
                         (\( _, colConfig ) ->
                             let
                                 (ColumnContent content) =
-                                    colConfig.content r
+                                    colConfig.content dId r
                             in
                             div
                                 [ css
                                     [ Css.width colConfig.width
                                     , Css.displayFlex
-                                    , Css.borderRight3 (Css.px 1) Css.solid Palette.gray200
                                     , Css.alignItems Css.center
                                     ]
                                 , alignment colConfig
@@ -358,7 +408,7 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
                                 , css [ Css.boxSizing Css.borderBox ]
                                 ]
                             <|
-                                Nonempty.toList content
+                                [ content ]
                         )
                         colList
                 , case extendableView of
@@ -376,8 +426,8 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
 
                                   else
                                     Css.maxHeight (Css.px 0)
+                                , Css.boxSizing Css.borderBox
                                 ]
-                            , css [ Css.boxSizing Css.borderBox ]
                             ]
                             [ div
                                 [ css
@@ -390,6 +440,6 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
 
                     _ ->
                         span [] []
-                ]
+                ] 
     in
-    div [] (header :: (List.map row <| Dict.toList data))
+    div [ css [ Css.border3 (Css.px 1) Css.solid Palette.gray200 ] ] (header :: (List.singleton <| lazyNode3 "div" [ ] row <| List.map (\(k, (r, b)) -> (k, (k,r,b))) <| List.take 50 <| Dict.toList data))

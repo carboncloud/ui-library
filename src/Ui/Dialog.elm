@@ -11,7 +11,6 @@ import Accessibility.Styled.Aria as Aria
 import Accessibility.Styled.Role as Role
 import Css
 import Html.Styled.Attributes as Attributes exposing (css)
-import Rpx exposing (rpx)
 import Ui.Button as Button exposing (ButtonColor, ButtonEmphasis)
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
@@ -58,7 +57,7 @@ view { title, content, onClose, actionButtons, labelId } =
             , Css.maxWidth (Css.px 1500)
             , Css.left (Css.pct 50)
             , Css.top (Css.pct 50)
-            , Css.padding (rpx 25)
+            , Css.padding (Css.px 25)
             , Css.zIndex (Css.int 1000)
             ]
         ]
