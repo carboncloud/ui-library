@@ -1,4 +1,4 @@
-module Ui.MillerColumns exposing (Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus)
+module Ui.MillerColumns exposing (Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus, select)
 
 {-| This module defines a component of a miller column layout
 
@@ -88,6 +88,8 @@ setSearch : List (Tree ( NodeId, v )) -> Model v -> Model v
 setSearch searchResults m =
     { m | state = Search searchResults }
 
+select : NodeId -> Model v -> Model v
+select nodeId ({ treeZipper } as m) = { m | treeZipper = Zipper.findFromRoot ((==) nodeId << Tuple.first) treeZipper |> Maybe.withDefault treeZipper }
 
 {-| Get the value of the current focus
 -}
