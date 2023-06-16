@@ -94,6 +94,7 @@ viewNode : Item -> MillerColumns.Content
 viewNode item =
     { leftAlignedText = item.label
     , mRightAlignedText = Nothing
+    , mTooltip = Just <| "Tooltip: " ++ item.label
     }
 
 
@@ -105,6 +106,19 @@ t =
                 , tree { label = "Crushed Tomatoes", emission = Just 4 }
                     [ tree { label = "Semi Crushed", emission = Just 5 } []
                     , tree { label = "Veryvery crushed", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed1", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed2", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed3", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed4", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed5", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed6", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed7", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed8", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed9", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed10", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed11", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed12", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed13", emission = Just 6 } []
                     ]
                 ]
             , tree { label = "Cucumber", emission = Just 7 } []
