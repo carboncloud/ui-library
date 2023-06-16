@@ -112,7 +112,7 @@ t =
                     , tree { label = "Veryvery crushed4", emission = Just 6 } []
                     , tree { label = "Veryvery crushed5", emission = Just 6 } []
                     , tree { label = "Veryvery crushed6", emission = Just 6 } []
-                    , tree { label = "Veryvery crushe7", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed7", emission = Just 6 } []
                     , tree { label = "Veryvery crushed8", emission = Just 6 } []
                     , tree { label = "Veryvery crushed9", emission = Just 6 } []
                     , tree { label = "Veryvery crushed10", emission = Just 6 } []
