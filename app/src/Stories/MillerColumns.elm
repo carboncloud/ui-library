@@ -82,7 +82,7 @@ view { millerColumnsModel, searchValue } =
         Styled.div [ css [ Css.height (Css.px 550), Css.displayFlex, Css.flexDirection Css.column, Css.property "gap" "25px" ] ]
             [ Input.search [ css [ Css.maxWidth (Css.px 350) ] ] { onInput = Search, value = searchValue, onClear = Search "", onSearch = Nothing }
             , MillerColumns.view { liftMsg = GotTreeMsg, nodeContent = viewNode }
-                (MillerColumns.select (dasherize "Meat, poultry and seafood") millerColumnsModel)
+                millerColumnsModel
             ]
 
 
@@ -94,6 +94,7 @@ viewNode : Item -> MillerColumns.Content
 viewNode item =
     { leftAlignedText = item.label
     , mRightAlignedText = Nothing
+    , mTooltip = Just <| "Tooltip: " ++ item.label
     }
 
 
@@ -105,6 +106,19 @@ t =
                 , tree { label = "Crushed Tomatoes", emission = Just 4 }
                     [ tree { label = "Semi Crushed", emission = Just 5 } []
                     , tree { label = "Veryvery crushed", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed1", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed2", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed3", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed4", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed5", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed6", emission = Just 6 } []
+                    , tree { label = "Veryvery crushe7", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed8", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed9", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed10", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed11", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed12", emission = Just 6 } []
+                    , tree { label = "Veryvery crushed13", emission = Just 6 } []
                     ]
                 ]
             , tree { label = "Cucumber", emission = Just 7 } []
