@@ -265,7 +265,6 @@ view { liftMsg, nodeContent } model =
                     , Css.padding (Css.px 0)
                     , Css.margin (Css.px 0)
                     , Css.width (Css.px 300)
-                    , Css.backgroundColor (toCssColor Ui.Palette.white)
                     , Css.lastChild [ Css.borderRight (Css.px 0) ]
 
                     -- order is important since we want this to apply for the first child even when it is the last child
