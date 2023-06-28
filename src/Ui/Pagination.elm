@@ -45,13 +45,14 @@ import ZipList exposing (ZipList)
 {-| The Pagination model
 -}
 type Model a
-    = Model (ZipList (Int, a))
+    = Model (ZipList ( Int, a ))
 
 
 {-| Creates a model for the component
 -}
 init : ZipList a -> Model a
-init = Model << ZipList.indexedMap (\i x -> Tuple.pair (i + 1) x)
+init =
+    Model << ZipList.indexedMap (\i x -> Tuple.pair (i + 1) x)
 
 
 {-| Returns a view of a pagination component.
@@ -73,7 +74,7 @@ view =
 
 {-| Returns the current page number
 -}
-currentPage : Model a -> (Int, a)
+currentPage : Model a -> ( Int, a )
 currentPage (Model z) =
     ZipList.current z
 

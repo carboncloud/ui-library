@@ -1,4 +1,29 @@
-module Ui.Css.Palette exposing (..)
+module Ui.Css.Palette exposing
+    ( approved500
+    , attention500
+    , black
+    , disabled
+    , focus
+    , gray050
+    , gray100
+    , gray200
+    , gray300
+    , gray500
+    , gray800
+    , gray900
+    , primary050
+    , primary500
+    , primary600
+    , secondary050
+    , secondary500
+    , secondary600
+    , success
+    , success050
+    , warn050
+    , warn500
+    , warn600
+    , white
+    )
 
 import Css
 import Ui.Color exposing (toCssColor)
@@ -113,3 +138,13 @@ gray800 =
 gray900 : Css.Color
 gray900 =
     toCssColor Palette.gray900
+
+
+attention500 : Css.Color
+attention500 =
+    toCssColor Palette.attention500
+
+
+approved500 : Css.Color
+approved500 =
+    toCssColor Palette.approved500

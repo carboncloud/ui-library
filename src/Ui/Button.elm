@@ -22,7 +22,7 @@ import Accessibility.Styled.Role as Role
 import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
-import Html.Styled.Events as Events exposing (preventDefaultOn)
+import Html.Styled.Events as Events
 import Json.Decode as JD
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)

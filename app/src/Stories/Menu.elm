@@ -55,6 +55,20 @@ view model =
         Menu.view
             { liftMsg = GotMenuMsg
             , label = "test-menu"
+            , interactiveComponent =
+                Ui.Button.iconButton
+                    [ css
+                        [ if open then
+                            Css.backgroundColor Palette.gray300
+
+                          else
+                            Css.backgroundColor Css.transparent
+                        ]
+                    ]
+                    { onClick = Just <| liftMsg Open
+                    , icon = Icon.more
+                    , tooltip = "entry-actions"
+                    }
             , options =
                 [ { name = "Delete"
                   , icon = Just Icon.delete

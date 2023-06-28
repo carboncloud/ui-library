@@ -9,6 +9,7 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Svg.Styled exposing (desc, toUnstyled)
 import Ui.Button
+import Ui.Css.Palette as Palette
 import Ui.Icon
 import Ui.Menu as Menu
 import Ui.Table as Table exposing (ColumnConfig, TableConfig)
@@ -122,6 +123,21 @@ tableConfig =
                         Menu.view
                             { label = "data-entry-menu"
                             , liftMsg = GotMenuMsg << Tuple.pair entryId
+                            , interactiveComponent =
+                                \open onOpen ->
+                                    Ui.Button.iconButton
+                                        [ css
+                                            [ if open then
+                                                Css.backgroundColor Palette.gray300
+
+                                              else
+                                                Css.backgroundColor Css.transparent
+                                            ]
+                                        ]
+                                        { onClick = Just onOpen
+                                        , icon = Ui.Icon.more
+                                        , tooltip = "entry-actions"
+                                        }
                             , options =
                                 [ { name = "Delete"
                                   , icon = Just Ui.Icon.edit

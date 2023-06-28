@@ -12,7 +12,7 @@ when pred content =
         none
 
 
-whenJust :  Maybe a -> (a -> Html msg) -> Html msg
+whenJust : Maybe a -> (a -> Html msg) -> Html msg
 whenJust x f =
     Maybe.map f x |> Maybe.withDefault none
 

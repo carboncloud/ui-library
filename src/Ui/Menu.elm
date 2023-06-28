@@ -3,17 +3,16 @@ module Ui.Menu exposing (Model, Msg, update, view)
 import Accessibility.Styled.Aria as Aria
 import Accessibility.Styled.Role as Role
 import Css
+import Extra.Styled exposing (whenJust)
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes exposing (css)
-import Html.Styled.Events as Events exposing (onClick)
+import Html.Styled.Events as Events
 import Json.Decode as JD
-import Ui.Button
 import Ui.Css.Palette as Palette
 import Ui.Icon as Icon exposing (Icon)
 import Ui.Shadow as Shadow exposing (shadow)
 import Ui.Text as Text
 import Ui.TextStyle as TextStyle
-import Extra.Styled exposing (whenJust)
 
 
 type alias Option msg =
@@ -42,22 +41,10 @@ update msg model =
             { model | open = False }
 
 
-view : { label : String, liftMsg : Msg -> msg, options : List (Option msg) } -> Model -> Html msg
-view { label, liftMsg, options } { open } =
-    Html.div [ onClick <| liftMsg Open ] <|
-        Ui.Button.iconButton
-            [ css
-                [ if open then
-                    Css.backgroundColor Palette.gray300
-
-                  else
-                    Css.backgroundColor Css.transparent
-                ]
-            ]
-            { onClick = Just <| liftMsg Open
-            , icon = Icon.more
-            , tooltip = "entry-actions"
-            }
+view : { label : String, liftMsg : Msg -> msg, options : List (Option msg), interactiveComponent : Bool -> msg -> Html msg } -> Model -> Html msg
+view { label, liftMsg, options, interactiveComponent } { open } =
+    Html.div [] <|
+        (interactiveComponent open <| liftMsg Open)
             :: (if open then
                     [ Html.div
                         [ css

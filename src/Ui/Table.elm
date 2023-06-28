@@ -12,6 +12,7 @@ module Ui.Table exposing
     , cellCustom
     , cellFloat
     , cellInt
+    , cellLink
     , cellRows
     , cellText
     , column
@@ -22,28 +23,25 @@ module Ui.Table exposing
     , setColumnWidth
     , showColumn
     , update
-    , view, cellLink
+    , view
     )
 
-import Css exposing (AlignItems)
+import Css
 import Css.Transitions exposing (transition)
 import Dict exposing (Dict)
 import Html.Styled exposing (Attribute, Html, a, div, span)
-import Html.Styled.Attributes exposing (align, css)
+import Html.Styled.Attributes exposing (css, href)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Keyed exposing (lazyNode3)
 import List
-import List.Nonempty as Nonempty exposing (Nonempty)
 import Maybe.Extra exposing (isJust)
 import Ui.Css.Palette as Palette
 import Ui.Css.TextStyle exposing (toCssStyle)
-import Ui.Icon exposing (Icon)
+import Ui.Icon
 import Ui.Palette
 import Ui.Text as Text
-import Ui.TextStyle as TextStyle
-import Html.Styled.Attributes exposing (href)
-import Ui.TextStyle exposing (TextStyle)
-import Html.Styled.Lazy exposing (lazy3)
-import Html.Styled.Keyed exposing (lazyNode3)
+import Ui.TextStyle as TextStyle exposing (TextStyle)
+
 
 type SortDirection
     = Ascending
@@ -212,10 +210,12 @@ updateColumn k f config =
     { config | columns = Dict.update k (Maybe.map f) config.columns }
 
 
+cellContentStyle : Attribute msg
 cellContentStyle =
     css [ Css.flexGrow (Css.num 1) ]
 
 
+unwrapColumnContent : ColumnContent msg -> Html msg
 unwrapColumnContent (ColumnContent x) =
     x
 
@@ -256,8 +256,8 @@ cellFloat =
 
 
 cellLink : TextStyle -> { url : String, text : String } -> ColumnContent msg
-cellLink textStyle { url, text} =
-    ColumnContent <| a [ href url ] [ Text.view (textStyle |> TextStyle.withColor TextStyle.linkColor) text]
+cellLink textStyle { url, text } =
+    ColumnContent <| a [ href url ] [ Text.view (textStyle |> TextStyle.withColor TextStyle.linkColor) text ]
 
 
 cellCustom : Html msg -> ColumnContent msg
@@ -299,14 +299,17 @@ cellRows w =
         << List.map unwrapColumnContent
 
 
+headerStyle : List Css.Style
 headerStyle =
     toCssStyle (TextStyle.bodySmall |> TextStyle.withColor Ui.Palette.gray300)
 
 
+cellPadding : Attribute msg
 cellPadding =
     css [ Css.padding2 (Css.px 10) (Css.px 8) ]
 
 
+alignment : { a | alignment : ColumnAlignment } -> Attribute msg
 alignment col =
     case col.alignment of
         Left ->
@@ -371,17 +374,25 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
 
         row : String -> record -> Bool -> Html msg
         row dId r expanded =
-            let
-                _ = Debug.log ("Creating row: " ++ dId) identity
-            in
-             div [ css [ Css.displayFlex, Css.flexDirection Css.column, Css.lastChild [Css.borderBottom Css.zero] ] ]
+            div
+                [ css
+                    [ Css.displayFlex
+                    , Css.flexDirection Css.column
+                    , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray200
+                    , Css.lastChild [ Css.borderBottom Css.zero ]
+                    ]
+                ]
                 [ div
                     (css
                         [ Css.displayFlex
                         , Css.flexDirection Css.row
-                        , Css.borderBottom3 (Css.px 1) Css.solid Palette.gray200
                         , Css.cursor Css.pointer
                         , Css.hover [ Css.backgroundColor Palette.gray100 ]
+                        , if isJust extendableView && expanded then
+                            Css.borderBottom3 (Css.px 1) Css.solid Palette.gray200
+
+                          else
+                            Css.border Css.zero
                         ]
                         :: (if isJust extendableView then
                                 [ onClick <| liftMsg <| ToggleAccordionView dId ]
@@ -416,7 +427,7 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
                         div
                             [ css
                                 [ Css.width (Css.pct 100)
-                                , Css.backgroundColor Palette.primary050
+                                , Css.backgroundColor Palette.gray100
                                 , Css.overflow Css.hidden
                                 , Css.height Css.auto
                                 , Css.displayFlex
@@ -440,6 +451,14 @@ view attributes { liftMsg, columns, extendableView } { sortIndex, sortDirection,
 
                     _ ->
                         span [] []
-                ] 
+                ]
     in
-    div [ css [ Css.border3 (Css.px 1) Css.solid Palette.gray200 ] ] (header :: (List.singleton <| lazyNode3 "div" [ ] row <| List.map (\(k, (r, b)) -> (k, (k,r,b))) <| List.take 50 <| Dict.toList data))
+    div (css [ Css.border3 (Css.px 1) Css.solid Palette.gray200 ] :: attributes)
+        (header
+            :: (List.singleton <|
+                    lazyNode3 "div" [] row <|
+                        List.map (\( k, ( r, b ) ) -> ( k, ( k, r, b ) )) <|
+                            List.take 50 <|
+                                Dict.toList data
+               )
+        )

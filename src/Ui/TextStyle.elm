@@ -9,12 +9,13 @@ module Ui.TextStyle exposing
     , heading3
     , heading4
     , label
+    , linkColor
     , monospace
     , monospaceFamilies
     , primaryColor
     , primaryWhiteColor
     , sansSerifFamilies
-    , withColor, linkColor
+    , withColor
     )
 
 {-|
@@ -85,7 +86,9 @@ primaryWhiteColor =
 
 
 linkColor : Color
-linkColor = Color.fromHex "#6A95FA"
+linkColor =
+    Color.fromHex "#6A95FA"
+
 
 {-| -}
 sansSerifFamilies : List String
