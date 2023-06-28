@@ -5,6 +5,7 @@ import Html.Styled exposing (toUnstyled)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Ui.Pagination
+import ZipList exposing (ZipList(..))
 
 
 main : Component Model Msg
@@ -28,36 +29,36 @@ type alias Controls =
 
 
 type alias Model =
-    { paginationModel : Result String Ui.Pagination.Model }
+    { paginationModel : Ui.Pagination.Model Int }
 
 
 init : Model
 init =
-    { paginationModel = Ui.Pagination.init 10 1 }
+    { paginationModel = Ui.Pagination.init pageNumbers }
+
+
+pageNumbers : ZipList Int
+pageNumbers =
+    Zipper [] 1 (List.range 2 20)
 
 
 type Msg
-    = UserSelectedPageNumber Ui.Pagination.Model
+    = UserSelectedPageNumber (Ui.Pagination.Model Int)
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         UserSelectedPageNumber newPaginationModel ->
-            { model | paginationModel = Ok newPaginationModel }
+            { model | paginationModel = newPaginationModel }
 
 
 view : Controls -> Model -> Html Msg
-view _ model =
-    case model.paginationModel of
-        Ok paginationModel ->
-            toUnstyled <|
-                Ui.Pagination.view
-                    paginationModel
-                    { siblingCount = 1
-                    , boundaryCount = 1
-                    , onNav = UserSelectedPageNumber
-                    }
-
-        Err s ->
-            span [] [ text s ]
+view _ { paginationModel } =
+    toUnstyled <|
+        Ui.Pagination.view
+            paginationModel
+            { siblingCount = 1
+            , boundaryCount = 1
+            , onNav = UserSelectedPageNumber
+            }
