@@ -1,8 +1,8 @@
-module Ui.MillerColumns exposing (Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus)
+module Ui.MillerColumns exposing (Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus, select)
 
 {-| This module defines a component of a miller column layout
 
-@docs Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus
+@docs Config, Model, Content, Msg, init, setFocus, setSearch, view, update, NodeId, unwrapNodeId, root, focus, select
 
 -}
 
@@ -15,6 +15,7 @@ import Html.Styled.Attributes as StyledAttributes exposing (css)
 import Html.Styled.Events as StyledEvents
 import List.Extra as List
 import Maybe
+import Maybe.Extra as Maybe
 import Task exposing (Task)
 import Tree as Tree exposing (Tree(..))
 import Tree.Zipper as Zipper exposing (Zipper)
@@ -58,6 +59,7 @@ type alias Config msg a =
 -}
 type alias Content =
     { leftAlignedText : String
+    , mTooltip : Maybe String
     , mRightAlignedText : Maybe String
     }
 
@@ -89,6 +91,13 @@ setSearch searchResults m =
     { m | state = Search searchResults }
 
 
+{-| Select the node with the given nodeId
+-}
+select : String -> Model v -> Model v
+select nodeId ({ treeZipper } as m) =
+    { m | treeZipper = Zipper.findFromRoot ((==) (NodeId nodeId) << Tuple.first) treeZipper |> Maybe.withDefault treeZipper }
+
+
 {-| Get the value of the current focus
 -}
 focus : Model v -> ( NodeId, v )
@@ -114,17 +123,21 @@ type Msg
 -}
 update : Msg -> Model v -> ( Model v, Cmd Msg )
 update msg model =
-    let
-        focusOn x =
-            Zipper.findFromRoot ((==) x << Tuple.first) model.treeZipper |> Maybe.withDefault model.treeZipper
-    in
     case msg of
         Select id ->
+            let
+                updatedTreeZipper =
+                    Zipper.findFromRoot ((==) id << Tuple.first) model.treeZipper
+            in
             ( { model
-                | treeZipper = focusOn id
+                | treeZipper = updatedTreeZipper |> Maybe.withDefault model.treeZipper
                 , state = Focus
               }
-            , Task.attempt ScrollTo <| horizontalScrollToElementInViewportOf id rootId
+            , if Maybe.map Zipper.hasChildren updatedTreeZipper |> Maybe.withDefault False then
+                Task.attempt ScrollTo <| horizontalScrollToElementInViewportOf id rootId
+
+              else
+                Cmd.none
             )
 
         ScrollTo _ ->
@@ -196,15 +209,17 @@ view { liftMsg, nodeContent } model =
                     nodeContent n
             in
             Styled.div
-                [ css
+                (css
                     [ Css.textOverflow Css.ellipsis
                     , Css.overflow Css.hidden
                     , Css.whiteSpace Css.normal
                     , Css.lineHeight (Css.num 1.3)
+                    , Css.flexBasis (Css.px 0)
                     , Css.flex (Css.num 1)
                     , Css.width (Css.px 200)
                     ]
-                ]
+                    :: (Maybe.map StyledAttributes.title content.mTooltip |> Maybe.toList)
+                )
             <|
                 case content.mRightAlignedText of
                     Nothing ->
@@ -247,17 +262,14 @@ view { liftMsg, nodeContent } model =
             Styled.ul
                 [ css <|
                     [ Css.listStyleType Css.none
+                    , Css.padding (Css.px 0)
+                    , Css.margin (Css.px 0)
+                    , Css.width (Css.px 300)
                     , Css.lastChild [ Css.borderRight (Css.px 0) ]
 
                     -- order is important since we want this to apply for the first child even when it is the last child
                     , Css.firstChild [ Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200) ]
                     , Css.borderRight3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200)
-                    , Css.padding (Css.px 0)
-                    , Css.margin (Css.px 0)
-                    , Css.height (Css.px 350)
-                    , Css.width (Css.px 300)
-                    , scrollbarWidth Thin
-                    , scrollbarColor Ui.Palette.gray300 Ui.Palette.gray100
                     ]
                         ++ TextStyle.body
                 ]
@@ -268,37 +280,44 @@ view { liftMsg, nodeContent } model =
         [ StyledAttributes.id rootId
         , css
             [ Css.displayFlex
-            , Css.flexDirection Css.row
-            , Css.maxWidth (Css.px 800)
-            , Css.borderRadius (Css.px 5)
+            , Css.flexDirection Css.column
+            , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200)
             , Css.overflowX Css.scroll
-            , Css.color (toCssColor Ui.Palette.black)
             , scrollbarWidth Thin
             , scrollbarColor Ui.Palette.gray300 Ui.Palette.gray100
-            , Css.border3 (Css.px 1) Css.solid (toCssColor Ui.Palette.gray200)
             ]
         ]
-    <|
-        case model.state of
-            Focus ->
-                List.reverse
-                    (List.unfoldr
-                        (\ct ->
-                            Maybe.map (\p -> ( viewList (Zipper.children p), p ))
-                                (Zipper.parent ct)
+        [ Styled.div
+            [ css
+                [ Css.displayFlex
+                , Css.flexDirection Css.row
+                , Css.maxWidth (Css.px 800)
+                , Css.borderRadius (Css.px 5)
+                , Css.color (toCssColor Ui.Palette.black)
+                ]
+            ]
+          <|
+            case model.state of
+                Focus ->
+                    List.reverse
+                        (List.unfoldr
+                            (\ct ->
+                                Maybe.map (\p -> ( viewList (Zipper.children p), p ))
+                                    (Zipper.parent ct)
+                            )
+                            model.treeZipper
                         )
-                        model.treeZipper
-                    )
-                    ++ (case Zipper.children model.treeZipper of
-                            [] ->
-                                []
+                        ++ (case Zipper.children model.treeZipper of
+                                [] ->
+                                    []
 
-                            children ->
-                                [ viewList children ]
-                       )
+                                children ->
+                                    [ viewList children ]
+                           )
 
-            Search searchResults ->
-                [ viewList searchResults ]
+                Search searchResults ->
+                    [ viewList searchResults ]
+        ]
 
 
 {-| Opaque type of the internal state of the component.
