@@ -38,7 +38,6 @@ import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
 import Ui.Palette as Palette
-
 import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
 import ZipList exposing (ZipList)
 
