@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app
+        working-directory: ./storybook
     permissions:
       pull-requests: write
     # Job steps
@@ -32,7 +32,7 @@ jobs:
         with:
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_TOKEN }}
-          workingDir: ./app
+          workingDir: ./storybook
       - name: Publish Summary
         run: echo -e "| Results |  |\n| --- | --- |\n| Build Results | ${{steps.chromatic.outputs.buildUrl}} |\n| Storybook Preview | ${{steps.chromatic.outputs.storybookUrl}} |\n| Component Count | ${{steps.chromatic.outputs.componentCount}} |" >> $GITHUB_STEP_SUMMARY
       - uses: jwalton/gh-find-current-pr@v1

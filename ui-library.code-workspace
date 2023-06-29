@@ -2,12 +2,15 @@
     "folders": [
       {
         "path": ".",
-        "ignore": "app",
+        "name": "Root"
+      },
+      {
+        "path": "./ui-library",
         "name": "Ui-library"
       },
       {
-        "path": "./app",
-        "name": "Ui-library Storybook"
+        "path": "./storybook",
+        "name": "Storybook"
       }
     ],
     "settings": {

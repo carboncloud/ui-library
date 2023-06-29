@@ -4,7 +4,6 @@ import Css
 import Html exposing (Html)
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
-import Html.Styled.Events exposing (onClick)
 import Stories.Table exposing (Msg(..))
 import Storybook.Component exposing (Component)
 import Storybook.Controls
@@ -12,8 +11,6 @@ import Ui.Button as Button
 import Ui.Css.Palette as Palette
 import Ui.Icon as Icon
 import Ui.Menu as Menu
-import Ui.Text as Text
-import Ui.TextStyle as TextStyle
 
 
 main : Component Model Msg
@@ -56,19 +53,20 @@ view model =
             { liftMsg = GotMenuMsg
             , label = "test-menu"
             , interactiveComponent =
-                Ui.Button.iconButton
-                    [ css
-                        [ if open then
-                            Css.backgroundColor Palette.gray300
+                \open onClick ->
+                    Button.iconButton
+                        [ css
+                            [ if open then
+                                Css.backgroundColor Palette.gray300
 
-                          else
-                            Css.backgroundColor Css.transparent
+                              else
+                                Css.backgroundColor Css.transparent
+                            ]
                         ]
-                    ]
-                    { onClick = Just <| liftMsg Open
-                    , icon = Icon.more
-                    , tooltip = "entry-actions"
-                    }
+                        { onClick = Just onClick
+                        , icon = Icon.more
+                        , tooltip = "entry-actions"
+                        }
             , options =
                 [ { name = "Delete"
                   , icon = Just Icon.delete

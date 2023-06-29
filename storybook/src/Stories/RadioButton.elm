@@ -37,6 +37,7 @@ type alias Model =
     { selectedOption : Maybe RadioOption }
 
 
+init : Model
 init =
     { selectedOption = Just Option3 }
 

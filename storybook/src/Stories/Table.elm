@@ -1,18 +1,18 @@
 module Stories.Table exposing (..)
 
-import Css exposing (displayFlex, flex)
+import Css
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
-import Svg.Styled exposing (desc, toUnstyled)
+import Svg.Styled exposing (toUnstyled)
 import Ui.Button
 import Ui.Css.Palette as Palette
 import Ui.Icon
 import Ui.Menu as Menu
-import Ui.Table as Table exposing (ColumnConfig, TableConfig)
+import Ui.Table as Table exposing (TableConfig)
 import Ui.TextStyle as TextStyle
 
 
@@ -39,6 +39,13 @@ type Msg
     | Noop
 
 
+init :
+    { tableModel :
+        { sortDirection : Table.SortDirection
+        , sortIndex : String
+        , data : Dict String ( TableData, Bool )
+        }
+    }
 init =
     { tableModel =
         { sortDirection = Table.Ascending
@@ -154,10 +161,6 @@ tableConfig =
                 Table.Center
             )
         |> Table.addExtendableView (Styled.text << .description)
-
-
-
--- |> Table.hideColumn "test2"
 
 
 tableData : Dict String ( TableData, Bool )

@@ -1,6 +1,6 @@
 module Stories.Icon exposing (..)
 
-import Css exposing (displayFlex, flex)
+import Css exposing (displayFlex)
 import Html exposing (Html)
 import Html.Styled as Styled
 import Html.Styled.Attributes exposing (css)
@@ -8,10 +8,7 @@ import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Svg.Styled exposing (toUnstyled)
 import Ui.Button exposing (ButtonEmphasis(..))
-import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon exposing (Icon)
-import Ui.Palette
-import Ui.Shadow
 import Ui.Text as Text
 import Ui.TextStyle as TextStyle
 

@@ -1,6 +1,6 @@
 module Stories.Button exposing (..)
 
-import Css exposing (displayFlex, flex)
+import Css exposing (displayFlex)
 import Html exposing (Html)
 import Html.Styled as Styled
 import Storybook.Component exposing (Component)

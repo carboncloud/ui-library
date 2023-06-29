@@ -27,14 +27,16 @@ main =
 
 
 type alias Model =
-    { searchValue : String, millerColumnsModel : MillerColumns.Model Item }
+    { searchValue : String
+    , millerColumnsModel : MillerColumns.Model Item
+    }
 
 
 init : Model
 init =
     let
         newTree =
-            MillerColumns.init <| Tree.map (\x -> ( dasherize x.label, x )) t
+            MillerColumns.init <| Tree.map (\x -> ( dasherize x.label, x )) defaultTree
     in
     { searchValue = ""
     , millerColumnsModel = newTree
@@ -87,7 +89,9 @@ view { millerColumnsModel, searchValue } =
 
 
 type alias Item =
-    { label : String, emission : Maybe Float }
+    { label : String
+    , emission : Maybe Float
+    }
 
 
 viewNode : Item -> MillerColumns.Content
@@ -98,7 +102,8 @@ viewNode item =
     }
 
 
-t =
+defaultTree : Tree { label : String, emission : Maybe number }
+defaultTree =
     tree { label = "Food Products", emission = Nothing }
         [ tree { label = "Fruits and Vegtables", emission = Just 1 }
             [ tree { label = "Tomatoes", emission = Just 2 }
