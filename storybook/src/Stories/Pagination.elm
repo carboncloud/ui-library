@@ -1,6 +1,6 @@
 module Stories.Pagination exposing (..)
 
-import Html exposing (Html, span)
+import Html exposing (Html)
 import Html.Styled exposing (toUnstyled)
 import Storybook.Component exposing (Component)
 import Storybook.Controls
