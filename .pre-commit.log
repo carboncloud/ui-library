@@ -1,5 +1,0 @@
-Running command: elm-format --validate ./ui-library || { echo 'elm-format --validate failed in ui-library'; exit 1; }
-------------------------------
-[{"path":"./ui-library/src/Ui/Pagination.elm","message":"File is not formatted with elm-format-0.8.5 --elm-version=0.19"}
-]
-elm-format --validate failed in ui-library

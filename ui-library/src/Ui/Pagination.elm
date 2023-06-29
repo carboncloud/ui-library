@@ -23,7 +23,7 @@ module Ui.Pagination exposing
 
 -}
 
-import Accessibility.Styled as A11y exposing (Html)
+import Accessibility.Styled as A11y exposing (Html, span)
 import Accessibility.Styled.Landmark as Landmark
 import Css
 import Extra.A11y as CCA11y
@@ -33,7 +33,6 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import List
 import List.Extra as List
-
 import Maybe.Extra as Maybe
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)

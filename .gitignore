@@ -5,6 +5,7 @@ repl-temp-*
 
 # node
 node_modules
+.pre-commit.tmp.log
 
 public/explorer.js
 build-storybook.log
