@@ -12,6 +12,9 @@ jobs:
 
   validate-package:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./storybook
     steps:
       - uses: actions/checkout@v1
       - name: Install Nix
@@ -29,7 +32,9 @@ jobs:
   publish-elm-package:
     needs: [validate-package] # make sure all your other jobs succeed before trying to publish
     runs-on: ubuntu-latest
-
+    defaults:
+        run:
+          working-directory: ./storybook
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
