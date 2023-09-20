@@ -19,3 +19,4 @@ build-storybook.log
 
 dist
 yarn-error.log*
+**/.pre-commit.tmp.log

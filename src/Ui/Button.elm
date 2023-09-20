@@ -23,7 +23,6 @@ import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import Rpx exposing (rpx)
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
@@ -159,7 +158,7 @@ customView attrs { emphasis, color, onClick } content =
                             ( Palette.black, Palette.gray300 )
 
                 baseStyle =
-                    [ Css.padding2 (rpx 8) (rpx 14)
+                    [ Css.padding2 (Css.px 8) (Css.px 14)
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
                     , Css.color <| Color.toCssColor baseColor
                     , Css.whiteSpace Css.noWrap
@@ -250,8 +249,8 @@ button customStyle attrs mOnClick buttonContent =
             , Css.alignItems Css.center
             , Css.border Css.zero
             , Css.backgroundColor Css.transparent
-            , Css.padding2 (rpx 10) (rpx 16)
-            , Css.borderRadius (rpx 24)
+            , Css.padding2 (Css.px 10) (Css.px 16)
+            , Css.borderRadius (Css.px 24)
             , Css.fontWeight Css.bold
             , Css.color <| Color.toCssColor Palette.white
             , Css.cursor Css.pointer

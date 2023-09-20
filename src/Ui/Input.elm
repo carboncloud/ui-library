@@ -14,7 +14,6 @@ import Extra.Styled as Styled
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events
-import Rpx exposing (rpx)
 import Ui.Button
 import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
@@ -52,7 +51,7 @@ search :
         }
     -> Styled.Html msg
 search attrs { value, onInput, onClear, onSearch } =
-    Styled.div ([ inputTextBaseStyle, css [ Css.borderRadius (rpx 20) ] ] ++ attrs) <|
+    Styled.div ([ inputTextBaseStyle, css [ Css.borderRadius (Css.px 20) ] ] ++ attrs) <|
         [ Ui.Button.iconButton [ css [ Css.cursor Css.default ] ]
             { tooltip = "search"
             , onClick = onSearch
