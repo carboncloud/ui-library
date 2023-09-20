@@ -3,7 +3,7 @@
     "name": "carboncloud/ui-library",
     "summary": "UI library we use at CarbonCloud.",
     "license": "BSD-3-Clause",
-    "version": "7.0.0",
+    "version": "7.0.1",
     "exposed-modules": [
         "Ui.Button",
         "Ui.Color",
