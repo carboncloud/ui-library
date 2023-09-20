@@ -21,7 +21,6 @@ module Ui.Css.TextStyle exposing
 -}
 
 import Css
-import Rpx exposing (rpx)
 import Ui.Color
 import Ui.TextStyle as TextStyle exposing (TextStyle(..), fontWeight)
 
@@ -73,7 +72,7 @@ fontFamilyToCssStyle (TextStyle { family }) =
 
 fontSizeToCssStyle : TextStyle -> Css.Style
 fontSizeToCssStyle (TextStyle { size }) =
-    Css.fontSize <| rpx <| toFloat size
+    Css.fontSize <| Css.px <| toFloat size
 
 
 fontWeightToCssStyle : TextStyle -> Css.Style

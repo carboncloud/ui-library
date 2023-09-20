@@ -20,7 +20,6 @@ module Ui.Text exposing
 import Css
 import Html.Styled as Styled
 import Html.Styled.Attributes as Attributes
-import Rpx exposing (rpx)
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.TextStyle as TextStyle exposing (TextStyle(..))
 
@@ -57,7 +56,7 @@ styledCustomParagraph : List (Styled.Attribute msg) -> TextStyle -> String -> St
 styledCustomParagraph attrs font s =
     Styled.p
         ((Attributes.css <|
-            Css.margin2 (rpx 15) Css.zero
+            Css.margin2 (Css.px 15) Css.zero
                 :: toCssStyle font
          )
             :: attrs

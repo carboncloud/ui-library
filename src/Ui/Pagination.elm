@@ -34,7 +34,6 @@ import Html.Styled.Events as Events
 import List
 import List.Extra as List
 import Maybe.Extra as Maybe
-import Rpx exposing (rpx)
 import Ui.Color as Color
 import Ui.Css.TextStyle exposing (toCssStyle)
 import Ui.Icon as Icon exposing (Icon)
@@ -147,14 +146,14 @@ customView attrs model config =
             36
 
         buttonStyle =
-            [ Css.height (rpx buttonSize)
-            , Css.width (rpx buttonSize)
+            [ Css.height (Css.px buttonSize)
+            , Css.width (Css.px buttonSize)
             , Css.cursor Css.pointer
             , Css.border Css.zero
             , Css.backgroundColor Css.transparent
             , Css.property "display" "grid"
             , Css.property "place-items" "center"
-            , Css.borderRadius (rpx <| buttonSize / 2)
+            , Css.borderRadius (Css.px <| buttonSize / 2)
             ]
 
         hoverStyle =
@@ -162,7 +161,7 @@ customView attrs model config =
 
         iconButtonStyle =
             buttonStyle
-                ++ [ Css.padding (rpx 10) ]
+                ++ [ Css.padding (Css.px 10) ]
 
         ellipsis : Html msg
         ellipsis =
