@@ -52,11 +52,11 @@ view { title, content, onClose, actionButtons, labelId } =
             [ Css.position Css.fixed
             , Css.displayFlex
             , Css.flexDirection Css.column
-            , Css.transform (Css.translate2 (Css.pct -50) (Css.pct -50))
+            , Css.transform (Css.translateX (Css.pct -50))
             , Css.minWidth (Css.px 300)
             , Css.maxWidth (Css.px 1500)
             , Css.left (Css.pct 50)
-            , Css.top (Css.pct 50)
+            , Css.top (Css.px 50)
             , Css.padding (Css.px 25)
             , Css.zIndex (Css.int 1000)
             ]
