@@ -13,7 +13,7 @@ module Ui.Css.TextStyle exposing
 
 
     ### Interpreters
-    @docs heading1, heading2, heading3, heading4, body
+    @docs heading1, heading2, heading3, heading4, body, bodySmall
 
     ### Converters
     @docs toCssStyle
