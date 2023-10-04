@@ -37,8 +37,6 @@ view =
         Styled.div [ css [ displayFlex, Css.flexDirection Css.column, Css.property "gap" "45px" ] ]
             [ iconGroup "Actions" [ Icon.edit, Icon.copy, Icon.settings, Icon.delete, Icon.comment, Icon.search, Icon.close, Icon.newWindow, Icon.more ]
             , iconGroup "Chevron" [ Icon.chevronUp, Icon.chevronRight, Icon.chevronDown, Icon.chevronLeft ]
-            , iconGroup "Status indicators" [ Icon.draft, Icon.waitingForReview, Icon.underReview, Icon.needClarification, Icon.approved, Icon.broken ]
-            , iconGroup "Domain" [ Icon.farmgate, Icon.store, Icon.distributionCenter, Icon.factory ]
             ]
 
 

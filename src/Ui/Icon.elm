@@ -1,9 +1,9 @@
 module Ui.Icon exposing
     ( Icon(..)
-    , view
+    , view, view24x24
     , setFill
-    , chevronUp, chevronLeft, chevronRight, chevronDown, edit, close, search, newWindow, comment, settings
-    , approved, broken, copy, delete, distributionCenter, draft, factory, farmgate, more, needClarification, store, underReview, view24x24, waitingForReview
+    , edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy
+    , chevronUp, chevronLeft, chevronRight, chevronDown
     )
 
 {-|
@@ -16,7 +16,7 @@ module Ui.Icon exposing
 
 # Views
 
-@docs view
+@docs view, view24x24
 
 
 # Helpers
@@ -24,9 +24,14 @@ module Ui.Icon exposing
 @docs setFill
 
 
-# Icons
+# Action icons
 
-@docs chevronUp, chevronLeft, chevronRight, chevronDown, edit, close, search, newWindow, comment, settings
+@docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy
+
+
+# Chevron icons
+
+@docs chevronUp, chevronLeft, chevronRight, chevronDown
 
 -}
 
@@ -72,6 +77,8 @@ view (Icon { label, attributes, children }) =
         |> Html.map never
 
 
+{-| Renders an icon as a 24 by 24 pixels icon
+-}
 view24x24 : Icon -> Html msg
 view24x24 (Icon { label, attributes, children }) =
     svg
@@ -86,6 +93,18 @@ view24x24 (Icon { label, attributes, children }) =
         |> Html.map never
 
 
+{-| Represents an icon
+-}
+icon : String -> Svg Never -> Icon
+icon label shape =
+    Icon
+        { label = label
+        , attributes = [ SvgAttr.viewBox "0 0 24 24" ]
+        , children =
+            [ shape ]
+        }
+
+
 {-| Chevron left icon
 -}
 chevronLeft : Icon
@@ -97,7 +116,8 @@ chevronLeft =
             []
 
 
-{-| -}
+{-| Chevron up icon
+-}
 chevronUp : Icon
 chevronUp =
     icon "chevron-up-icon" <|
@@ -118,7 +138,8 @@ chevronRight =
             []
 
 
-{-| -}
+{-| Checron down icon
+-}
 chevronDown : Icon
 chevronDown =
     icon "chevron-down-icon" <|
@@ -172,7 +193,8 @@ newWindow =
             []
 
 
-{-| -}
+{-| Represents a comment icon
+-}
 comment : Icon
 comment =
     icon "comment-icon" <|
@@ -182,7 +204,8 @@ comment =
             []
 
 
-{-| -}
+{-| Represents a settings icon
+-}
 settings : Icon
 settings =
     icon "settings-icon" <|
@@ -192,6 +215,8 @@ settings =
             []
 
 
+{-| Represents a draft icon.
+-}
 draft : Icon
 draft =
     icon "draft-icon" <|
@@ -201,6 +226,8 @@ draft =
             []
 
 
+{-| Represents an waiting for review icon.
+-}
 waitingForReview : Icon
 waitingForReview =
     icon "waiting-for-review-icon" <|
@@ -210,6 +237,8 @@ waitingForReview =
             []
 
 
+{-| Represents an under review icon
+-}
 underReview : Icon
 underReview =
     icon "under-review-icon" <|
@@ -219,6 +248,8 @@ underReview =
             []
 
 
+{-| Represents a nedd clarification icon
+-}
 needClarification : Icon
 needClarification =
     icon "need-clarification-icon" <|
@@ -237,6 +268,8 @@ needClarification =
             ]
 
 
+{-| Represents an approved icon
+-}
 approved : Icon
 approved =
     icon "approved-icon" <|
@@ -258,25 +291,8 @@ approved =
             ]
 
 
-broken : Icon
-broken =
-    icon "broken-icon" <|
-        Svg.g []
-            [ path
-                [ SvgAttr.d "M12 22.0005C17.5228 22.0005 22 17.5233 22 12.0005C22 6.47764 17.5228 2.00049 12 2.00049C6.47715 2.00049 2 6.47764 2 12.0005C2 17.5233 6.47715 22.0005 12 22.0005Z"
-                , SvgAttr.fill "#FA876A"
-                ]
-                []
-            , path
-                [ SvgAttr.fillRule "evenodd"
-                , SvgAttr.clipRule "evenodd"
-                , SvgAttr.d "M13 7.00049C13 6.4482 12.5523 6.00049 12 6.00049C11.4477 6.00049 11 6.4482 11 7.00049V13.0005C11 13.5528 11.4477 14.0005 12 14.0005C12.5523 14.0005 13 13.5528 13 13.0005V7.00049ZM12 15.0005C11.4477 15.0005 11 15.4482 11 16.0005C11 16.5528 11.4477 17.0005 12 17.0005H12.01C12.5623 17.0005 13.01 16.5528 13.01 16.0005C13.01 15.4482 12.5623 15.0005 12.01 15.0005H12Z"
-                , SvgAttr.fill "black"
-                ]
-                []
-            ]
-
-
+{-| Represents a more icon
+-}
 more : Icon
 more =
     icon "more-icon" <|
@@ -286,16 +302,8 @@ more =
             []
 
 
-icon : String -> Svg Never -> Icon
-icon label shape =
-    Icon
-        { label = label
-        , attributes = [ SvgAttr.viewBox "0 0 24 24" ]
-        , children =
-            [ shape ]
-        }
-
-
+{-| Represents a copy icon
+-}
 copy : Icon
 copy =
     icon "copy-icon" <|
@@ -305,6 +313,8 @@ copy =
             []
 
 
+{-| Represents a delete icon
+-}
 delete : Icon
 delete =
     icon "delete-icon" <|
@@ -314,6 +324,8 @@ delete =
             []
 
 
+{-| Represents a farmgate icon
+-}
 farmgate : Icon
 farmgate =
     icon "farmgate-icon" <|
@@ -323,6 +335,8 @@ farmgate =
             []
 
 
+{-| Represents the distribution center icon
+-}
 distributionCenter : Icon
 distributionCenter =
     icon "distribution-center-icon" <|
@@ -332,6 +346,8 @@ distributionCenter =
             []
 
 
+{-| Represents a store icon.
+-}
 store : Icon
 store =
     icon "store-icon" <|
@@ -341,10 +357,24 @@ store =
             []
 
 
+{-| Represents a factory icon.
+-}
 factory : Icon
 factory =
     icon "factory-icon" <|
         path
             [ SvgAttr.d "M18.7509 8.69321C18.6785 8.64523 18.5922 8.622 18.5052 8.62707C18.4182 8.63214 18.3353 8.66522 18.269 8.72128L14.3122 11.8866V9.19101C14.3151 9.09459 14.294 8.99893 14.2509 8.91245C14.2077 8.82597 14.1438 8.7513 14.0647 8.69501C13.9922 8.64703 13.906 8.6238 13.819 8.62887C13.732 8.63394 13.649 8.66702 13.5828 8.72308L9.14041 12.2746L8.72321 5.25144H9.15713C9.29405 5.23714 9.41985 5.17019 9.50745 5.06498C9.59505 4.95977 9.63747 4.82471 9.62557 4.68885V3.56403C9.63787 3.42793 9.59564 3.2925 9.508 3.18698C9.42035 3.08145 9.29433 3.01429 9.15713 3H4.47126C4.33392 3.01412 4.20771 3.0812 4.11992 3.18674C4.03212 3.29229 3.9898 3.42782 4.00209 3.56403V4.68885C3.9902 4.82482 4.03271 4.95998 4.12047 5.06521C4.20822 5.17044 4.3342 5.23732 4.47126 5.25144H4.90517L4.00209 20.3971C3.99147 20.5483 4.03567 20.6982 4.12674 20.82C4.16601 20.8742 4.21742 20.9187 4.27694 20.9499C4.33646 20.9811 4.40247 20.9983 4.4698 21H18.5296C18.6665 20.9857 18.7923 20.9188 18.8799 20.8135C18.9675 20.7083 19.0099 20.5733 18.998 20.4374V9.19101C19.0013 9.09432 18.9804 8.99832 18.9373 8.9115C18.8942 8.82469 18.8302 8.74971 18.7509 8.69321ZM12.4377 16.4978H10.5632V14.2482H12.4377V16.4978ZM17.1239 16.4978H15.2494V14.2482H17.1239V16.4978Z"
+            ]
+            []
+
+
+{-| Represents a checkmark icon.
+-}
+checkmark : Icon
+checkmark =
+    icon "checkmark" <|
+        path
+            [ SvgAttr.d "M9.54999 15.15L18.025 6.675C18.225 6.475 18.4625 6.375 18.7375 6.375C19.0125 6.375 19.25 6.475 19.45 6.675C19.65 6.875 19.75 7.1125 19.75 7.3875C19.75 7.6625 19.65 7.9 19.45 8.1L10.25 17.3C10.05 17.5 9.81666 17.6 9.54999 17.6C9.28333 17.6 9.04999 17.5 8.84999 17.3L4.54999 13C4.34999 12.8 4.25416 12.5625 4.26249 12.2875C4.27083 12.0125 4.37499 11.775 4.57499 11.575C4.77499 11.375 5.01249 11.275 5.28749 11.275C5.56249 11.275 5.79999 11.375 5.99999 11.575L9.54999 15.15Z"
+            , SvgAttr.fill "#1C1B1F"
             ]
             []
