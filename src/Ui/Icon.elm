@@ -54,13 +54,6 @@ type Icon
         }
 
 
-{-| Set a fill color for the given icon
--}
-setFill : Color -> Icon -> Icon
-setFill color (Icon ({ attributes } as icon_)) =
-    Icon { icon_ | attributes = attributes ++ [ SvgAttr.css [ Css.fill <| toCssColor color ] ] }
-
-
 {-| Creates a view for the given icon
 -}
 view : Icon -> Html msg
@@ -91,6 +84,19 @@ view24x24 (Icon { label, attributes, children }) =
         )
         (Svg.title [] [ Svg.text label ] :: children)
         |> Html.map never
+
+
+{-| Set a fill color for the given icon
+-}
+setFill : Color -> Icon -> Icon
+setFill color (Icon ({ attributes } as icon_)) =
+    Icon { icon_ | attributes = attributes ++ [ SvgAttr.css [ Css.fill <| toCssColor color ] ] }
+
+
+
+-- -----------------------------
+-- ICONS
+-- ----------------------------
 
 
 {-| Represents an icon
