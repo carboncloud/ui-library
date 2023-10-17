@@ -77,7 +77,8 @@ view :
     -> ButtonContent
     -> Html msg
 view { onClick, color, emphasis } =
-    customView [] []
+    customView []
+        []
         { onClick = onClick
         , color = color
         , emphasis = emphasis
@@ -139,7 +140,8 @@ customView customStyle attrs { emphasis, color, onClick } content =
                             ++ [ Css.backgroundColor <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
-                               ] ++ customStyle
+                               ]
+                            ++ customStyle
                         )
                         attrs
                         onClick
@@ -186,7 +188,8 @@ customView customStyle attrs { emphasis, color, onClick } content =
                             ++ [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
-                               ] ++ customStyle
+                               ]
+                            ++ customStyle
                         )
                         attrs
                         onClick
@@ -300,7 +303,7 @@ button customStyle attrs mOnClick buttonContent =
             Role.button :: onClickAttribute mOnClick ++ attrs
 
         textBaseAttrs =
-            baseAttrs ++ [ textButtonStyle ]
+            textButtonStyle :: baseAttrs
     in
     case buttonContent of
         Text s ->

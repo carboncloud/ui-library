@@ -63,8 +63,7 @@ view controls =
                 , Ui.Button.customView
                     [ Css.color <| toCssColor Palette.secondary500
                     ]
-                    [ 
-                    ]
+                    []
                     { emphasis = controls.emphasis
                     , color = Ui.Button.Primary
                     , onClick = Just UserClickedButton
