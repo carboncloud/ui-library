@@ -3,12 +3,15 @@ module Stories.Button exposing (..)
 import Css exposing (displayFlex, flex)
 import Html exposing (Html)
 import Html.Styled as Styled
+import Html.Styled.Attributes
 import Storybook.Component exposing (Component)
 import Storybook.Controls
 import Svg.Styled exposing (toUnstyled)
 import Svg.Styled.Attributes exposing (css)
 import Ui.Button exposing (ButtonColor(..), ButtonEmphasis(..))
+import Ui.Color exposing (toCssColor)
 import Ui.Icon as Icon
+import Ui.Palette as Palette
 
 
 main : Component () Msg
@@ -43,39 +46,60 @@ type alias Controls =
 
 type Msg
     = UserClickedButton
+    | Noop
 
 
 view : Controls -> Html Msg
 view controls =
     toUnstyled <|
-        Styled.div [ css [ displayFlex, Css.property "gap" "20px" ] ]
-            [ Ui.Button.view
-                { emphasis = controls.emphasis
-                , color = controls.color
-                , onClick = Just UserClickedButton
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
-                { emphasis = controls.emphasis
-                , color = controls.color
-                , onClick = Nothing
-                }
-                (Ui.Button.Text controls.label)
-            , Ui.Button.view
-                { emphasis = controls.emphasis
-                , color = controls.color
-                , onClick = Just UserClickedButton
-                }
-                (Ui.Button.TextWithLeftIcon controls.label Icon.edit)
-            , Ui.Button.view
-                { emphasis = controls.emphasis
-                , color = controls.color
-                , onClick = Just UserClickedButton
-                }
-                (Ui.Button.TextWithRightIcon controls.label Icon.edit)
-            , Ui.Button.iconButton []
-                { icon = Icon.newWindow
-                , tooltip = "Open in new window"
-                , onClick = Just UserClickedButton
-                }
-            ]
+        Styled.div [ css [ displayFlex, Css.property "gap" "20px" ] ] <|
+            List.map (Styled.div [] << List.singleton) <|
+                [ Ui.Button.view
+                    { emphasis = controls.emphasis
+                    , color = controls.color
+                    , onClick = Just UserClickedButton
+                    }
+                    (Ui.Button.Text controls.label)
+                , Ui.Button.customView
+                    [ Html.Styled.Attributes.css
+                        [ Css.color <| toCssColor Palette.white
+                        , Css.backgroundColor <| toCssColor Palette.primary600
+                        ]
+                    ]
+                    { emphasis = controls.emphasis
+                    , color = controls.color
+                    , onClick = Just UserClickedButton
+                    }
+                    (Ui.Button.Text "TEST CUSTOM")
+                , Ui.Button.view
+                    { emphasis = controls.emphasis
+                    , color = controls.color
+                    , onClick = Nothing
+                    }
+                    (Ui.Button.Text controls.label)
+                , Ui.Button.view
+                    { emphasis = controls.emphasis
+                    , color = controls.color
+                    , onClick = Just UserClickedButton
+                    }
+                    (Ui.Button.TextWithLeftIcon controls.label Icon.edit)
+                , Ui.Button.view
+                    { emphasis = controls.emphasis
+                    , color = controls.color
+                    , onClick = Just UserClickedButton
+                    }
+                    (Ui.Button.TextWithRightIcon controls.label Icon.edit)
+                , Ui.Button.iconButton []
+                    { icon = Icon.newWindow
+                    , tooltip = "Open in new window"
+                    , onClick = Just UserClickedButton
+                    }
+                , Styled.div
+                    [ Html.Styled.Attributes.css
+                        [ Css.backgroundColor <| toCssColor Palette.primary600
+                        , Css.padding (Css.px 25)
+                        ]
+                    ]
+                    [ Ui.Button.account { name = "Jane Doe", picture = "https://i0.wp.com/cdn.auth0.com/avatars/mf.png?ssl=1", onClick = Noop }
+                    ]
+                ]

@@ -1,6 +1,6 @@
 module Ui.Button exposing
     ( ButtonColor(..), ButtonEmphasis(..), ButtonContent(..)
-    , view, customView, iconButton
+    , view, customView, iconButton, account
     )
 
 {-| Defines a Button component
@@ -13,12 +13,13 @@ module Ui.Button exposing
 
 # Views
 
-@docs view, customView, iconButton
+@docs view, customView, iconButton, account
 
 -}
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
+import Color exposing (Color)
 import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
@@ -36,6 +37,8 @@ import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
   - `Primary`: used to get users main focus
   - `Secondary`: used as an accent to `Primary`
   - `Warn`: used to indicate a destructive and/or dangerous action
+  - `Neutral`: used when little focus should be put on the button
+  - `Custom`: when custom styling is needed
 
 -}
 type ButtonColor
@@ -43,6 +46,7 @@ type ButtonColor
     | Secondary
     | Warn
     | Neutral
+    | Custom ( Color, Color )
 
 
 {-| Defines the emphasis of the button
@@ -110,6 +114,9 @@ customView attrs { emphasis, color, onClick } content =
                         Neutral ->
                             ( Palette.black, Palette.gray800 )
 
+                        Custom color_ ->
+                            color_
+
                 baseStyle =
                     [ Css.backgroundColor <| Color.toCssColor bgColor
                     , Css.border Css.zero
@@ -156,6 +163,9 @@ customView attrs { emphasis, color, onClick } content =
 
                         Neutral ->
                             ( Palette.black, Palette.gray300 )
+
+                        Custom color_ ->
+                            color_
 
                 baseStyle =
                     [ Css.padding2 (Css.px 8) (Css.px 14)
@@ -204,6 +214,9 @@ customView attrs { emphasis, color, onClick } content =
                         Neutral ->
                             ( Palette.black, Palette.gray300 )
 
+                        Custom color_ ->
+                            color_
+
                 baseStyle =
                     [ Css.color <| Color.toCssColor textColor
                     , Css.fontWeight (Css.int 500)
@@ -241,31 +254,62 @@ buttonText =
         }
 
 
+{-| -}
+account : { picture : String, name : String, onClick : msg } -> A11y.Html msg
+account { picture, name } =
+    let
+        accountButtonStyle =
+            buttonBaseStyle
+                ++ [ Css.color <| Color.toCssColor Palette.white
+                   , Css.fontWeight (Css.int 500)
+                   , Css.whiteSpace Css.noWrap
+                   , Css.fill <| Color.toCssColor Palette.white
+                   , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.gray300 ]
+                   ]
+    in
+    A11y.button [ Attributes.css accountButtonStyle ]
+        [ A11y.text name
+        , A11y.span
+            [ Attributes.css
+                [ Css.margin4 Css.auto Css.auto Css.auto (Css.px 10)
+                , Css.displayFlex
+                ]
+            ]
+            [ A11y.img "Profile picture"
+                [ Attributes.src picture
+                , Attributes.css [ Css.borderRadius (Css.pct 100), Css.width (Css.px 24), Css.margin Css.auto ]
+                ]
+            ]
+        ]
+
+
+buttonBaseStyle : List Css.Style
+buttonBaseStyle =
+    [ Css.displayFlex
+    , Css.alignItems Css.center
+    , Css.border Css.zero
+    , Css.backgroundColor Css.transparent
+    , Css.padding2 (Css.px 10) (Css.px 16)
+    , Css.borderRadius (Css.px 24)
+    , Css.fontWeight Css.bold
+    , Css.color <| Color.toCssColor Palette.white
+    , Css.cursor Css.pointer
+    , Css.focus
+        [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]
+    ]
+
+
 button : List Css.Style -> List (A11y.Attribute msg) -> Maybe msg -> ButtonContent -> A11y.Html msg
 button customStyle attrs mOnClick buttonContent =
     let
-        baseStyle =
-            [ Css.displayFlex
-            , Css.alignItems Css.center
-            , Css.border Css.zero
-            , Css.backgroundColor Css.transparent
-            , Css.padding2 (Css.px 10) (Css.px 16)
-            , Css.borderRadius (Css.px 24)
-            , Css.fontWeight Css.bold
-            , Css.color <| Color.toCssColor Palette.white
-            , Css.cursor Css.pointer
-            , Css.focus
-                [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]
-            ]
-
         textButtonStyle =
-            baseStyle ++ toCssStyle buttonText ++ customStyle
+            Attributes.css <| buttonBaseStyle ++ toCssStyle buttonText ++ customStyle
 
         baseAttrs =
             Role.button :: onClickAttribute mOnClick ++ attrs
 
         textBaseAttrs =
-            Attributes.css textButtonStyle :: baseAttrs
+            baseAttrs ++ [ textButtonStyle ]
     in
     case buttonContent of
         Text s ->
