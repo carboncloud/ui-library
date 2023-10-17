@@ -61,13 +61,12 @@ view controls =
                     }
                     (Ui.Button.Text controls.label)
                 , Ui.Button.customView
-                    [ Html.Styled.Attributes.css
-                        [ Css.color <| toCssColor Palette.white
-                        , Css.backgroundColor <| toCssColor Palette.primary600
-                        ]
+                    [ Css.color <| toCssColor Palette.secondary500
+                    ]
+                    [ 
                     ]
                     { emphasis = controls.emphasis
-                    , color = controls.color
+                    , color = Ui.Button.Primary
                     , onClick = Just UserClickedButton
                     }
                     (Ui.Button.Text "TEST CUSTOM")

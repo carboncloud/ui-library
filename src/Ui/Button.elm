@@ -46,7 +46,6 @@ type ButtonColor
     | Secondary
     | Warn
     | Neutral
-    | Custom ( Color, Color )
 
 
 {-| Defines the emphasis of the button
@@ -78,7 +77,7 @@ view :
     -> ButtonContent
     -> Html msg
 view { onClick, color, emphasis } =
-    customView []
+    customView [] []
         { onClick = onClick
         , color = color
         , emphasis = emphasis
@@ -88,7 +87,8 @@ view { onClick, color, emphasis } =
 {-| Returns a custom view of a button.
 -}
 customView :
-    List (Styled.Attribute msg)
+    List Css.Style
+    -> List (Styled.Attribute msg)
     ->
         { onClick : Maybe msg
         , color : ButtonColor
@@ -96,7 +96,7 @@ customView :
         }
     -> ButtonContent
     -> Html msg
-customView attrs { emphasis, color, onClick } content =
+customView customStyle attrs { emphasis, color, onClick } content =
     case emphasis of
         High ->
             let
@@ -114,9 +114,6 @@ customView attrs { emphasis, color, onClick } content =
                         Neutral ->
                             ( Palette.black, Palette.gray800 )
 
-                        Custom color_ ->
-                            color_
-
                 baseStyle =
                     [ Css.backgroundColor <| Color.toCssColor bgColor
                     , Css.border Css.zero
@@ -131,7 +128,7 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
@@ -142,7 +139,7 @@ customView attrs { emphasis, color, onClick } content =
                             ++ [ Css.backgroundColor <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
-                               ]
+                               ] ++ customStyle
                         )
                         attrs
                         onClick
@@ -164,9 +161,6 @@ customView attrs { emphasis, color, onClick } content =
                         Neutral ->
                             ( Palette.black, Palette.gray300 )
 
-                        Custom color_ ->
-                            color_
-
                 baseStyle =
                     [ Css.padding2 (Css.px 8) (Css.px 14)
                     , Css.border3 (Css.px 2) Css.solid <| Color.toCssColor baseColor
@@ -181,7 +175,7 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
@@ -192,7 +186,7 @@ customView attrs { emphasis, color, onClick } content =
                             ++ [ Css.border3 (Css.px 2) Css.solid <| Color.toCssColor Palette.gray200
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
-                               ]
+                               ] ++ customStyle
                         )
                         attrs
                         onClick
@@ -214,9 +208,6 @@ customView attrs { emphasis, color, onClick } content =
                         Neutral ->
                             ( Palette.black, Palette.gray300 )
 
-                        Custom color_ ->
-                            color_
-
                 baseStyle =
                     [ Css.color <| Color.toCssColor textColor
                     , Css.fontWeight (Css.int 500)
@@ -230,14 +221,14 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
 
                 Nothing ->
                     button
-                        (baseStyle ++ [ Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ])
+                        (baseStyle ++ [ Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ] ++ customStyle)
                         attrs
                         onClick
                         content
