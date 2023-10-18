@@ -3,7 +3,7 @@ module Ui.Icon exposing
     , view, view24x24
     , setFill
     , edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy
-    , chevronUp, chevronLeft, chevronRight, chevronDown
+    , chevronUp, chevronLeft, chevronRight, chevronDown, vibilityOn, vibilityOff
     )
 
 {-|
@@ -26,7 +26,7 @@ module Ui.Icon exposing
 
 # Action icons
 
-@docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy
+@docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visbilityOn, visibilityOff
 
 
 # Chevron icons
@@ -384,7 +384,8 @@ checkmark =
             ]
             []
 
-
+{-|
+-}
 vibilityOn : Icon
 vibilityOn =
     icon "visibility-on" <|
@@ -393,7 +394,8 @@ vibilityOn =
             ]
             []
 
-
+{-|
+-}
 vibilityOff : Icon
 vibilityOff =
     icon "visibility-on" <|
