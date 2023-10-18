@@ -19,7 +19,7 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
-import Color exposing (Color)
+import Color
 import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
