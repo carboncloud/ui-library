@@ -1,5 +1,5 @@
 import { Elm } from "./Button.elm";
-import elmSource from "./Button.elm?raw";
+import elmSource from "./../../../src/Ui/Button.elm?raw";
 import { ElmComponent } from "elm-storybook";
 
 export default {
