@@ -1,6 +1,6 @@
 module Ui.Button exposing
     ( ButtonColor(..), ButtonEmphasis(..), ButtonContent(..)
-    , view, customView, iconButton, account
+    , view, customView, iconButton
     )
 
 {-| Defines a Button component
@@ -13,7 +13,7 @@ module Ui.Button exposing
 
 # Views
 
-@docs view, customView, iconButton, account
+@docs view, customView, iconButton
 
 -}
 
@@ -246,35 +246,6 @@ buttonText =
         , color = TextStyle.primaryWhiteColor
         , lineHeight = 1.0
         }
-
-
-{-| -}
-account : { picture : String, name : String, onClick : msg } -> A11y.Html msg
-account { picture, name } =
-    let
-        accountButtonStyle =
-            buttonBaseStyle
-                ++ [ Css.color <| Color.toCssColor Palette.white
-                   , Css.fontWeight (Css.int 500)
-                   , Css.whiteSpace Css.noWrap
-                   , Css.fill <| Color.toCssColor Palette.white
-                   , Css.hover [ Css.backgroundColor <| Color.toCssColor Palette.gray300 ]
-                   ]
-    in
-    A11y.button [ Attributes.css accountButtonStyle ]
-        [ A11y.text name
-        , A11y.span
-            [ Attributes.css
-                [ Css.margin4 Css.auto Css.auto Css.auto (Css.px 10)
-                , Css.displayFlex
-                ]
-            ]
-            [ A11y.img "Profile picture"
-                [ Attributes.src picture
-                , Attributes.css [ Css.borderRadius (Css.pct 100), Css.width (Css.px 24), Css.margin Css.auto ]
-                ]
-            ]
-        ]
 
 
 buttonBaseStyle : List Css.Style

@@ -92,12 +92,4 @@ view controls =
                     , tooltip = "Open in new window"
                     , onClick = Just UserClickedButton
                     }
-                , Styled.div
-                    [ Html.Styled.Attributes.css
-                        [ Css.backgroundColor <| toCssColor Palette.primary600
-                        , Css.padding (Css.px 25)
-                        ]
-                    ]
-                    [ Ui.Button.account { name = "Jane Doe", picture = "https://i0.wp.com/cdn.auth0.com/avatars/mf.png?ssl=1", onClick = Noop }
-                    ]
                 ]
