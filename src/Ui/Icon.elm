@@ -27,7 +27,7 @@ module Ui.Icon exposing
 
 # Action icons
 
-@docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visbilityOn, visibilityOff
+@docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visibilityOn, visibilityOff
 
 
 # Chevron icons
