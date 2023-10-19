@@ -19,6 +19,7 @@ module Ui.Button exposing
 
 import Accessibility.Styled as A11y
 import Accessibility.Styled.Role as Role
+import Color
 import Css
 import Html.Styled as Styled exposing (Html)
 import Html.Styled.Attributes as Attributes
@@ -36,6 +37,8 @@ import Ui.TextStyle as TextStyle exposing (FontWeight(..), TextStyle(..))
   - `Primary`: used to get users main focus
   - `Secondary`: used as an accent to `Primary`
   - `Warn`: used to indicate a destructive and/or dangerous action
+  - `Neutral`: used when little focus should be put on the button
+  - `Custom`: when custom styling is needed
 
 -}
 type ButtonColor
@@ -75,6 +78,7 @@ view :
     -> Html msg
 view { onClick, color, emphasis } =
     customView []
+        []
         { onClick = onClick
         , color = color
         , emphasis = emphasis
@@ -84,7 +88,8 @@ view { onClick, color, emphasis } =
 {-| Returns a custom view of a button.
 -}
 customView :
-    List (Styled.Attribute msg)
+    List Css.Style
+    -> List (Styled.Attribute msg)
     ->
         { onClick : Maybe msg
         , color : ButtonColor
@@ -92,7 +97,7 @@ customView :
         }
     -> ButtonContent
     -> Html msg
-customView attrs { emphasis, color, onClick } content =
+customView customStyle attrs { emphasis, color, onClick } content =
     case emphasis of
         High ->
             let
@@ -124,7 +129,7 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
@@ -136,6 +141,7 @@ customView attrs { emphasis, color, onClick } content =
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
                                ]
+                            ++ customStyle
                         )
                         attrs
                         onClick
@@ -171,7 +177,7 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
@@ -183,6 +189,7 @@ customView attrs { emphasis, color, onClick } content =
                                , Css.color <| Color.toCssColor Palette.disabled
                                , Css.cursor Css.notAllowed
                                ]
+                            ++ customStyle
                         )
                         attrs
                         onClick
@@ -217,14 +224,14 @@ customView attrs { emphasis, color, onClick } content =
             case onClick of
                 Just _ ->
                     button
-                        enabledBaseStyle
+                        (enabledBaseStyle ++ customStyle)
                         attrs
                         onClick
                         content
 
                 Nothing ->
                     button
-                        (baseStyle ++ [ Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ])
+                        (baseStyle ++ [ Css.color <| Color.toCssColor Palette.disabled, Css.cursor Css.notAllowed ] ++ customStyle)
                         attrs
                         onClick
                         content
@@ -241,31 +248,33 @@ buttonText =
         }
 
 
+buttonBaseStyle : List Css.Style
+buttonBaseStyle =
+    [ Css.displayFlex
+    , Css.alignItems Css.center
+    , Css.border Css.zero
+    , Css.backgroundColor Css.transparent
+    , Css.padding2 (Css.px 10) (Css.px 16)
+    , Css.borderRadius (Css.px 24)
+    , Css.fontWeight Css.bold
+    , Css.color <| Color.toCssColor Palette.white
+    , Css.cursor Css.pointer
+    , Css.focus
+        [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]
+    ]
+
+
 button : List Css.Style -> List (A11y.Attribute msg) -> Maybe msg -> ButtonContent -> A11y.Html msg
 button customStyle attrs mOnClick buttonContent =
     let
-        baseStyle =
-            [ Css.displayFlex
-            , Css.alignItems Css.center
-            , Css.border Css.zero
-            , Css.backgroundColor Css.transparent
-            , Css.padding2 (Css.px 10) (Css.px 16)
-            , Css.borderRadius (Css.px 24)
-            , Css.fontWeight Css.bold
-            , Css.color <| Color.toCssColor Palette.white
-            , Css.cursor Css.pointer
-            , Css.focus
-                [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]
-            ]
-
         textButtonStyle =
-            baseStyle ++ toCssStyle buttonText ++ customStyle
+            Attributes.css <| buttonBaseStyle ++ toCssStyle buttonText ++ customStyle
 
         baseAttrs =
             Role.button :: onClickAttribute mOnClick ++ attrs
 
         textBaseAttrs =
-            Attributes.css textButtonStyle :: baseAttrs
+            textButtonStyle :: baseAttrs
     in
     case buttonContent of
         Text s ->
