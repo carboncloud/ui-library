@@ -387,9 +387,7 @@ checkmark =
 
 
 {-| -}
-vibilityOn : Icon
-
-
+visibilityOn : Icon
 visibilityOn =
     icon "visibility-on" <|
         path
@@ -399,9 +397,7 @@ visibilityOn =
 
 
 {-| -}
-vibilityOff : Icon
-
-
+visibilityOff : Icon
 visibilityOff =
     icon "visibility-on" <|
         path
