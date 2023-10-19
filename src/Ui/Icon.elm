@@ -2,9 +2,9 @@ module Ui.Icon exposing
     ( Icon(..)
     , view, view24x24
     , setFill
-    , edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy
+    , edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visibilityOff
     , chevronUp, chevronLeft, chevronRight, chevronDown
-    , visibilityOff, visibilityOn
+    , visibilityOn
     )
 
 {-|
@@ -388,6 +388,8 @@ checkmark =
 
 {-| -}
 vibilityOn : Icon
+
+
 visibilityOn =
     icon "visibility-on" <|
         path
@@ -398,6 +400,8 @@ visibilityOn =
 
 {-| -}
 vibilityOff : Icon
+
+
 visibilityOff =
     icon "visibility-on" <|
         path
