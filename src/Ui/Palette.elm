@@ -3,6 +3,7 @@ module Ui.Palette exposing
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
+    , textPrimary, textPrimaryWhite
     )
 
 {-| This module defines a palette of available colors
@@ -26,6 +27,11 @@ module Ui.Palette exposing
 # Gray colors
 
 @docs black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
+
+
+# Text colors
+
+@docs textPrimary, textPrimaryWhite
 
 -}
 
@@ -185,3 +191,16 @@ success050 =
 disabled : Color
 disabled =
     gray500
+
+
+{-| -}
+textPrimary : Color
+textPrimary =
+    gray900
+
+
+{-| ![#FCFCFC](https://placehold.co/15x15/172D69/172D69.png) `#FCFCFC`
+-}
+textPrimaryWhite : Color
+textPrimaryWhite =
+    Ui.Color.fromHex "#FCFCFC"

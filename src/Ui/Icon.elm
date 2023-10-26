@@ -1,7 +1,6 @@
 module Ui.Icon exposing
     ( Icon(..)
     , view, view24x24
-    , setFill
     , edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visibilityOn, visibilityOff
     , chevronUp, chevronLeft, chevronRight, chevronDown
     )
@@ -19,11 +18,6 @@ module Ui.Icon exposing
 @docs view, view24x24
 
 
-# Helpers
-
-@docs setFill
-
-
 # Action icons
 
 @docs edit, close, search, newWindow, comment, settings, checkmark, more, delete, copy, visibilityOn, visibilityOff
@@ -36,12 +30,9 @@ module Ui.Icon exposing
 -}
 
 import Accessibility.Styled.Role as Role
-import Color exposing (Color)
-import Css
 import Html.Styled as Html exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, path, svg)
 import Svg.Styled.Attributes as SvgAttr
-import Ui.Color exposing (toCssColor)
 
 
 {-| Defines the Icon type
@@ -62,7 +53,6 @@ view (Icon { label, attributes, children }) =
         ([ Role.img
          , SvgAttr.height "100%"
          , SvgAttr.width "100%"
-         , SvgAttr.pointerEvents "none"
          ]
             ++ attributes
         )
@@ -78,19 +68,11 @@ view24x24 (Icon { label, attributes, children }) =
         ([ Role.img
          , SvgAttr.height "24px"
          , SvgAttr.width "24px"
-         , SvgAttr.pointerEvents "none"
          ]
             ++ attributes
         )
         (Svg.title [] [ Svg.text label ] :: children)
         |> Html.map never
-
-
-{-| Set a fill color for the given icon
--}
-setFill : Color -> Icon -> Icon
-setFill color (Icon ({ attributes } as icon_)) =
-    Icon { icon_ | attributes = attributes ++ [ SvgAttr.css [ Css.fill <| toCssColor color ] ] }
 
 
 
@@ -105,7 +87,7 @@ icon : String -> Svg Never -> Icon
 icon label shape =
     Icon
         { label = label
-        , attributes = [ SvgAttr.viewBox "0 0 24 24" ]
+        , attributes = [ SvgAttr.viewBox "0 0 24 24", SvgAttr.fill "currentColor", SvgAttr.pointerEvents "none" ]
         , children =
             [ shape ]
         }

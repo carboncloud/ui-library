@@ -9,10 +9,7 @@ module Ui.TextStyle exposing
     , heading3
     , heading4
     , label
-    , primaryColor
-    , primaryWhiteColor
     , sansSerifFamilies
-    , withColor
     )
 
 {-|
@@ -42,21 +39,10 @@ and the available font properties.
     ## Font families
     @docs sansSerifFamilies
 
-    ## Font colors
-    @docs primaryWhiteColor, primaryColor
-
     ## Font weights
     @docs FontWeight, fontWeight
 
-    ## Modifiers
-
-    @docs withColor
-
 -}
-
-import Color exposing (Color)
-import Ui.Color as Color
-import Ui.Palette as Palette
 
 
 {-| -}
@@ -65,21 +51,8 @@ type TextStyle
         { family : List String
         , size : Int
         , weight : FontWeight
-        , color : Color
         , lineHeight : Float
         }
-
-
-{-| -}
-primaryColor : Color
-primaryColor =
-    Palette.gray900
-
-
-{-| -}
-primaryWhiteColor : Color
-primaryWhiteColor =
-    Color.fromHex "#FCFCFC"
 
 
 {-| -}
@@ -95,7 +68,6 @@ bodySmall =
         { family = sansSerifFamilies
         , size = 14
         , weight = Normal
-        , color = primaryColor
         , lineHeight = 1.2
         }
 
@@ -107,7 +79,6 @@ body =
         { family = sansSerifFamilies
         , size = 16
         , weight = Normal
-        , color = primaryColor
         , lineHeight = 1.5
         }
 
@@ -120,7 +91,6 @@ label =
         , size = 16
         , weight = SemiBold
         , lineHeight = 1.2
-        , color = primaryColor
         }
 
 
@@ -131,7 +101,6 @@ heading1 =
         { family = sansSerifFamilies
         , size = 72
         , weight = SemiBold
-        , color = primaryColor
         , lineHeight = 1.2
         }
 
@@ -143,7 +112,6 @@ heading2 =
         { family = sansSerifFamilies
         , size = 48
         , weight = SemiBold
-        , color = primaryColor
         , lineHeight = 1.2
         }
 
@@ -155,7 +123,6 @@ heading3 =
         { family = sansSerifFamilies
         , size = 32
         , weight = SemiBold
-        , color = primaryColor
         , lineHeight = 1.2
         }
 
@@ -167,15 +134,8 @@ heading4 =
         { family = sansSerifFamilies
         , size = 16
         , weight = SemiBold
-        , color = primaryColor
         , lineHeight = 2
         }
-
-
-{-| -}
-withColor : Color -> TextStyle -> TextStyle
-withColor c (TextStyle s) =
-    TextStyle { s | color = c }
 
 
 {-| Represents a font weight

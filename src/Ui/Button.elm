@@ -243,7 +243,6 @@ buttonText =
         { family = TextStyle.sansSerifFamilies
         , size = 14
         , weight = Normal
-        , color = TextStyle.primaryWhiteColor
         , lineHeight = 1.0
         }
 
@@ -257,7 +256,7 @@ buttonBaseStyle =
     , Css.padding2 (Css.px 10) (Css.px 16)
     , Css.borderRadius (Css.px 24)
     , Css.fontWeight Css.bold
-    , Css.color <| Color.toCssColor Palette.white
+    , Css.color <| Color.toCssColor Palette.textPrimaryWhite
     , Css.cursor Css.pointer
     , Css.focus
         [ Css.outline3 (Css.px 1) Css.solid (Color.toCssColor Palette.focus) ]

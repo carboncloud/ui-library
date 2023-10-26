@@ -180,13 +180,13 @@ customView attrs model config =
                         [ A11y.button
                             [ Events.onClick <| config.onNav newModel
                             , Attributes.css <|
-                                buttonStyle
+                                Css.color (Color.toCssColor Palette.textPrimary)
+                                    :: buttonStyle
                                     ++ toCssStyle
                                         (TextStyle
                                             { family = TextStyle.sansSerifFamilies
                                             , size = 16
                                             , weight = Normal
-                                            , color = TextStyle.primaryColor
                                             , lineHeight = 1.0
                                             }
                                         )
@@ -237,8 +237,8 @@ customView attrs model config =
 
                 Nothing ->
                     A11y.button
-                        [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default ] ]
-                        [ Icon.view (icon |> Icon.setFill Palette.disabled) ]
+                        [ Attributes.css <| iconButtonStyle ++ [ Css.cursor Css.default, Css.color <| Color.toCssColor Palette.disabled ] ]
+                        [ Icon.view icon ]
     in
     A11y.nav (Landmark.navigation :: attrs)
         [ A11y.ul

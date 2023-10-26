@@ -1,12 +1,14 @@
-module Ui.Shadow exposing
-    ( Shadow(..)
-    , focus
-    , shadow
-    )
+module Ui.Shadow exposing (shadow, Shadow(..), focus)
 
-{-
-   This module defines the `Shadow` type
-   that is an abstraction over layered shadows.
+{-|
+
+    # Shadow
+
+This module defines the `Shadow` type
+that is an abstraction over layered shadows.
+
+@docs shadow, Shadow, focus
+
 -}
 
 import Css exposing (Color)
@@ -28,11 +30,21 @@ type alias ShadowSpec =
     }
 
 
+{-|
+
+    Size of the shadow
+
+-}
 type Shadow
     = Large
     | Small
 
 
+{-|
+
+    Creates a focus style
+
+-}
 focus : Css.Style
 focus =
     toStyle <|
@@ -46,6 +58,11 @@ focus =
             []
 
 
+{-|
+
+    Creates a shadow style
+
+-}
 shadow : Shadow -> Css.Style
 shadow size =
     toStyle <|

@@ -3,7 +3,7 @@
     "name": "carboncloud/ui-library",
     "summary": "UI library we use at CarbonCloud.",
     "license": "BSD-3-Clause",
-    "version": "8.0.0",
+    "version": "9.0.0",
     "exposed-modules": [
         "Ui.Button",
         "Ui.Color",
@@ -16,7 +16,8 @@
         "Ui.Icon",
         "Ui.Input",
         "Ui.MillerColumns",
-        "Ui.Dialog"
+        "Ui.Dialog",
+        "Ui.Shadow"
     ],
     "elm-version": "0.19.1 <= v < 0.20.0",
     "dependencies": {
