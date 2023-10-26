@@ -192,7 +192,8 @@ disabled : Color
 disabled =
     gray500
 
-
+{-|
+-}
 textPrimary : Color
 textPrimary =
     gray900
