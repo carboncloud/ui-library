@@ -36,7 +36,7 @@ view font =
 -}
 customView : List (Styled.Attribute msg) -> TextStyle -> String -> Styled.Html msg
 customView attrs font s =
-    Styled.span (attrs ++ [ Attributes.css <| Css.color Css.currentColor :: toCssStyle font ]) [ Styled.text s ]
+    Styled.span (attrs ++ [ Attributes.css <| toCssStyle font ]) [ Styled.text s ]
 
 
 {-| -}
