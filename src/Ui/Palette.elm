@@ -28,6 +28,11 @@ module Ui.Palette exposing
 
 @docs black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
 
+
+# Text colors
+
+@docs textPrimary, textPrimaryWhite
+
 -}
 
 import Color exposing (Color)
@@ -193,6 +198,8 @@ textPrimary =
     gray900
 
 
+{-| ![#FCFCFC](https://placehold.co/15x15/172D69/172D69.png) `#FCFCFC`
+-}
 textPrimaryWhite : Color
 textPrimaryWhite =
     Ui.Color.fromHex "#FCFCFC"
