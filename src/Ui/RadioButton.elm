@@ -144,14 +144,13 @@ customView attrs config =
                                     [ Css.color <| Color.toCssColor Palette.disabled ]
 
                                 else
-                                    []
+                                    [ Css.color <| Color.toCssColor Palette.textPrimary ]
                                )
                     ]
                     (TextStyle
                         { family = TextStyle.sansSerifFamilies
                         , weight = Normal
                         , size = 14
-                        , color = TextStyle.primaryColor
                         , lineHeight = 1.0
                         }
                     )

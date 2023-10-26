@@ -21,7 +21,6 @@ module Ui.Css.TextStyle exposing
 -}
 
 import Css
-import Ui.Color
 import Ui.TextStyle as TextStyle exposing (TextStyle(..), fontWeight)
 
 
@@ -62,7 +61,7 @@ body =
 -}
 toCssStyle : TextStyle -> List Css.Style
 toCssStyle font =
-    List.map (\f -> f font) [ fontSizeToCssStyle, fontFamilyToCssStyle, fontWeightToCssStyle, fontColorToCssStyle, lineHeightToCssStyle ]
+    List.map (\f -> f font) [ fontSizeToCssStyle, fontFamilyToCssStyle, fontWeightToCssStyle, lineHeightToCssStyle ]
 
 
 fontFamilyToCssStyle : TextStyle -> Css.Style
@@ -78,11 +77,6 @@ fontSizeToCssStyle (TextStyle { size }) =
 fontWeightToCssStyle : TextStyle -> Css.Style
 fontWeightToCssStyle (TextStyle { weight }) =
     Css.fontWeight <| Css.int <| fontWeight weight
-
-
-fontColorToCssStyle : TextStyle -> Css.Style
-fontColorToCssStyle (TextStyle { color }) =
-    Css.color <| Ui.Color.toCssColor color
 
 
 lineHeightToCssStyle : TextStyle -> Css.Style

@@ -36,7 +36,7 @@ view font =
 -}
 customView : List (Styled.Attribute msg) -> TextStyle -> String -> Styled.Html msg
 customView attrs font s =
-    Styled.span (attrs ++ [ Attributes.css <| toCssStyle font ]) [ Styled.text s ]
+    Styled.span (attrs ++ [ Attributes.css <| Css.color Css.currentColor :: toCssStyle font ]) [ Styled.text s ]
 
 
 {-| -}
@@ -56,8 +56,8 @@ styledCustomParagraph : List (Styled.Attribute msg) -> TextStyle -> String -> St
 styledCustomParagraph attrs font s =
     Styled.p
         ((Attributes.css <|
-            Css.margin2 (Css.px 15) Css.zero
-                :: toCssStyle font
+            [ Css.margin2 (Css.px 15) Css.zero, Css.color Css.currentColor ]
+                ++ toCssStyle font
          )
             :: attrs
         )
