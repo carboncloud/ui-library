@@ -16,7 +16,8 @@
         "Ui.Icon",
         "Ui.Input",
         "Ui.MillerColumns",
-        "Ui.Dialog"
+        "Ui.Dialog",
+        "Ui.Shadow"
     ],
     "elm-version": "0.19.1 <= v < 0.20.0",
     "dependencies": {
