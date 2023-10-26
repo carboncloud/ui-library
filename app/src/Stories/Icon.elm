@@ -36,6 +36,7 @@ view =
     toUnstyled <|
         Styled.div [ css [ displayFlex, Css.flexDirection Css.column, Css.property "gap" "45px" ] ]
             [ iconGroup "Actions" [ Icon.edit, Icon.copy, Icon.settings, Icon.delete, Icon.comment, Icon.search, Icon.close, Icon.newWindow, Icon.more ]
+            , iconGroup "Domain" [Icon.product]
             , iconGroup "Chevron" [ Icon.chevronUp, Icon.chevronRight, Icon.chevronDown, Icon.chevronLeft ]
             ]
 
