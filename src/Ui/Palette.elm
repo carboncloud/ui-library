@@ -1,10 +1,9 @@
 module Ui.Palette exposing
-    ( primary050, primary500, primary600
+    ( primary050, primary400, primary500, primary600
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
     , textPrimary, textPrimaryWhite
-    , primary400
     )
 
 {-| This module defines a palette of available colors
