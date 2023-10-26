@@ -4,6 +4,7 @@ module Ui.Palette exposing
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
     , textPrimary, textPrimaryWhite
+    , primary400
     )
 
 {-| This module defines a palette of available colors
@@ -44,6 +45,13 @@ import Ui.Color
 primary050 : Color
 primary050 =
     Ui.Color.fromHex "#CAE8E9"
+
+
+{-| ![#38B9B9](https://placehold.co/15x15/287386/287386.png) `#38B9B9`
+-}
+primary400 : Color
+primary400 =
+    Ui.Color.fromHex "#38B9B9"
 
 
 {-| ![#28A0A6](https://placehold.co/15x15/287386/287386.png) `#28A0A6`
