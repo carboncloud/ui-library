@@ -12,7 +12,7 @@ module Ui.Palette exposing
 
 # Primary colors
 
-@docs primary050, primary500, primary600
+@docs primary050, primary400, primary500, primary600
 
 
 # Secondary colors
