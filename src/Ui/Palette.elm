@@ -1,5 +1,5 @@
 module Ui.Palette exposing
-    ( primary050, primary500, primary600
+    ( primary050, primary400, primary500, primary600
     , secondary050, secondary500, secondary600
     , success, success050, warn050, warn500, warn600, focus, disabled
     , black, white, gray050, gray100, gray200, gray300, gray500, gray800, gray900
@@ -11,7 +11,7 @@ module Ui.Palette exposing
 
 # Primary colors
 
-@docs primary050, primary500, primary600
+@docs primary050, primary400, primary500, primary600
 
 
 # Secondary colors
@@ -44,6 +44,13 @@ import Ui.Color
 primary050 : Color
 primary050 =
     Ui.Color.fromHex "#CAE8E9"
+
+
+{-| ![#38B9B9](https://placehold.co/15x15/287386/287386.png) `#38B9B9`
+-}
+primary400 : Color
+primary400 =
+    Ui.Color.fromHex "#38B9B9"
 
 
 {-| ![#28A0A6](https://placehold.co/15x15/287386/287386.png) `#28A0A6`
